@@ -615,11 +615,13 @@ func createHTTPServer(ctx context.Context, ln net.Listener, configuration *stati
 
 	handler = routingPath(handler)
 
-	handler = normalizePath(handler)
-
+	// Note that the Path sanitization has to be done after the path normalization,
+	// hence the wrapping has to be done before the normalize path wrapping.
 	if configuration.HTTP.SanitizePath != nil && *configuration.HTTP.SanitizePath {
 		handler = sanitizePath(handler)
 	}
+
+	handler = normalizePath(handler)
 
 	handler = denyFragment(handler)
 
