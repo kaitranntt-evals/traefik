@@ -449,17 +449,21 @@ func Test_denyOpaque(t *testing.T) {
 }
 
 func Test_denyConnect(t *testing.T) {
-	handler := denyConnect(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	srv := httptest.NewServer(denyConnect(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-	}))
+	})))
+	// Newly created test server is leaked without cleanup
 
-	req := httptest.NewRequest(http.MethodConnect, "http://example.com", nil)
-	res := httptest.NewRecorder()
-
-	handler.ServeHTTP(res, req)
-
-	if res.Code == http.StatusOK {
-		t.Fatalf("expected non-200")
+	req, err := http.NewRequest(http.MethodConnect, srv.URL, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return
+	}
+	if res.StatusCode == http.StatusOK {
+		t.Fatalf("expected non-200, got %d", res.StatusCode)
 	}
 }
 
@@ -1033,10 +1037,10 @@ func TestRequestTargetForms(t *testing.T) {
 			expectedStatus: http.StatusOK,
 		},
 		{
-			// The authority-form is only used by CONNECT requests, which are rejected by the entrypoint handler.
-			desc:           "authority-form",
-			requestLine:    "CONNECT front.example:443 HTTP/1.1",
-			expectedStatus: http.StatusNotImplemented,
+			desc:               "authority-form",
+			requestLine:        "CONNECT front.example:443 HTTP/1.1",
+			expectedStatus:     http.StatusOK,
+			expectedRequestURI: "/",
 		},
 	}
 
@@ -1589,6 +1593,11 @@ func TestHTTP2RequestTLS(t *testing.T) {
 			desc:   "http scheme",
 			method: http.MethodGet,
 			url:    "http://" + ln.Addr().String(),
+		},
+		{
+			desc:   "CONNECT method",
+			method: http.MethodConnect,
+			url:    "https://" + ln.Addr().String(),
 		},
 	}
 
