@@ -462,8 +462,8 @@ func Test_denyConnect(t *testing.T) {
 	if err != nil {
 		return
 	}
-	if res.StatusCode == http.StatusOK {
-		t.Fatalf("expected non-200, got %d", res.StatusCode)
+	if res.StatusCode != http.StatusNotImplemented {
+		t.Fatalf("expected 501 Not Implemented, got %d", res.StatusCode)
 	}
 }
 
