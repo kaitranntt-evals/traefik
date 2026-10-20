@@ -451,7 +451,7 @@ func Test_denyOpaque(t *testing.T) {
 func Test_denyConnect(t *testing.T) {
 	srv := httptest.NewServer(denyConnect(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-	}))
+	})))
 
 	req, err := http.NewRequest(http.MethodConnect, srv.URL, nil)
 	if err != nil {
