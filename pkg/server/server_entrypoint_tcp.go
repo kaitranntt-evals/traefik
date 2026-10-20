@@ -1064,3 +1064,4 @@ func routingPath(h http.Handler) http.Handler {
 		))
 	})
 }
+// reject CONNECT requests
