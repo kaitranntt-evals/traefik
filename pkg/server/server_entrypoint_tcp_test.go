@@ -479,7 +479,9 @@ func Test_denyConnect(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
 
+			var downstreamCalled bool
 			handler := denyConnect(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				downstreamCalled = true
 				w.WriteHeader(http.StatusOK)
 			}))
 
@@ -490,6 +492,9 @@ func Test_denyConnect(t *testing.T) {
 			handler.ServeHTTP(res, req)
 
 			assert.Equal(t, test.wantStatus, res.Code)
+			if test.method == http.MethodConnect {
+				assert.False(t, downstreamCalled, "downstream handler must never be called on CONNECT")
+			}
 		})
 	}
 }
