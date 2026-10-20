@@ -578,7 +578,8 @@ func createHTTPServer(ctx context.Context, ln net.Listener, configuration *stati
 		return nil, errors.New("max concurrent streams value must be greater than or equal to zero")
 	}
 
-	httpSwitcher := middlewares.NewHandlerSwitcher(router.BuildDefaultHTTPRouter())
+	defaultRouter := &defaultRouterWrapper{handler: router.BuildDefaultHTTPRouter()}
+	httpSwitcher := middlewares.NewHandlerSwitcher(defaultRouter)
 
 	next, err := alice.New(requestdecorator.WrapHandler(reqDecorator)).Then(httpSwitcher)
 	if err != nil {
@@ -624,6 +625,8 @@ func createHTTPServer(ctx context.Context, ln net.Listener, configuration *stati
 	handler = normalizePath(handler)
 
 	handler = denyFragment(handler)
+
+	handler = denyConnect(handler, httpSwitcher)
 
 	switch configuration.HTTP.AliasHeadersStrategy {
 	case "":
@@ -794,6 +797,33 @@ func denyFragment(h http.Handler) http.Handler {
 			rw.WriteHeader(http.StatusBadRequest)
 
 			return
+		}
+
+		h.ServeHTTP(rw, req)
+	})
+}
+
+// denyConnect rejects the CONNECT requests, whatever the HTTP version.
+// CONNECT tunnels are not supported, and forwarding them without a dedicated handling is unsafe.
+type defaultRouterWrapper struct {
+	handler http.Handler
+}
+
+func (d *defaultRouterWrapper) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
+	d.handler.ServeHTTP(rw, req)
+}
+
+func denyConnect(h http.Handler, httpSwitcher *middlewares.HTTPHandlerSwitcher) http.Handler {
+	return http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		if req.Method == http.MethodConnect {
+			if httpSwitcher == nil {
+				rw.WriteHeader(http.StatusNotImplemented)
+				return
+			}
+			if _, isDefault := httpSwitcher.GetHandler().(*defaultRouterWrapper); !isDefault {
+				rw.WriteHeader(http.StatusNotImplemented)
+				return
+			}
 		}
 
 		h.ServeHTTP(rw, req)
