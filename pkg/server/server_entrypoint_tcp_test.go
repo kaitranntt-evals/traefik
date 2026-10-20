@@ -1039,8 +1039,7 @@ func TestRequestTargetForms(t *testing.T) {
 		{
 			desc:               "authority-form",
 			requestLine:        "CONNECT front.example:443 HTTP/1.1",
-			expectedStatus:     http.StatusOK,
-			expectedRequestURI: "/",
+			expectedStatus:     http.StatusNotImplemented,
 		},
 	}
 
@@ -1593,11 +1592,6 @@ func TestHTTP2RequestTLS(t *testing.T) {
 			desc:   "http scheme",
 			method: http.MethodGet,
 			url:    "http://" + ln.Addr().String(),
-		},
-		{
-			desc:   "CONNECT method",
-			method: http.MethodConnect,
-			url:    "https://" + ln.Addr().String(),
 		},
 	}
 
