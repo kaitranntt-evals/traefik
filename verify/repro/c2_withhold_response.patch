@@ -1,0 +1,12 @@
+diff --git a/pkg/server/server_entrypoint_tcp.go b/pkg/server/server_entrypoint_tcp.go
+index 01ed4d361..7fb228596 100644
+--- a/pkg/server/server_entrypoint_tcp.go
++++ b/pkg/server/server_entrypoint_tcp.go
+@@ -779,6 +779,7 @@ func denyConnect(h http.Handler) http.Handler {
+ 			return
+ 		}
+ 
++		<-req.Context().Done() // AUDIT MUTATION: withhold the response.
+ 		log.WithoutContext().Debugf("Rejecting %s CONNECT request from %s to %q: CONNECT is not supported", req.Proto, req.RemoteAddr, req.Host)
+ 
+ 		// With HTTP/1, any byte sent by the client after the CONNECT request header section could be tunnel data,
