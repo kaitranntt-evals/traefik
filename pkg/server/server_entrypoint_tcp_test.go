@@ -494,6 +494,8 @@ func Test_denyConnect(t *testing.T) {
 			assert.Equal(t, test.wantStatus, res.Code)
 			if test.method == http.MethodConnect {
 				assert.False(t, downstreamCalled, "downstream handler must never be called on CONNECT")
+			} else {
+				assert.True(t, downstreamCalled, "downstream handler must be called for non-CONNECT")
 			}
 		})
 	}
