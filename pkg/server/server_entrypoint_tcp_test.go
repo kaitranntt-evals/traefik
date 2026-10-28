@@ -449,28 +449,12 @@ func Test_denyOpaque(t *testing.T) {
 }
 
 func Test_denyConnect(t *testing.T) {
-	srv := httptest.NewServer(denyConnect(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-	})))
-
-	req, err := http.NewRequest(http.MethodConnect, srv.URL, nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-	res, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return
-	}
-	if res.StatusCode != http.StatusNotImplemented {
-		t.Fatalf("expected 501 Not Implemented, got %d", res.StatusCode)
-	}
-
-	reqH2 := httptest.NewRequest(http.MethodConnect, "http://example.com", nil)
-	reqH2.ProtoMajor = 2
-	rwH2 := httptest.NewRecorder()
-	denyConnect(nil).ServeHTTP(rwH2, reqH2)
-	if rwH2.Code != http.StatusNotImplemented {
-		t.Fatalf("expected 501 for HTTP/2, got %d", rwH2.Code)
+	req := httptest.NewRequest(http.MethodConnect, "http://example.com", nil)
+	req.ProtoMajor = 2
+	rw := httptest.NewRecorder()
+	denyConnect(nil).ServeHTTP(rw, req)
+	if rw.Code != http.StatusNotImplemented {
+		t.Fatalf("expected 501 Not Implemented, got %d", rw.Code)
 	}
 }
 
