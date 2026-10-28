@@ -464,6 +464,14 @@ func Test_denyConnect(t *testing.T) {
 	if res.StatusCode != http.StatusNotImplemented {
 		t.Fatalf("expected 501 Not Implemented, got %d", res.StatusCode)
 	}
+
+	reqH2 := httptest.NewRequest(http.MethodConnect, "http://example.com", nil)
+	reqH2.ProtoMajor = 2
+	rwH2 := httptest.NewRecorder()
+	denyConnect(nil).ServeHTTP(rwH2, reqH2)
+	if rwH2.Code != http.StatusNotImplemented {
+		t.Fatalf("expected 501 for HTTP/2, got %d", rwH2.Code)
+	}
 }
 
 func Test_denyFragment(t *testing.T) {
