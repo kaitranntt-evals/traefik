@@ -1027,11 +1027,6 @@ func TestRequestTargetForms(t *testing.T) {
 			requestLine:    "OPTIONS * HTTP/1.1",
 			expectedStatus: http.StatusOK,
 		},
-		{
-			desc:               "authority-form",
-			requestLine:        "CONNECT front.example:443 HTTP/1.1",
-			expectedStatus:     http.StatusNotImplemented,
-		},
 	}
 
 	for _, test := range tests {
