@@ -807,6 +807,7 @@ func denyFragment(h http.Handler) http.Handler {
 func denyConnect(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
 		if req.Method == http.MethodConnect {
+			log.WithoutContext().Debug("Rejecting CONNECT request: CONNECT tunnels are not supported")
 			rw.WriteHeader(http.StatusNotImplemented)
 
 			return
