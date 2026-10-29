@@ -1,0 +1,71 @@
+diff --git a/pkg/server/server_entrypoint_connect_test.go b/pkg/server/server_entrypoint_connect_test.go
+index 850a03df2..350cfe998 100644
+--- a/pkg/server/server_entrypoint_connect_test.go
++++ b/pkg/server/server_entrypoint_connect_test.go
+@@ -12,6 +12,7 @@ import (
+ 	"os"
+ 	"path/filepath"
+ 	"strings"
++	"sync"
+ 	"sync/atomic"
+ 	"testing"
+ 	"time"
+@@ -98,7 +99,7 @@ func TestHTTPConnect(t *testing.T) {
+ 	}))
+ 	t.Cleanup(auth.Close)
+ 
+-	backend := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
++	backend := httptest.NewUnstartedServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+ 		backendCalls.Add(1)
+ 		body, err := io.ReadAll(req.Body)
+ 		if err != nil {
+@@ -107,7 +108,36 @@ func TestHTTPConnect(t *testing.T) {
+ 		}
+ 		_, _ = fmt.Fprintf(rw, "%s %s %s", req.Method, req.RequestURI, body)
+ 	}))
+-	t.Cleanup(backend.Close)
++	// VERIFY C1 instrumentation: track backend connection states.
++	var connMu sync.Mutex
++	connStates := map[net.Conn]http.ConnState{}
++	backendIdleConns := func() int {
++		connMu.Lock()
++		defer connMu.Unlock()
++		n := 0
++		for _, st := range connStates {
++			if st == http.StateIdle {
++				n++
++			}
++		}
++		return n
++	}
++	backend.Config.ConnState = func(c net.Conn, st http.ConnState) {
++		connMu.Lock()
++		defer connMu.Unlock()
++		if st == http.StateClosed || st == http.StateHijacked {
++			delete(connStates, c)
++		} else {
++			connStates[c] = st
++		}
++	}
++	backend.Start()
++	var managersCreated int
++	t.Cleanup(func() {
++		time.Sleep(200 * time.Millisecond)
++		t.Logf("VERIFY C1: at test cleanup (before backend.Close): RoundTripperManagers created=%d, CloseIdleConnections calls on them=0 (no such method), idle keep-alive backend connections still open=%d", managersCreated, backendIdleConns())
++		backend.Close()
++	})
+ 
+ 	accessLogPath := filepath.Join(t.TempDir(), "access.log")
+ 	accessLogger, err := accesslog.NewHandler(&types.AccessLog{
+@@ -218,6 +248,11 @@ func TestHTTPConnect(t *testing.T) {
+ 			rtConfig := runtime.NewConfig(dynamic.Configuration{HTTP: httpConfig})
+ 			transports := service.NewRoundTripperManager()
+ 			transports.Update(map[string]*dynamic.ServersTransport{"default@internal": {}})
++			managersCreated++
++			t.Cleanup(func() {
++				time.Sleep(200 * time.Millisecond)
++				t.Logf("VERIFY C1: end of routing subtest %q: idle keep-alive backend connections still open=%d", routing.name, backendIdleConns())
++			})
+ 			services := service.NewManager(rtConfig.Services, nil, nil, transports)
+ 			middlewares := middleware.NewBuilder(rtConfig.Middlewares, services, nil)
+ 			chain := middleware.NewChainBuilder(nil, accessLogger, nil)
