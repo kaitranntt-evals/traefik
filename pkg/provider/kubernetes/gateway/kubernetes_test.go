@@ -10318,3 +10318,10 @@ func TestCrossProviderNamespaces_TLSRoute(t *testing.T) {
 		})
 	}
 }
+
+func TestCandidateListenerIsolation_Basic(t *testing.T) {
+	uniq := uniqListener{epName: "web", protocol: gatev1.HTTPProtocolType}
+	first := makeListenerRouterName(uniq, "*.example.com")
+	second := makeListenerRouterName(uniq, "example.com")
+	assert.NotEqual(t, first, second)
+}
