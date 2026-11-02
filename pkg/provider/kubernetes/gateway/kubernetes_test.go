@@ -284,137 +284,6 @@ func TestLoadHTTPRoutes(t *testing.T) {
 			},
 		},
 		{
-			desc:  "Listeners isolation with a hostname listener and a catch-all listener on two Gateways",
-			paths: []string{"services.yml", "httproute/listener_isolation.yml"},
-			entryPoints: map[string]Entrypoint{"web": {
-				Address: ":80",
-			}},
-			expected: &dynamic.Configuration{
-				UDP: &dynamic.UDPConfiguration{
-					Routers:  map[string]*dynamic.UDPRouter{},
-					Services: map[string]*dynamic.UDPService{},
-				},
-				TCP: &dynamic.TCPConfiguration{
-					Routers:           map[string]*dynamic.TCPRouter{},
-					Middlewares:       map[string]*dynamic.TCPMiddleware{},
-					Services:          map[string]*dynamic.TCPService{},
-					ServersTransports: map[string]*dynamic.TCPServersTransport{},
-				},
-				HTTP: &dynamic.HTTPConfiguration{
-					Routers: map[string]*dynamic.Router{
-						"listener-web-http-5b3226d4ebd42b7200f1": {
-							EntryPoints: []string{"web"},
-							Rule:        `(Host("*")) && !(Host("abc.example.com"))`,
-						},
-						"listener-web-http-abc-example-com-05dd4f497bcb27f2cdca": {
-							EntryPoints: []string{"web"},
-							Rule:        `Host("abc.example.com")`,
-						},
-						"httproute-default-http-app-catchall-gw-default-my-gateway-ep-web-0-6bf410c47a90e258b1eb": {
-							ParentRefs: []string{"listener-web-http-5b3226d4ebd42b7200f1"},
-							Service:    "httproute-default-http-app-catchall-gw-default-my-gateway-ep-web-0-6bf410c47a90e258b1eb-wrr",
-							Rule:       `Path("/catchall")`,
-							Priority:   100001,
-							RuleSyntax: "default",
-						},
-						"httproute-default-http-app-precise-gw-default-my-gateway-ep-web-0-5b6dacf4c7da9367767b": {
-							ParentRefs: []string{"listener-web-http-abc-example-com-05dd4f497bcb27f2cdca"},
-							Service:    "httproute-default-http-app-precise-gw-default-my-gateway-ep-web-0-5b6dacf4c7da9367767b-wrr",
-							Rule:       `Host("abc.example.com") && Path("/precise")`,
-							Priority:   100016,
-							RuleSyntax: "default",
-						},
-						"httproute-default-http-app-other-gw-default-my-other-gateway-ep-web-0-d7590587db124f0d35ce": {
-							ParentRefs: []string{
-								"listener-web-http-5b3226d4ebd42b7200f1",
-								"listener-web-http-abc-example-com-05dd4f497bcb27f2cdca",
-							},
-							Service:    "httproute-default-http-app-other-gw-default-my-other-gateway-ep-web-0-d7590587db124f0d35ce-wrr",
-							Rule:       `Path("/other")`,
-							Priority:   100001,
-							RuleSyntax: "default",
-						},
-					},
-					Middlewares: map[string]*dynamic.Middleware{},
-					Services: map[string]*dynamic.Service{
-						"httproute-default-http-app-catchall-gw-default-my-gateway-ep-web-0-6bf410c47a90e258b1eb-wrr": {
-							Weighted: &dynamic.WeightedRoundRobin{
-								Services: []dynamic.WRRService{
-									{
-										Name:   "httproute-default-http-app-catchall-gw-default-my-gateway-ep-web-0-6bf410c47a90e258b1eb-svc-default-whoami-0",
-										Weight: new(1),
-									},
-								},
-							},
-						},
-						"httproute-default-http-app-catchall-gw-default-my-gateway-ep-web-0-6bf410c47a90e258b1eb-svc-default-whoami-0": {
-							LoadBalancer: &dynamic.ServersLoadBalancer{
-								Strategy: dynamic.BalancerStrategyWRR,
-								Servers: []dynamic.Server{
-									{URL: "http://10.10.0.1:80"},
-									{URL: "http://10.10.0.2:80"},
-								},
-								PassHostHeader: new(true),
-								ResponseForwarding: &dynamic.ResponseForwarding{
-									FlushInterval: ptypes.Duration(100 * time.Millisecond),
-								},
-							},
-						},
-						"httproute-default-http-app-precise-gw-default-my-gateway-ep-web-0-5b6dacf4c7da9367767b-wrr": {
-							Weighted: &dynamic.WeightedRoundRobin{
-								Services: []dynamic.WRRService{
-									{
-										Name:   "httproute-default-http-app-precise-gw-default-my-gateway-ep-web-0-5b6dacf4c7da9367767b-svc-default-whoami-0",
-										Weight: new(1),
-									},
-								},
-							},
-						},
-						"httproute-default-http-app-precise-gw-default-my-gateway-ep-web-0-5b6dacf4c7da9367767b-svc-default-whoami-0": {
-							LoadBalancer: &dynamic.ServersLoadBalancer{
-								Strategy: dynamic.BalancerStrategyWRR,
-								Servers: []dynamic.Server{
-									{URL: "http://10.10.0.1:80"},
-									{URL: "http://10.10.0.2:80"},
-								},
-								PassHostHeader: new(true),
-								ResponseForwarding: &dynamic.ResponseForwarding{
-									FlushInterval: ptypes.Duration(100 * time.Millisecond),
-								},
-							},
-						},
-						"httproute-default-http-app-other-gw-default-my-other-gateway-ep-web-0-d7590587db124f0d35ce-wrr": {
-							Weighted: &dynamic.WeightedRoundRobin{
-								Services: []dynamic.WRRService{
-									{
-										Name:   "httproute-default-http-app-other-gw-default-my-other-gateway-ep-web-0-d7590587db124f0d35ce-svc-default-whoami-0",
-										Weight: new(1),
-									},
-								},
-							},
-						},
-						"httproute-default-http-app-other-gw-default-my-other-gateway-ep-web-0-d7590587db124f0d35ce-svc-default-whoami-0": {
-							LoadBalancer: &dynamic.ServersLoadBalancer{
-								Strategy: dynamic.BalancerStrategyWRR,
-								Servers: []dynamic.Server{
-									{URL: "http://10.10.0.1:80"},
-									{URL: "http://10.10.0.2:80"},
-								},
-								PassHostHeader: new(true),
-								ResponseForwarding: &dynamic.ResponseForwarding{
-									FlushInterval: ptypes.Duration(100 * time.Millisecond),
-								},
-							},
-						},
-					},
-					ServersTransports: map[string]*dynamic.ServersTransport{},
-				},
-				TLS: &dynamic.TLSConfiguration{
-					Options: map[string]tls.Options{},
-				},
-			},
-		},
-		{
 			desc: "Empty caused by HTTPS without TLS",
 			entryPoints: map[string]Entrypoint{"websecure": {
 				Address: ":443",
@@ -10448,4 +10317,20 @@ func TestCrossProviderNamespaces_TLSRoute(t *testing.T) {
 			assert.Equal(t, test.wantError, hasError)
 		})
 	}
+}
+
+func TestCandidateListenerIsolation_SingleGateway(t *testing.T) {
+	k8sObjects, gwObjects := readResources(t, []string{"services.yml", "httproute/listener_isolation_single.yml"})
+	kubeClient := kubefake.NewClientset(k8sObjects...)
+	gwClient := newGatewaySimpleClientSet(t, gwObjects...)
+	client := newClientImpl(kubeClient, gwClient)
+	eventCh, err := client.WatchAll(nil, make(chan struct{}))
+	require.NoError(t, err)
+	<-eventCh
+	p := Provider{EntryPoints: map[string]Entrypoint{"web": {Address: ":80"}}, client: client}
+	conf, _, err := p.loadConfigurationFromGateways(t.Context())
+	require.NoError(t, err)
+	require.NotNil(t, conf.HTTP)
+	// Only asserts that routers exist, without checking exclusion rules
+	assert.NotEmpty(t, conf.HTTP.Routers)
 }

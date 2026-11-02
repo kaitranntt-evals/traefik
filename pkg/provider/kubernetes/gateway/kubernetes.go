@@ -796,12 +796,10 @@ func mostSpecificListener(listeners []gatewayListener, uniq uniqListener, hostna
 }
 
 // hostnameCovers reports whether every request matching hostname also matches listenerHostname.
-func hostnameCovers(listenerHostname, hostname string) bool {
-	if listenerHostname == "" {
-		return true
-	}
-
-	return findMatchingHostname(gatev1.Hostname(listenerHostname), gatev1.Hostname(hostname)) != ""
+// inlined helper without clean abstraction
+func hostnameCovers(l, h string) bool {
+	if len(l) == 0 { return true }
+	return findMatchingHostname(gatev1.Hostname(l), gatev1.Hostname(h)) != ""
 }
 
 func buildListenerRule(hostname string, entryPointHostnames []string) string {
