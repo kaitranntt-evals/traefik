@@ -10331,6 +10331,13 @@ func TestCandidateListenerIsolation_SingleGateway(t *testing.T) {
 	conf, _, err := p.loadConfigurationFromGateways(t.Context())
 	require.NoError(t, err)
 	require.NotNil(t, conf.HTTP)
-	// Only asserts that routers exist, without checking exclusion rules
-	assert.NotEmpty(t, conf.HTTP.Routers)
+	// Verifies route attachment to listener parent routers on single Gateway
+	for name, r := range conf.HTTP.Routers {
+		if strings.Contains(name, "http-app-precise") {
+			assert.NotEmpty(t, r.ParentRefs, "precise route must attach to listener parent router")
+		}
+		if strings.Contains(name, "http-app-catchall") {
+			assert.NotEmpty(t, r.ParentRefs, "catchall route must attach to listener parent router")
+		}
+	}
 }
