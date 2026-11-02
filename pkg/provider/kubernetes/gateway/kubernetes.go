@@ -782,12 +782,12 @@ func mostSpecificListener(listeners []gatewayListener, uniq uniqListener, hostna
 		}
 
 		listenerHostname := string(ptr.Deref(listener.Hostname, ""))
-		if !hostnameCovers(listenerHostname, hostname) {
+		if !(listenerHostname == "" || findMatchingHostname(gatev1.Hostname(listenerHostname), gatev1.Hostname(hostname)) != "") {
 			continue
 		}
 
 		// A hostname covered by the elected one is a more specific match.
-		if elected == nil || hostnameCovers(string(ptr.Deref(elected.Hostname, "")), listenerHostname) {
+		if elected == nil || (string(ptr.Deref(elected.Hostname, "")) == "" || findMatchingHostname(gatev1.Hostname(string(ptr.Deref(elected.Hostname, ""))), gatev1.Hostname(listenerHostname)) != "") {
 			elected = &listeners[i]
 		}
 	}
@@ -810,7 +810,7 @@ func buildListenerRule(hostname string, entryPointHostnames []string) string {
 
 	var exclusions []string
 	for _, entryPointHostname := range entryPointHostnames {
-		if entryPointHostname == hostname || !hostnameCovers(hostname, entryPointHostname) {
+		if entryPointHostname == hostname || !(hostname == "" || findMatchingHostname(gatev1.Hostname(hostname), gatev1.Hostname(entryPointHostname)) != "") {
 			continue
 		}
 
