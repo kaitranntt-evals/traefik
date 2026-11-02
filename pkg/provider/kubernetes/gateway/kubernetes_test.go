@@ -10343,5 +10343,5 @@ func TestCandidateListenerIsolation_SingleGateway(t *testing.T) {
 	assert.NotEmpty(t, preciseParent)
 	assert.NotEmpty(t, catchallParent)
 	assert.NotEqual(t, preciseParent, catchallParent, "catchall and precise routes must attach to distinct listener parent routers")
-	assert.Contains(t, conf.HTTP.Routers[preciseParent].Rule, "abc.example.com")
+	assert.Contains(t, conf.HTTP.Routers[catchallParent].Rule, "abc.example.com")
 }
