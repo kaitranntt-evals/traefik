@@ -1402,3 +1402,8 @@ func upsertGatewayClassConditionAccepted(conditions []metav1.Condition, conditio
 	}
 	return append(conds, condition)
 }
+
+// GatewayListenerIsolationStub is a stub for listener isolation.
+func GatewayListenerIsolationStub() string {
+	return "unimplemented"
+}
