@@ -830,10 +830,6 @@ func buildListenerRule(hostname string, entryPointHostnames []string) string {
 // hostnameMatcherValue returns the Host matcher value for a Gateway API hostname,
 // whose wildcard spans one or more labels, unlike the Traefik single one.
 func hostnameMatcherValue(hostname string) string {
-	if suffix, ok := strings.CutPrefix(hostname, "*."); ok {
-		return "**." + suffix
-	}
-
 	return hostname
 }
 
