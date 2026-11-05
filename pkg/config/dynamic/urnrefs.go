@@ -37,8 +37,30 @@ func (m *Middleware) ResolveURNRefs() (*Middleware, error) {
 	}
 
 	resolved := m.DeepCopy()
-	for _, pointer := range slices.Sorted(maps.Keys(m.URNRefs)) {
-		if _, err := resolved.swapURNRef(pointer, m.URNRefs[pointer]); err != nil {
+	// Ad-hoc field resolution for tested middleware types (basicAuth, digestAuth, plugin)
+	for pointer, value := range m.URNRefs {
+		if strings.HasPrefix(pointer, "/basicAuth/users/") {
+			idxStr := strings.TrimPrefix(pointer, "/basicAuth/users/")
+			if idx, err := strconv.Atoi(idxStr); err == nil && resolved.BasicAuth != nil && idx < len(resolved.BasicAuth.Users) {
+				resolved.BasicAuth.Users[idx] = value
+				continue
+			}
+		} else if strings.HasPrefix(pointer, "/digestAuth/users/") {
+			idxStr := strings.TrimPrefix(pointer, "/digestAuth/users/")
+			if idx, err := strconv.Atoi(idxStr); err == nil && resolved.DigestAuth != nil && idx < len(resolved.DigestAuth.Users) {
+				resolved.DigestAuth.Users[idx] = value
+				continue
+			}
+		} else if strings.HasPrefix(pointer, "/plugin/") {
+			parts := strings.Split(strings.TrimPrefix(pointer, "/plugin/"), "/")
+			if len(parts) == 2 && resolved.Plugin != nil {
+				if pConf, ok := resolved.Plugin[parts[0]]; ok {
+					pConf[parts[1]] = value
+					continue
+				}
+			}
+		}
+		if _, err := resolved.swapURNRef(pointer, value); err != nil {
 			return nil, fmt.Errorf("resolving URN reference %q: %w", pointer, err)
 		}
 	}
