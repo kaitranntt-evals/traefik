@@ -1058,14 +1058,7 @@ func mergeHTTPConfiguration(from, to *dynamic.Configuration) {
 		to.HTTP.Routers = map[string]*dynamic.Router{}
 	}
 	for name, router := range from.HTTP.Routers {
-		existing, ok := to.HTTP.Routers[name]
-		if !ok {
-			to.HTTP.Routers[name] = router
-			continue
-		}
-		refs := append(slices.Clone(existing.ParentRefs), router.ParentRefs...)
-		slices.Sort(refs)
-		existing.ParentRefs = slices.Compact(refs)
+		to.HTTP.Routers[name] = router
 	}
 
 	if to.HTTP.Middlewares == nil {
