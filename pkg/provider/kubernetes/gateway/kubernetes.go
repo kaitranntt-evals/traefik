@@ -723,6 +723,7 @@ func (p *Provider) buildListenerRouters(gateways []gatewayWithListeners, conf *d
 			listenerRouterName := makeListenerRouterName(uniq, hostname)
 
 			listenerRouter := &dynamic.Router{
+				RuleSyntax:  "default",
 				Rule:        buildListenerRule(hostname, hostnames),
 				EntryPoints: []string{uniq.epName},
 			}
