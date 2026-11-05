@@ -704,6 +704,10 @@ func (p *Provider) buildListenerRouters(gateways []gatewayWithListeners, conf *d
 
 			uniq := uniqListener{epName: listener.EPName, protocol: listener.Protocol}
 
+			if !slices.Contains(listener.AllowedRouteKinds, "HTTPRoute") {
+				continue
+			}
+
 			hostname := string(ptr.Deref(listener.Hostname, ""))
 			if !slices.Contains(hostnamesByListener[uniq], hostname) {
 				hostnamesByListener[uniq] = append(hostnamesByListener[uniq], hostname)
