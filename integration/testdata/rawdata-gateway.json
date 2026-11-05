@@ -67,6 +67,7 @@
 				"web"
 			],
 			"rule": "Host(\"*\")",
+			"ruleSyntax": "default",
 			"priority": 9,
 			"observability": {
 				"accessLogs": true,
@@ -84,6 +85,7 @@
 				"websecure"
 			],
 			"rule": "Host(\"*\")",
+			"ruleSyntax": "default",
 			"priority": 9,
 			"tls": {
 				"options": "listener-websecure-https-439feda8e3f1dbdca529"

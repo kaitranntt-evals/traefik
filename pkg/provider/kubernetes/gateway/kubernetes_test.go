@@ -273,6 +273,7 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -670,6 +671,7 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -738,14 +740,17 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `(Host("*")) && !(Host("**.example.com") || Host("abc.example.com"))`,
 						},
 						"listener-web-http-example-com-e7b9da953ca48d642d6b": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `(Host("**.example.com")) && !(Host("abc.example.com"))`,
 						},
 						"listener-web-http-abc-example-com-05dd4f497bcb27f2cdca": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("abc.example.com")`,
 						},
@@ -910,10 +915,12 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `(Host("*")) && !(Host("abc.example.com"))`,
 						},
 						"listener-web-http-abc-example-com-05dd4f497bcb27f2cdca": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("abc.example.com")`,
 						},
@@ -1041,6 +1048,7 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-example-com-e7b9da953ca48d642d6b": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("**.example.com")`,
 						},
@@ -1109,6 +1117,7 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -1179,6 +1188,7 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -1219,6 +1229,7 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-websecure-https-439feda8e3f1dbdca529": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"websecure"},
 							Rule:        `Host("*")`,
 							TLS: &dynamic.RouterTLSConfig{
@@ -1300,6 +1311,7 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-websecure-https-439feda8e3f1dbdca529": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"websecure"},
 							Rule:        `Host("*")`,
 							TLS: &dynamic.RouterTLSConfig{
@@ -1415,6 +1427,7 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -1483,6 +1496,7 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -1551,6 +1565,7 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -1619,6 +1634,7 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -1721,6 +1737,7 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -1815,10 +1832,12 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
 						"listener-websecure-https-439feda8e3f1dbdca529": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"websecure"},
 							Rule:        `Host("*")`,
 							TLS: &dynamic.RouterTLSConfig{
@@ -1939,10 +1958,12 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
 						"listener-websecure-https-439feda8e3f1dbdca529": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"websecure"},
 							Rule:        `Host("*")`,
 							TLS: &dynamic.RouterTLSConfig{
@@ -2058,6 +2079,7 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -2194,6 +2216,7 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -2262,6 +2285,7 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -2330,6 +2354,7 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -2398,6 +2423,7 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -2500,6 +2526,7 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -2568,6 +2595,7 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -2645,6 +2673,7 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -2722,6 +2751,7 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -2799,6 +2829,7 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -2853,6 +2884,7 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -2906,6 +2938,7 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -2981,6 +3014,7 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -3056,6 +3090,7 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -3133,6 +3168,7 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -3212,6 +3248,7 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -3290,6 +3327,7 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -3364,6 +3402,7 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -3429,6 +3468,7 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -3495,6 +3535,7 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -3563,6 +3604,7 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -3623,6 +3665,7 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -3735,6 +3778,7 @@ func TestLoadHTTPRoutes_backendExtensionRef(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -3791,6 +3835,7 @@ func TestLoadHTTPRoutes_backendExtensionRef(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -3850,6 +3895,7 @@ func TestLoadHTTPRoutes_backendExtensionRef(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -3907,6 +3953,7 @@ func TestLoadHTTPRoutes_backendExtensionRef(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -3965,6 +4012,7 @@ func TestLoadHTTPRoutes_backendExtensionRef(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -4043,6 +4091,7 @@ func TestLoadHTTPRoutes_backendExtensionRef(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -4234,6 +4283,7 @@ func TestLoadHTTPRoutes_filterExtensionRef(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -4334,6 +4384,7 @@ func TestLoadHTTPRoutes_filterExtensionRef(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -4433,6 +4484,7 @@ func TestLoadHTTPRoutes_filterExtensionRef(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -4489,6 +4541,7 @@ func TestLoadHTTPRoutes_filterExtensionRef(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -4591,6 +4644,7 @@ func TestLoadGRPCRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -4670,6 +4724,7 @@ func TestLoadGRPCRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -4748,6 +4803,7 @@ func TestLoadGRPCRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -4821,6 +4877,7 @@ func TestLoadGRPCRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -4881,6 +4938,7 @@ func TestLoadGRPCRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -4989,6 +5047,7 @@ func TestLoadGRPCRoutes_filterExtensionRef(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -5065,6 +5124,7 @@ func TestLoadGRPCRoutes_filterExtensionRef(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -5139,6 +5199,7 @@ func TestLoadGRPCRoutes_filterExtensionRef(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -5198,6 +5259,7 @@ func TestLoadGRPCRoutes_filterExtensionRef(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
@@ -8295,10 +8357,12 @@ func TestLoadMixedRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
 						"listener-websecure-https-439feda8e3f1dbdca529": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"websecure"},
 							Rule:        `Host("*")`,
 							TLS: &dynamic.RouterTLSConfig{
@@ -8519,10 +8583,12 @@ func TestLoadMixedRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
 						"listener-websecure-https-439feda8e3f1dbdca529": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"websecure"},
 							Rule:        `Host("*")`,
 							TLS: &dynamic.RouterTLSConfig{
@@ -8713,10 +8779,12 @@ func TestLoadMixedRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
 						"listener-websecure-https-439feda8e3f1dbdca529": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"websecure"},
 							Rule:        `Host("*")`,
 							TLS: &dynamic.RouterTLSConfig{
@@ -8975,10 +9043,12 @@ func TestLoadMixedRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
 						"listener-websecure-https-439feda8e3f1dbdca529": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"websecure"},
 							Rule:        `Host("*")`,
 							TLS: &dynamic.RouterTLSConfig{
@@ -9127,10 +9197,12 @@ func TestLoadMixedRoutes(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-web-http-5b3226d4ebd42b7200f1": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"web"},
 							Rule:        `Host("*")`,
 						},
 						"listener-websecure-https-439feda8e3f1dbdca529": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"websecure"},
 							Rule:        `Host("*")`,
 							TLS: &dynamic.RouterTLSConfig{
@@ -9559,6 +9631,7 @@ func TestLoadRoutesWithReferenceGrants(t *testing.T) {
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
 						"listener-http-http-foo-example-com-34297ca2d1326bfcdaad": {
+							RuleSyntax:  "default",
 							EntryPoints: []string{"http"},
 							Rule:        `Host("foo.example.com")`,
 						},
