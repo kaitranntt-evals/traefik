@@ -704,6 +704,10 @@ func (p *Provider) buildListenerRouters(gateways []gatewayWithListeners, conf *d
 
 			uniq := uniqListener{epName: listener.EPName, protocol: listener.Protocol}
 
+			if !p.listenerHasRoutes(gateway, listener) {
+				continue
+			}
+
 			hostname := string(ptr.Deref(listener.Hostname, ""))
 			if !slices.Contains(hostnamesByListener[uniq], hostname) {
 				hostnamesByListener[uniq] = append(hostnamesByListener[uniq], hostname)
@@ -754,6 +758,26 @@ func (p *Provider) buildListenerRouters(gateways []gatewayWithListeners, conf *d
 	}
 
 	return listenerRouterNames
+}
+
+func (p *Provider) listenerHasRoutes(gateway gatewayWithListeners, listener gatewayListener) bool {
+	routes, _ := p.client.ListHTTPRoutes()
+	for _, r := range routes {
+		for _, pRef := range r.Spec.ParentRefs {
+			if string(pRef.Name) == gateway.Name && (pRef.SectionName == nil || string(*pRef.SectionName) == listener.Name) {
+				return true
+			}
+		}
+	}
+	grpcRoutes, _ := p.client.ListGRPCRoutes()
+	for _, r := range grpcRoutes {
+		for _, pRef := range r.Spec.ParentRefs {
+			if string(pRef.Name) == gateway.Name && (pRef.SectionName == nil || string(*pRef.SectionName) == listener.Name) {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 // dropChildlessListenerRouters removes the parent routers no route is attached to.
