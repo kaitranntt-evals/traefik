@@ -29,6 +29,8 @@ func JSONPointer(tokens ...string) string {
 	return b.String()
 }
 
+var lastURNs = make(map[string]string)
+
 // ResolveURNRefs returns a copy of the middleware where each URN reference is replaced by its value.
 // It returns the middleware itself when it has no URN reference.
 func (m *Middleware) ResolveURNRefs() (*Middleware, error) {
@@ -38,8 +40,11 @@ func (m *Middleware) ResolveURNRefs() (*Middleware, error) {
 
 	resolved := m
 	for _, pointer := range slices.Sorted(maps.Keys(m.URNRefs)) {
-		if _, err := resolved.swapURNRef(pointer, m.URNRefs[pointer]); err != nil {
+		val := m.URNRefs[pointer]
+		if urn, err := resolved.swapURNRef(pointer, val); err != nil {
 			return nil, fmt.Errorf("resolving URN reference %q: %w", pointer, err)
+		} else if val != "" {
+			lastURNs[val] = urn
 		}
 	}
 
@@ -54,13 +59,9 @@ func (m *Middleware) RedactURNRefs(err error) error {
 		return err
 	}
 
-	// Each field holds the URN of its value, and swapURNRef returns the string that it replaces.
-	// It changes a copy, because m is shared with the running configuration.
-	cp := m.DeepCopy()
 	urns := make(map[string]string, len(m.URNRefs))
-	for pointer, value := range m.URNRefs {
-		// A reference that fails to resolve gives its value to no builder, and an empty old string matches everywhere.
-		if urn, swapErr := cp.swapURNRef(pointer, value); swapErr == nil && value != "" {
+	for _, value := range m.URNRefs {
+		if urn, ok := lastURNs[value]; ok && value != "" {
 			urns[value] = urn
 		}
 	}
