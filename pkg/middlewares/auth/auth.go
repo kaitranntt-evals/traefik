@@ -20,17 +20,11 @@ func getUsers(fileName string, appendUsers []string, parser UserParser) (map[str
 		return nil, err
 	}
 
-	// loadUsers puts the users of the file before the users of the list.
-	fileUsers := len(users) - len(appendUsers)
-
 	userMap := make(map[string]string)
 	for i, user := range users {
 		userName, userHash, err := parser(user)
 		if err != nil {
-			if i < fileUsers {
-				return nil, fmt.Errorf("parsing user %d of %s: %w", i+1, fileName, err)
-			}
-			return nil, fmt.Errorf("parsing user at index %d: %w", i-fileUsers, err)
+			return nil, fmt.Errorf("parsing user at index %d: %w", i, err)
 		}
 		userMap[userName] = userHash
 	}
