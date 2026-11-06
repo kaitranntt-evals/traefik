@@ -1,0 +1,27 @@
+diff --git a/pkg/server/middleware/secrets.go b/pkg/server/middleware/secrets.go
+index d6d823200..6daf98a2d 100644
+--- a/pkg/server/middleware/secrets.go
++++ b/pkg/server/middleware/secrets.go
+@@ -15,6 +15,22 @@ import (
+ func resolveSecrets(config *dynamic.Middleware) *dynamic.Middleware {
+ 	resolved := config.DeepCopy()
+ 	resolved.Secrets = nil
++	// MUTATION M2: drop non-secret siblings.
++	if resolved.ForwardAuth != nil {
++		resolved.ForwardAuth.Address = ""
++	}
++	if resolved.RateLimit != nil && resolved.RateLimit.Redis != nil {
++		resolved.RateLimit.Redis.Endpoints = nil
++	}
++	for _, plugin := range resolved.Plugin {
++		for key, value := range plugin {
++			if str, ok := value.(string); ok {
++				if _, isRef := config.Secrets[str]; !isRef {
++					delete(plugin, key)
++				}
++			}
++		}
++	}
+ 	resolveSecretValue(reflect.ValueOf(resolved), config.Secrets)
+ 	return resolved
+ }

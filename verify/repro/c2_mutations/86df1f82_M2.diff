@@ -1,0 +1,27 @@
+diff --git a/pkg/config/dynamic/secrets.go b/pkg/config/dynamic/secrets.go
+index 2c048ce19..dddd9001c 100644
+--- a/pkg/config/dynamic/secrets.go
++++ b/pkg/config/dynamic/secrets.go
+@@ -18,6 +18,22 @@ func (s SecretValues) Add(reference string, values ...string) string {
+ func (m *Middleware) ResolveSecrets() *Middleware {
+ 	config := m.DeepCopy()
+ 	config.Secrets = nil
++	// MUTATION M2: drop non-secret siblings.
++	if config.ForwardAuth != nil {
++		config.ForwardAuth.Address = ""
++	}
++	if config.RateLimit != nil && config.RateLimit.Redis != nil {
++		config.RateLimit.Redis.Endpoints = nil
++	}
++	for _, plugin := range config.Plugin {
++		for key, value := range plugin {
++			if str, ok := value.(string); ok {
++				if _, isRef := m.Secrets[str]; !isRef {
++					delete(plugin, key)
++				}
++			}
++		}
++	}
+ 	resolveSecrets(reflect.ValueOf(config), m.Secrets)
+ 	return config
+ }

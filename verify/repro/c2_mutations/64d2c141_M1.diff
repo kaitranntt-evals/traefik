@@ -1,0 +1,16 @@
+diff --git a/pkg/config/dynamic/secrets.go b/pkg/config/dynamic/secrets.go
+index 41a86c218..d85ff0197 100644
+--- a/pkg/config/dynamic/secrets.go
++++ b/pkg/config/dynamic/secrets.go
+@@ -111,7 +111,11 @@ func resolveSecretValue(value any, resolve func(string) string) any {
+ 		}
+ 	case map[string]any:
+ 		for key := range v {
++			orig := v[key]
+ 			v[key] = resolveSecretValue(v[key], resolve)
++			if _, ok := orig.(string); ok && v[key] != orig { // MUTATION M1: corrupt nested resolved values.
++				v[key] = "MUTATED"
++			}
+ 		}
+ 	}
+ 	return value

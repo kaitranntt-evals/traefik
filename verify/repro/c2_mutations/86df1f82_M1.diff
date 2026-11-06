@@ -1,0 +1,28 @@
+diff --git a/pkg/config/dynamic/secrets.go b/pkg/config/dynamic/secrets.go
+index 2c048ce19..91379bacd 100644
+--- a/pkg/config/dynamic/secrets.go
++++ b/pkg/config/dynamic/secrets.go
+@@ -63,12 +63,17 @@ func resolveSecrets(value reflect.Value, secrets SecretValues) {
+ 			resolveSecrets(value.Index(i), secrets)
+ 		}
+ 	case reflect.Map:
++		mutDepth++
+ 		for _, key := range value.MapKeys() {
+ 			resolved := reflect.New(value.Type().Elem()).Elem()
+ 			resolved.Set(value.MapIndex(key))
+ 			resolveSecrets(resolved, secrets)
++			if orig := value.MapIndex(key); mutDepth >= 3 && orig.Kind() == reflect.Interface && !orig.IsNil() && orig.Elem().Kind() == reflect.String && resolved.Elem().String() != orig.Elem().String() { // MUTATION M1.
++				resolved.Set(reflect.ValueOf("MUTATED"))
++			}
+ 			value.SetMapIndex(key, resolved)
+ 		}
++		mutDepth--
+ 	case reflect.String:
+ 		if secret, ok := secrets[value.String()]; ok && len(secret) == 1 {
+ 			value.SetString(secret[0])
+@@ -76,3 +81,5 @@ func resolveSecrets(value reflect.Value, secrets SecretValues) {
+ 	default:
+ 	}
+ }
++
++var mutDepth int

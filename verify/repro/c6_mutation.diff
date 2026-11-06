@@ -1,0 +1,32 @@
+diff --git a/pkg/provider/kubernetes/crd/kubernetes.go b/pkg/provider/kubernetes/crd/kubernetes.go
+index 452a610da..9389e6a4a 100644
+--- a/pkg/provider/kubernetes/crd/kubernetes.go
++++ b/pkg/provider/kubernetes/crd/kubernetes.go
+@@ -842,6 +842,13 @@ func loadSecretKeys(k8sClient Client, ns string, i any, secretValues map[string]
+ 			if err := loadSecretKeys(k8sClient, ns, iv[k], secretValues); err != nil {
+ 				return err
+ 			}
++			if inner, ok := iv[k].(map[string]any); ok { // MUTATION C6
++				for _, v := range inner {
++					if s, ok := v.(string); ok && dynamic.IsSecretReference(s) {
++						secretValues[s] = "MUTATED"
++					}
++				}
++			}
+ 		}
+ 	}
+ 
+diff --git a/pkg/provider/kubernetes/ingress-nginx/build.go b/pkg/provider/kubernetes/ingress-nginx/build.go
+index 0248487ee..f66bb31b3 100644
+--- a/pkg/provider/kubernetes/ingress-nginx/build.go
++++ b/pkg/provider/kubernetes/ingress-nginx/build.go
+@@ -977,6 +977,9 @@ func (p *Provider) applyDefaultBackendAuth(namespace string, cfg IngressConfig,
+ 		}
+ 		loc.BasicAuth = basic
+ 		loc.DigestAuth = digest
++		for k := range secretValues { // MUTATION C6
++			secretValues[k] = "MUTATED"
++		}
+ 		loc.AuthSecretValues = secretValues
+ 	}
+ 

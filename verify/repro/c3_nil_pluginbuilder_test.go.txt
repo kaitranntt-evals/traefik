@@ -1,0 +1,42 @@
+// Run: cd ~/repos/traefik && cp verify/repro/c3_nil_pluginbuilder_test.go pkg/server/middleware/ && go test -count=1 -run 'TestVerifyC3' -v ./pkg/server/middleware
+package middleware
+
+import (
+	"testing"
+
+	"github.com/stretchr/testify/require"
+	"github.com/traefik/traefik/v3/pkg/config/dynamic"
+	"github.com/traefik/traefik/v3/pkg/config/runtime"
+	"github.com/traefik/traefik/v3/pkg/plugins"
+)
+
+func verifyC3Configs() map[string]*runtime.MiddlewareInfo {
+	return map[string]*runtime.MiddlewareInfo{
+		"plug": {Middleware: &dynamic.Middleware{Plugin: map[string]dynamic.PluginConf{"demo": {"token": "x"}}}},
+	}
+}
+
+// Part reflection_operation: nil interface passed as PluginsBuilder.
+func TestVerifyC3_NilInterface(t *testing.T) {
+	b := NewBuilder(verifyC3Configs(), nil, nil)
+	defer func() {
+		r := recover()
+		t.Logf("recovered panic: %v", r)
+		require.NotNil(t, r)
+	}()
+	_, err := b.buildConstructor(t.Context(), "plug")
+	t.Logf("no panic, err=%v", err)
+}
+
+// Part production_trigger: cmd/traefik passes a *plugins.Builder (typed, possibly nil pointer), never a nil interface.
+func TestVerifyC3_TypedNilPointer(t *testing.T) {
+	var pb *plugins.Builder
+	b := NewBuilder(verifyC3Configs(), nil, pb)
+	defer func() {
+		r := recover()
+		t.Logf("recovered panic: %v", r)
+		require.Nil(t, r)
+	}()
+	c, err := b.buildConstructor(t.Context(), "plug")
+	t.Logf("constructor=%v err=%v", c, err)
+}

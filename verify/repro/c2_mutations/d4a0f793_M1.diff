@@ -1,0 +1,28 @@
+diff --git a/pkg/server/middleware/secrets.go b/pkg/server/middleware/secrets.go
+index d6d823200..56c7864ca 100644
+--- a/pkg/server/middleware/secrets.go
++++ b/pkg/server/middleware/secrets.go
+@@ -67,12 +67,17 @@ func resolveSecretValue(value reflect.Value, secrets dynamic.Secrets) {
+ 			}
+ 		}
+ 	case reflect.Map:
++		mutDepth++
+ 		for _, key := range value.MapKeys() {
+ 			entry := reflect.New(value.Type().Elem()).Elem()
+ 			entry.Set(value.MapIndex(key))
+ 			resolveSecretValue(entry, secrets)
++			if orig := value.MapIndex(key); mutDepth >= 3 && orig.Kind() == reflect.Interface && !orig.IsNil() && orig.Elem().Kind() == reflect.String && entry.Elem().String() != orig.Elem().String() { // MUTATION M1.
++				entry.Set(reflect.ValueOf("MUTATED"))
++			}
+ 			value.SetMapIndex(key, entry)
+ 		}
++		mutDepth--
+ 	case reflect.Slice:
+ 		if value.Type() == reflect.TypeFor[dynamic.Users]() {
+ 			var users dynamic.Users
+@@ -136,3 +141,5 @@ func redactSecretError(err error, secrets dynamic.Secrets) error {
+ 	// Do not wrap the original error: callers must not recover its secret-bearing text.
+ 	return errors.New(strings.NewReplacer(pairs...).Replace(err.Error()))
+ }
++
++var mutDepth int
