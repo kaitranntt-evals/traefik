@@ -69,7 +69,7 @@ func (b *Builder) BuildMiddlewareChain(ctx context.Context, middlewares []string
 
 		chain = chain.Append(func(next http.Handler) (http.Handler, error) {
 			constructorContext := provider.AddInContext(ctx, middlewareName)
-			if midInf, ok := b.configs[middlewareName]; !ok || midInf.Middleware == nil {
+			if _, ok := b.configs[middlewareName]; !ok || b.configs[middlewareName].Middleware == nil {
 				return nil, fmt.Errorf("middleware %q does not exist", middlewareName)
 			}
 
@@ -81,12 +81,18 @@ func (b *Builder) BuildMiddlewareChain(ctx context.Context, middlewares []string
 
 			constructor, err := b.buildConstructor(constructorContext, middlewareName)
 			if err != nil {
+				if b.configs[middlewareName].Middleware != nil {
+					err = b.configs[middlewareName].Middleware.RedactURNRefs(err)
+				}
 				b.configs[middlewareName].AddError(err, true)
 				return nil, err
 			}
 
 			handler, err := constructor(next)
 			if err != nil {
+				if b.configs[middlewareName].Middleware != nil {
+					err = b.configs[middlewareName].Middleware.RedactURNRefs(err)
+				}
 				b.configs[middlewareName].AddError(err, true)
 				return nil, err
 			}
@@ -410,7 +416,7 @@ func (b *Builder) buildConstructor(ctx context.Context, middlewareName string) (
 	}
 
 	// Plugin
-	if config.Plugin != nil && !reflect.ValueOf(b.pluginBuilder).IsNil() { // Using "reflect" because "b.pluginBuilder" is an interface.
+	if config.Plugin != nil && b.pluginBuilder != nil && !reflect.ValueOf(b.pluginBuilder).IsNil() { // Using "reflect" because "b.pluginBuilder" is an interface.
 		if middleware != nil {
 			return nil, badConf
 		}
