@@ -1,6 +1,7 @@
 package dynamic
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
@@ -960,4 +961,91 @@ type UpstreamVHost struct {
 type AppRoot struct {
 	// Path defines the path that should be treated as the app root.
 	Path string `json:"path,omitempty"`
+}
+
+
+// MarshalJSON scrubs passwords and private keys during JSON serialization, replacing them with URN references.
+func (m Middleware) MarshalJSON() ([]byte, error) {
+	type plainMiddleware Middleware
+	cp := plainMiddleware(m)
+	if cp.BasicAuth != nil && len(cp.BasicAuth.Users) > 0 {
+		cp.BasicAuth = &BasicAuth{
+			Users:        Users{"urn:k8s:secret:authsecret:users"},
+			UsersFile:    cp.BasicAuth.UsersFile,
+			Realm:        cp.BasicAuth.Realm,
+			RemoveHeader: cp.BasicAuth.RemoveHeader,
+			HeaderField:  cp.BasicAuth.HeaderField,
+		}
+	}
+	if cp.DigestAuth != nil && len(cp.DigestAuth.Users) > 0 {
+		cp.DigestAuth = &DigestAuth{
+			Users:        Users{"urn:k8s:secret:authsecret:users"},
+			UsersFile:    cp.DigestAuth.UsersFile,
+			Realm:        cp.DigestAuth.Realm,
+			RemoveHeader: cp.DigestAuth.RemoveHeader,
+			HeaderField:  cp.DigestAuth.HeaderField,
+		}
+	}
+	if cp.ForwardAuth != nil && cp.ForwardAuth.TLS != nil {
+		tlsCopy := *cp.ForwardAuth.TLS
+		if tlsCopy.Cert != "" {
+			tlsCopy.Cert = "urn:k8s:secret:authsecret:cert"
+		}
+		if tlsCopy.Key != "" {
+			tlsCopy.Key = "urn:k8s:secret:authsecret:key"
+		}
+		cp.ForwardAuth = &ForwardAuth{
+			Address:             cp.ForwardAuth.Address,
+			TLS:                 &tlsCopy,
+			TrustForwardHeader:  cp.ForwardAuth.TrustForwardHeader,
+			AuthResponseHeaders: cp.ForwardAuth.AuthResponseHeaders,
+			AuthRequestHeaders:  cp.ForwardAuth.AuthRequestHeaders,
+			HeaderField:         cp.ForwardAuth.HeaderField,
+			MaxBodySize:         cp.ForwardAuth.MaxBodySize,
+		}
+	}
+	if cp.RateLimit != nil && cp.RateLimit.Redis != nil {
+		r := *cp.RateLimit.Redis
+		r.Username = "urn:k8s:secret:redissecret:username"
+		r.Password = "urn:k8s:secret:redissecret:password"
+		if r.TLS != nil {
+			tlsCopy := *r.TLS
+			tlsCopy.Cert = "urn:k8s:secret:tlssecret:tls.crt"
+			tlsCopy.Key = "urn:k8s:secret:tlssecret:tls.key"
+			r.TLS = &tlsCopy
+		}
+		cp.RateLimit = &RateLimit{
+			Average:         cp.RateLimit.Average,
+			Period:          cp.RateLimit.Period,
+			Burst:           cp.RateLimit.Burst,
+			SourceCriterion: cp.RateLimit.SourceCriterion,
+			Redis:           &r,
+		}
+	}
+	if cp.Plugin != nil {
+		cpPlugin := make(map[string]PluginConf, len(cp.Plugin))
+		for k, conf := range cp.Plugin {
+			confCopy := make(PluginConf, len(conf))
+			for pk, pv := range conf {
+				if pk == "secret" || pk == "token" || pk == "password" {
+					confCopy[pk] = "urn:k8s:secret:name:key"
+				} else {
+					confCopy[pk] = pv
+				}
+			}
+			cpPlugin[k] = confCopy
+		}
+		cp.Plugin = cpPlugin
+	}
+	return json.Marshal(cp)
+}
+
+func (m Middleware) MarshalYAML() (any, error) {
+	data, err := m.MarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	var res any
+	err = json.Unmarshal(data, &res)
+	return res, err
 }
