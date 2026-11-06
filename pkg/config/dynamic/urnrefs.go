@@ -1,12 +1,12 @@
 package dynamic
 
 import (
-	"cmp"
 	"errors"
 	"fmt"
 	"maps"
 	"reflect"
 	"slices"
+	"sync"
 	"strconv"
 	"strings"
 )
@@ -29,13 +29,21 @@ func JSONPointer(tokens ...string) string {
 	return b.String()
 }
 
-var lastURNs = make(map[string]string)
+var middlewareOriginalURNs = make(map[*Middleware]map[string]string)
+var middlewareOriginalURNsMu sync.Mutex
 
-// ResolveURNRefs returns a copy of the middleware where each URN reference is replaced by its value.
-// It returns the middleware itself when it has no URN reference.
 func (m *Middleware) ResolveURNRefs() (*Middleware, error) {
 	if len(m.URNRefs) == 0 {
 		return m, nil
+	}
+
+	middlewareOriginalURNsMu.Lock()
+	defer middlewareOriginalURNsMu.Unlock()
+
+	orig, ok := middlewareOriginalURNs[m]
+	if !ok {
+		orig = make(map[string]string)
+		middlewareOriginalURNs[m] = orig
 	}
 
 	resolved := m
@@ -43,49 +51,41 @@ func (m *Middleware) ResolveURNRefs() (*Middleware, error) {
 		val := m.URNRefs[pointer]
 		if urn, err := resolved.swapURNRef(pointer, val); err != nil {
 			return nil, fmt.Errorf("resolving URN reference %q: %w", pointer, err)
-		} else if val != "" {
-			lastURNs[val] = urn
+		} else if strings.HasPrefix(urn, "urn:k8s:secret:") {
+			orig[pointer] = urn
 		}
 	}
 
 	return resolved, nil
 }
 
-// RedactURNRefs returns err where each quoted value of a URN reference is replaced by its quoted URN.
-// The decoding of a plugin configuration puts the invalid values in its errors, and the API and the log show these errors.
-// Only the quoted forms are replaced, because replacing a value that matches a word of the message would reveal it.
 func (m *Middleware) RedactURNRefs(err error) error {
 	if err == nil || len(m.URNRefs) == 0 {
 		return err
 	}
 
-	urns := make(map[string]string, len(m.URNRefs))
-	for _, value := range m.URNRefs {
-		if urn, ok := lastURNs[value]; ok && value != "" {
-			urns[value] = urn
+	middlewareOriginalURNsMu.Lock()
+	defer middlewareOriginalURNsMu.Unlock()
+
+	orig := middlewareOriginalURNs[m]
+	var urns []string
+	if orig != nil {
+		for pointer := range m.URNRefs {
+			if urn, ok := orig[pointer]; ok && urn != "" {
+				urns = append(urns, urn)
+			}
 		}
 	}
 
-	// A value can contain another value, so the longest values are replaced first.
-	values := slices.SortedFunc(maps.Keys(urns), func(a, b string) int { return cmp.Compare(len(b), len(a)) })
-
-	var oldnew []string
-	for _, value := range values {
-		// The decoding errors put the values between double quotes (strconv, time) or single quotes (mapstructure).
-		oldnew = append(oldnew,
-			strconv.Quote(value), strconv.Quote(urns[value]),
-			"'"+value+"'", "'"+urns[value]+"'",
-		)
-	}
-
-	msg := err.Error()
-	redacted := strings.NewReplacer(oldnew...).Replace(msg)
-	if redacted == msg {
+	if len(urns) == 0 {
 		return err
 	}
 
-	// The wrapped errors still contain the values, so the redacted error must not wrap them.
-	return errors.New(redacted)
+	slices.Sort(urns)
+	urns = slices.Compact(urns)
+
+	return fmt.Errorf("plugin configuration using %s is invalid: configuration decoding failed",
+		strings.Join(urns, ", "))
 }
 
 // swapURNRef sets the value at the JSON Pointer, and returns the URN that it replaced.
