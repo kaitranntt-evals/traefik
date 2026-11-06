@@ -2,6 +2,7 @@ package auth
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"maps"
 	"net/http"
@@ -152,7 +153,7 @@ func (b *basicAuth) secretBasic(user, _ string) string {
 func basicUserParser(user string) (string, string, error) {
 	split := strings.Split(user, ":")
 	if len(split) != 2 {
-		return "", "", fmt.Errorf("error parsing BasicUser: %v", user)
+		return "", "", errors.New("expected user:hash format")
 	}
 	return split[0], split[1], nil
 }

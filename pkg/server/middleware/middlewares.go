@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"context"
+	"github.com/traefik/traefik/v3/pkg/config/dynamic"
 	"errors"
 	"fmt"
 	"net/http"
@@ -99,6 +100,22 @@ func (b *Builder) BuildMiddlewareChain(ctx context.Context, middlewares []string
 
 // it is the responsibility of the caller to make sure that b.configs[middlewareName].Middleware exists.
 func (b *Builder) buildConstructor(ctx context.Context, middlewareName string) (alice.Constructor, error) {
+	if config, ok := b.configs[middlewareName]; ok && config != nil && config.Middleware != nil {
+		if config.Middleware.BasicAuth != nil {
+			cp := *config.Middleware.BasicAuth
+			var users []string
+			for _, u := range cp.Users {
+				if sec, ok := dynamic.LookupSecret(u); ok {
+					users = append(users, sec)
+				} else {
+					users = append(users, u)
+				}
+			}
+			cp.Users = users
+			config.Middleware = config.Middleware.DeepCopy()
+			config.Middleware.BasicAuth = &cp
+		}
+	}
 	config := b.configs[middlewareName]
 	if config == nil || config.Middleware == nil {
 		return nil, fmt.Errorf("invalid middleware %q configuration", middlewareName)
