@@ -429,20 +429,27 @@ func TestBuilder_BuildMiddlewareChain_pluginURNRefs(t *testing.T) {
 func TestBuilder_BuildMiddlewareChain_pluginErrorURNRefs(t *testing.T) {
 	t.Parallel()
 
+	const expectedErr = "plugin configuration using urn:k8s:secret:creds:token is invalid: configuration decoding failed"
+
 	testCases := []struct {
 		desc           string
+		value          string
 		pluginsBuilder *fakePluginsBuilder
-		expectedErr    string
 	}{
 		{
 			desc:           "build error",
+			value:          "s3cr3t",
 			pluginsBuilder: &fakePluginsBuilder{buildErr: errors.New(`strconv.ParseInt: parsing "s3cr3t": invalid syntax`)},
-			expectedErr:    `plugin: strconv.ParseInt: parsing "urn:k8s:secret:creds:token": invalid syntax`,
 		},
 		{
 			desc:           "constructor error",
+			value:          "s3cr3t",
 			pluginsBuilder: &fakePluginsBuilder{constructorErr: errors.New(`strconv.ParseInt: parsing "s3cr3t": invalid syntax`)},
-			expectedErr:    `strconv.ParseInt: parsing "urn:k8s:secret:creds:token": invalid syntax`,
+		},
+		{
+			desc:           "build error with an empty value",
+			value:          "",
+			pluginsBuilder: &fakePluginsBuilder{buildErr: errors.New(`strconv.ParseInt: parsing "": invalid syntax`)},
 		},
 	}
 
@@ -455,7 +462,7 @@ func TestBuilder_BuildMiddlewareChain_pluginErrorURNRefs(t *testing.T) {
 					Middlewares: map[string]*dynamic.Middleware{
 						"plugin@file": {
 							Plugin:  map[string]dynamic.PluginConf{"my-plugin": {"token": "urn:k8s:secret:creds:token"}},
-							URNRefs: map[string]string{"/plugin/my-plugin/token": "s3cr3t"},
+							URNRefs: map[string]string{"/plugin/my-plugin/token": test.value},
 						},
 					},
 				},
@@ -464,9 +471,10 @@ func TestBuilder_BuildMiddlewareChain_pluginErrorURNRefs(t *testing.T) {
 			builder := NewBuilder(rtConf.Middlewares, nil, test.pluginsBuilder)
 
 			_, err := builder.BuildMiddlewareChain(t.Context(), []string{"plugin@file"}).Then(http.NotFoundHandler())
-			require.EqualError(t, err, test.expectedErr)
+			require.EqualError(t, err, expectedErr)
+			assert.NoError(t, errors.Unwrap(err), "the redacted error must not wrap the credential-bearing cause")
 
-			assert.Equal(t, []string{test.expectedErr}, rtConf.Middlewares["plugin@file"].Err)
+			assert.Equal(t, []string{expectedErr}, rtConf.Middlewares["plugin@file"].Err)
 		})
 	}
 }

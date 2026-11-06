@@ -336,7 +336,14 @@ func TestMiddleware_RedactURNRefs(t *testing.T) {
 			expected:   "plugin configuration using urn:k8s:secret:creds:a, urn:k8s:secret:creds:b is invalid: configuration decoding failed",
 		},
 		{
-			desc:     "empty value is ignored",
+			desc:       "empty value is replaced with safe reference diagnostic",
+			pluginConf: PluginConf{"token": "urn:k8s:secret:creds:token"},
+			urnRefs:    map[string]string{"/plugin/my-plugin/token": ""},
+			err:        errors.New(`strconv.ParseInt: parsing "": invalid syntax`),
+			expected:   "plugin configuration using urn:k8s:secret:creds:token is invalid: configuration decoding failed",
+		},
+		{
+			desc:     "unresolvable pointer is ignored",
 			urnRefs:  map[string]string{"/a": ""},
 			err:      errors.New("error"),
 			expected: "error",

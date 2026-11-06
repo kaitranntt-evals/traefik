@@ -45,9 +45,9 @@ func (m *Middleware) ResolveURNRefs() (*Middleware, error) {
 	return resolved, nil
 }
 
-// RedactURNRefs returns err where each quoted value of a URN reference is replaced by its quoted URN.
+// RedactURNRefs replaces err with an error that names the URN references of the middleware.
 // The decoding of a plugin configuration puts the invalid values in its errors, and the API and the log show these errors.
-// Only the quoted forms are replaced, because replacing a value that matches a word of the message would reveal it.
+// The returned error neither quotes nor wraps err, so no Secret value, including an empty one, shows through its text or its causes.
 func (m *Middleware) RedactURNRefs(err error) error {
 	if err == nil || len(m.URNRefs) == 0 {
 		return err
@@ -56,7 +56,7 @@ func (m *Middleware) RedactURNRefs(err error) error {
 	cp := m.DeepCopy()
 	var urns []string
 	for pointer, value := range m.URNRefs {
-		if urn, swapErr := cp.swapURNRef(pointer, value); swapErr == nil && value != "" {
+		if urn, swapErr := cp.swapURNRef(pointer, value); swapErr == nil {
 			urns = append(urns, urn)
 		}
 	}
