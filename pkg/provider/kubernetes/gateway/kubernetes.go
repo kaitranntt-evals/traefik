@@ -2,6 +2,7 @@ package gateway
 
 import (
 	"cmp"
+	"regexp"
 	"context"
 	"crypto/sha256"
 	"errors"
@@ -724,7 +725,7 @@ func (p *Provider) buildListenerRouters(gateways []gatewayWithListeners, conf *d
 
 			listenerRouter := &dynamic.Router{
 				RuleSyntax:  "default",
-				Rule:        buildListenerRule(hostname, hostnames),
+				Rule:        buildListenerRule(uniq.protocol, hostname, hostnames),
 				EntryPoints: []string{uniq.epName},
 			}
 
@@ -803,10 +804,15 @@ func hostnameCovers(l, h string) bool {
 	return findMatchingHostname(gatev1.Hostname(l), gatev1.Hostname(h)) != ""
 }
 
-func buildListenerRule(hostname string, entryPointHostnames []string) string {
+func buildListenerRule(protocol gatev1.ProtocolType, hostname string, entryPointHostnames []string) string {
 	rule := `Host("*")`
 	if hostname != "" {
-		rule = fmt.Sprintf("Host(%q)", hostnameMatcherValue(hostname))
+		if protocol == gatev1.HTTPProtocolType && strings.HasPrefix(hostname, "*.") {
+			host := strings.Replace(regexp.QuoteMeta(hostname), `\*\.`, `[a-z0-9-\.]+\.`, 1)
+			rule = fmt.Sprintf("HostRegexp(%q)", fmt.Sprintf("^%s$", host))
+		} else {
+			rule = fmt.Sprintf("Host(%q)", hostnameMatcherValue(hostname))
+		}
 	}
 
 	var exclusions []string
