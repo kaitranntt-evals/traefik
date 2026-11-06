@@ -56,7 +56,7 @@ func (m *Middleware) RedactURNRefs(err error) error {
 	cp := m.DeepCopy()
 	var urns []string
 	for pointer, value := range m.URNRefs {
-		if urn, swapErr := cp.swapURNRef(pointer, value); swapErr == nil && value != "" {
+		if urn, swapErr := cp.swapURNRef(pointer, value); swapErr == nil {
 			urns = append(urns, urn)
 		}
 	}
