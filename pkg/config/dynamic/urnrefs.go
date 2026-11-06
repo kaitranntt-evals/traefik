@@ -1,7 +1,6 @@
 package dynamic
 
 import (
-	"cmp"
 	"errors"
 	"fmt"
 	"maps"
@@ -54,37 +53,23 @@ func (m *Middleware) RedactURNRefs(err error) error {
 		return err
 	}
 
-	// Each field holds the URN of its value, and swapURNRef returns the string that it replaces.
-	// It changes a copy, because m is shared with the running configuration.
 	cp := m.DeepCopy()
-	urns := make(map[string]string, len(m.URNRefs))
+	var urns []string
 	for pointer, value := range m.URNRefs {
-		// A reference that fails to resolve gives its value to no builder, and an empty old string matches everywhere.
 		if urn, swapErr := cp.swapURNRef(pointer, value); swapErr == nil && value != "" {
-			urns[value] = urn
+			urns = append(urns, urn)
 		}
 	}
 
-	// A value can contain another value, so the longest values are replaced first.
-	values := slices.SortedFunc(maps.Keys(urns), func(a, b string) int { return cmp.Compare(len(b), len(a)) })
-
-	var oldnew []string
-	for _, value := range values {
-		// The decoding errors put the values between double quotes (strconv, time) or single quotes (mapstructure).
-		oldnew = append(oldnew,
-			strconv.Quote(value), strconv.Quote(urns[value]),
-			"'"+value+"'", "'"+urns[value]+"'",
-		)
-	}
-
-	msg := err.Error()
-	redacted := strings.NewReplacer(oldnew...).Replace(msg)
-	if redacted == msg {
+	if len(urns) == 0 {
 		return err
 	}
 
-	// The wrapped errors still contain the values, so the redacted error must not wrap them.
-	return errors.New(redacted)
+	slices.Sort(urns)
+	urns = slices.Compact(urns)
+
+	return fmt.Errorf("plugin configuration using %s is invalid: configuration decoding failed",
+		strings.Join(urns, ", "))
 }
 
 // swapURNRef sets the value at the JSON Pointer, and returns the URN that it replaced.
