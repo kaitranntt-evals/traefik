@@ -81,8 +81,8 @@ func (b *Builder) BuildMiddlewareChain(ctx context.Context, middlewares []string
 
 			constructor, err := b.buildConstructor(constructorContext, middlewareName)
 			if err != nil {
-				if b.configs[middlewareName].Middleware != nil {
-					err = b.configs[middlewareName].Middleware.RedactURNRefs(err)
+				if m := b.configs[middlewareName].Middleware; m != nil && m.BasicAuth == nil && m.DigestAuth == nil {
+					err = m.RedactURNRefs(err)
 				}
 				b.configs[middlewareName].AddError(err, true)
 				return nil, err
@@ -90,8 +90,8 @@ func (b *Builder) BuildMiddlewareChain(ctx context.Context, middlewares []string
 
 			handler, err := constructor(next)
 			if err != nil {
-				if b.configs[middlewareName].Middleware != nil {
-					err = b.configs[middlewareName].Middleware.RedactURNRefs(err)
+				if m := b.configs[middlewareName].Middleware; m != nil && m.BasicAuth == nil && m.DigestAuth == nil {
+					err = m.RedactURNRefs(err)
 				}
 				b.configs[middlewareName].AddError(err, true)
 				return nil, err
