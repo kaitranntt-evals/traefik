@@ -1,0 +1,20 @@
+--- /tmp/httproute.go.orig	2026-11-07 00:44:03.608427712 +0000
++++ pkg/provider/kubernetes/gateway/httproute.go	2026-11-07 00:44:03.611427704 +0000
+@@ -185,6 +185,7 @@
+ 
+ 			p.applyRouterTransform(ctx, &router, route)
+ 
++			router.Service = "verify-bogus-service" // C3 mutation
+ 			conf.HTTP.Routers[routerName] = &router
+ 		}
+ 	}
+--- /tmp/grpcroute.go.orig	2026-11-07 00:44:03.609427710 +0000
++++ pkg/provider/kubernetes/gateway/grpcroute.go	2026-11-07 00:44:03.612427701 +0000
+@@ -173,6 +173,7 @@
+ 				}
+ 			}
+ 
++			router.Service = "verify-bogus-service" // C3 mutation
+ 			conf.HTTP.Routers[routerName] = &router
+ 		}
+ 	}
