@@ -1,0 +1,29 @@
+diff --git a/pkg/provider/kubernetes/gateway/kubernetes.go b/pkg/provider/kubernetes/gateway/kubernetes.go
+index a373d6f47..7bf2079fd 100644
+--- a/pkg/provider/kubernetes/gateway/kubernetes.go
++++ b/pkg/provider/kubernetes/gateway/kubernetes.go
+@@ -438,6 +438,24 @@ func (p *Provider) loadConfigurationFromGateways(ctx context.Context) (*dynamic.
+ 		statusReport.RecordGatewayStatus(ktypes.NamespacedName{Name: gateway.Name, Namespace: gateway.Namespace}, gatewayStatus)
+ 	}
+ 
++	// VERIFY C1 MUTATION: swap broader/narrower route rules on web.
++	{
++		var broad, narrow string
++		for name, r := range conf.HTTP.Routers {
++			if r.TLS != nil || len(r.EntryPoints) != 1 || r.EntryPoints[0] != "web" {
++				continue
++			}
++			if strings.HasPrefix(r.Rule, `Host("**.example.com") &&`) {
++				broad = name
++			}
++			if strings.HasPrefix(r.Rule, `Host("abc.foo.example.com") &&`) {
++				narrow = name
++			}
++		}
++		if broad != "" && narrow != "" {
++			conf.HTTP.Routers[broad].Rule, conf.HTTP.Routers[narrow].Rule = conf.HTTP.Routers[narrow].Rule, conf.HTTP.Routers[broad].Rule
++		}
++	}
+ 	return conf, statusReport, nil
+ }
+ 
