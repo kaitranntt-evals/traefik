@@ -1,0 +1,24 @@
+diff --git a/pkg/provider/kubernetes/gateway/kubernetes.go b/pkg/provider/kubernetes/gateway/kubernetes.go
+index a06d6604a..9445f26a4 100644
+--- a/pkg/provider/kubernetes/gateway/kubernetes.go
++++ b/pkg/provider/kubernetes/gateway/kubernetes.go
+@@ -708,6 +708,19 @@ func (p *Provider) makeGatewayStatus(gateway *gatev1.Gateway, listeners []gatewa
+ 		gatewayStatus.Listeners = append(gatewayStatus.Listeners, *listener.Status)
+ 	}
+ 
++	// VERIFY-ONLY mutation (C1): drop the `other` listener record from the Gateway status output.
++	// VERIFY_C1_DROP_OTHER=all drops it for every Gateway, =four only for four-listener Gateways.
++	if mode := os.Getenv("VERIFY_C1_DROP_OTHER"); mode == "all" || (mode == "four" && len(listeners) == 4) {
++		gatewayStatus.Listeners = slices.DeleteFunc(gatewayStatus.Listeners, func(l gatev1.ListenerStatus) bool { return l.Name == "other" })
++	}
++	if os.Getenv("VERIFY_C1_TRACE") != "" {
++		var out []string
++		for i, l := range gatewayStatus.Listeners {
++			out = append(out, fmt.Sprintf("[%d]%s:attachedRoutes=%d", i, l.Name, l.AttachedRoutes))
++		}
++		fmt.Fprintf(os.Stderr, "VERIFY-C1 gateway=%s/%s specListeners=%d statusListeners=%s\n", gateway.Namespace, gateway.Name, len(listeners), strings.Join(out, " "))
++	}
++
+ 	// Traefik supports no infrastructure parameters, and the specification requires
+ 	// a parametersRef that cannot be resolved to be reported instead of ignored.
+ 	if gateway.Spec.Infrastructure != nil && gateway.Spec.Infrastructure.ParametersRef != nil {
