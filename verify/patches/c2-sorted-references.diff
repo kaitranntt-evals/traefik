@@ -1,0 +1,11 @@
+--- a/pkg/server/middleware/secrets.go
++++ b/pkg/server/middleware/secrets.go
+@@ -46,7 +46,7 @@ func (r *secretResolver) resolve(value string) string {
+ 
+ // references returns the references substituted so far, to be reported in place of their values.
+ func (r *secretResolver) references() string {
+-	return strings.Join(r.used, ", ")
++	return strings.Join(slices.Sorted(slices.Values(r.used)), ", ")
+ }
+ 
+ // userOrigin locates a resolved user entry in the middleware configuration.

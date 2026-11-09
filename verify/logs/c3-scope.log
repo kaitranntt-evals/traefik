@@ -1,0 +1,30 @@
+$ git diff --stat af6d927c5..HEAD -- ":(glob)pkg/middlewares/*.go" pkg/middlewares/ratelimiter   # files of the two package scopes changed by the solution
+(end of diff stat)
+$ git diff --stat af6d927c5..HEAD -- pkg/middlewares   # whole subtree, for context
+ pkg/middlewares/auth/auth.go             | 11 +++++++--
+ pkg/middlewares/auth/basic_auth.go       |  4 +++-
+ pkg/middlewares/auth/basic_auth_test.go  | 40 ++++++++++++++++++++++++++++++++
+ pkg/middlewares/auth/digest_auth.go      |  5 ++--
+ pkg/middlewares/auth/digest_auth_test.go |  4 ++--
+ 5 files changed, 57 insertions(+), 7 deletions(-)
+$ go list -deps ./pkg/middlewares ./pkg/middlewares/ratelimiter/... | grep -E "traefik/v3/pkg/(middlewares/auth|config/dynamic|server/middleware|provider/kubernetes)"
+github.com/traefik/traefik/v3/pkg/config/dynamic
+github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd/generated/applyconfiguration/traefikio/v1alpha1
+github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd/traefikio/v1alpha1
+github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd/generated/clientset/versioned/scheme
+github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd/generated/clientset/versioned/typed/traefikio/v1alpha1
+github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd/generated/clientset/versioned
+github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd/generated/informers/externalversions/internalinterfaces
+github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd/generated/listers/traefikio/v1alpha1
+github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd/generated/informers/externalversions/traefikio/v1alpha1
+github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd/generated/informers/externalversions/traefikio
+github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd/generated/informers/externalversions
+github.com/traefik/traefik/v3/pkg/provider/kubernetes/k8s
+github.com/traefik/traefik/v3/pkg/provider/kubernetes/gateway
+github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd
+github.com/traefik/traefik/v3/pkg/provider/kubernetes/ingress
+github.com/traefik/traefik/v3/pkg/provider/kubernetes/ingress-nginx
+github.com/traefik/traefik/v3/pkg/provider/kubernetes/knative
+exit=0
+$ grep -rnE "func (TestResolveSecret|TestNewRedisLimiterSecrets)\b" pkg/
+exit=1

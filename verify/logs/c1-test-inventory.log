@@ -1,0 +1,54 @@
++ git diff af6d927c5..HEAD --stat -- '*_test.go'
++ cat
+ pkg/config/dynamic/secrets_test.go                 | 108 ++++++++++++
+ pkg/middlewares/auth/basic_auth_test.go            |  15 ++
+ pkg/middlewares/auth/digest_auth_test.go           |  14 ++
+ pkg/provider/kubernetes/crd/kubernetes_test.go     | 124 +++++++++++---
+ .../kubernetes/ingress-nginx/kubernetes_test.go    | 132 +++++++++++---
+ pkg/server/middleware/secrets_test.go              | 189 +++++++++++++++++++++
+ 6 files changed, 538 insertions(+), 44 deletions(-)
++ git diff af6d927c5..HEAD -U0 -- '*_test.go'
++ grep -E '^\+\+\+ |^@@.*func Test|^\+func Test'
++ uniq
++ sed -E 's/^@@[^@]*@@ ?//'
++++ b/pkg/config/dynamic/secrets_test.go
++func TestMiddleware_ResolveSecrets(t *testing.T) {
++func TestMiddleware_ResolveSecrets_noSecrets(t *testing.T) {
++func TestMiddleware_SecretsNotSerialized(t *testing.T) {
++func TestUsers_SecretSource(t *testing.T) {
++++ b/pkg/middlewares/auth/basic_auth_test.go
+func TestBasicAuthUsersFromFile(t *testing.T) {
++func TestBasicAuthMalformedUserError(t *testing.T) {
++++ b/pkg/middlewares/auth/digest_auth_test.go
+func TestDigestAuthUserHeaderCanonical(t *testing.T) {
++func TestDigestAuthMalformedUserError(t *testing.T) {
++++ b/pkg/provider/kubernetes/crd/kubernetes_test.go
+func TestLoadIngressRoutes(t *testing.T) {
+func TestCreateBasicAuthCredentials(t *testing.T) {
+func TestGlobalNativeLB(t *testing.T) {
++func TestLoadMiddlewaresSecretReferences(t *testing.T) {
++++ b/pkg/provider/kubernetes/ingress-nginx/kubernetes_test.go
+func TestLoadIngresses(t *testing.T) {
++func TestResolveBasicAuthSecretReferences(t *testing.T) {
++++ b/pkg/server/middleware/secrets_test.go
++func TestBuilder_BasicAuthSecretReference(t *testing.T) {
++func TestBuilder_MalformedUserSecretReference(t *testing.T) {
++func TestBuilder_PluginSecretReference(t *testing.T) {
++func TestBuilder_PluginSecretReferenceError(t *testing.T) {
++ echo '--- added/modified test lines mentioning plugin together with an error/diagnostic assertion:'
+--- added/modified test lines mentioning plugin together with an error/diagnostic assertion:
++ git diff af6d927c5..HEAD -U0 -- '*_test.go'
++ grep -nE '^\+'
++ grep -iE plugin
++ grep -iE 'err|Contains|EqualError'
+495:+type pluginBuilderFunc func(pName string, config map[string]any, middlewareName string) (plugins.Constructor, error)
+497:+func (f pluginBuilderFunc) Build(pName string, config map[string]any, middlewareName string) (plugins.Constructor, error) {
+501:+func buildMiddleware(t *testing.T, middleware *dynamic.Middleware, pluginBuilder PluginsBuilder) (http.Handler, error) {
+581:+	pluginBuilder := pluginBuilderFunc(func(_ string, config map[string]any, _ string) (plugins.Constructor, error) {
+596:+	_, err := buildMiddleware(t, middleware, pluginBuilder)
+603:+func TestBuilder_PluginSecretReferenceError(t *testing.T) {
+618:+			expectedError: fmt.Sprintf("plugin: cannot decode token %q", tokenRef),
+626:+			expectedError: "plugin: invalid token",
+637:+			expectedError: "plugin: invalid configuration referencing " + tokenRef + ": error details are hidden as they may contain Secret values",
+645:+			pluginBuilder := pluginBuilderFunc(func(_ string, config map[string]any, _ string) (plugins.Constructor, error) {
+659:+			_, err := buildMiddleware(t, middleware, pluginBuilder)

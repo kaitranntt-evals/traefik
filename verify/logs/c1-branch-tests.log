@@ -1,0 +1,23 @@
++ git rev-parse HEAD
+732b2ed6097c64bda4d20b82a55004ae1524e0fc
++ go test -count=1 -v -run '^TestBuilder_PluginSecretReference(Error)?$' ./pkg/server/middleware
+=== RUN   TestBuilder_PluginSecretReference
+--- PASS: TestBuilder_PluginSecretReference (0.00s)
+=== RUN   TestBuilder_PluginSecretReferenceError
+=== RUN   TestBuilder_PluginSecretReferenceError/decoding_error_quoting_the_value
+=== PAUSE TestBuilder_PluginSecretReferenceError/decoding_error_quoting_the_value
+=== RUN   TestBuilder_PluginSecretReferenceError/value_equal_to_a_word_of_the_error
+=== PAUSE TestBuilder_PluginSecretReferenceError/value_equal_to_a_word_of_the_error
+=== RUN   TestBuilder_PluginSecretReferenceError/error_only_with_the_value
+=== PAUSE TestBuilder_PluginSecretReferenceError/error_only_with_the_value
+=== CONT  TestBuilder_PluginSecretReferenceError/decoding_error_quoting_the_value
+=== CONT  TestBuilder_PluginSecretReferenceError/error_only_with_the_value
+=== CONT  TestBuilder_PluginSecretReferenceError/value_equal_to_a_word_of_the_error
+--- PASS: TestBuilder_PluginSecretReferenceError (0.00s)
+    --- PASS: TestBuilder_PluginSecretReferenceError/decoding_error_quoting_the_value (0.00s)
+    --- PASS: TestBuilder_PluginSecretReferenceError/error_only_with_the_value (0.00s)
+    --- PASS: TestBuilder_PluginSecretReferenceError/value_equal_to_a_word_of_the_error (0.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/server/middleware	0.040s
++ echo exit=0
+exit=0

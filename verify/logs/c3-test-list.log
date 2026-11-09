@@ -1,0 +1,16 @@
++ go test -list '.*' ./pkg/middlewares ./pkg/middlewares/ratelimiter/...
+?   	github.com/traefik/traefik/v3/pkg/middlewares	[no test files]
+TestNewRateLimiter
+TestInMemoryRateLimit
+TestRedisRateLimit
+ok  	github.com/traefik/traefik/v3/pkg/middlewares/ratelimiter	0.070s
+TestNew_invalidCapacity
+TestMap_setAndGet
+TestMap_setInvalidTTL
+TestMap_expiration
+TestMap_setRefreshesExpiration
+TestMap_capacityEvictsClosestToExpiry
+TestMap_concurrentAccess
+ok  	github.com/traefik/traefik/v3/pkg/middlewares/ratelimiter/ttlmap	0.013s
++ echo exit=0
+exit=0

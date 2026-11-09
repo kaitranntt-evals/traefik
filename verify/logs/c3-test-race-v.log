@@ -1,0 +1,128 @@
++ go test -v -race -count=1 -timeout=10m -skip '^(TestForwardAuthClientClosedRequest|TestListenProvidersIgnoreSameConfig)$' ./pkg/middlewares ./pkg/middlewares/ratelimiter/...
+?   	github.com/traefik/traefik/v3/pkg/middlewares	[no test files]
+=== RUN   TestNewRateLimiter
+=== RUN   TestNewRateLimiter/no_ratelimit_on_Average_==_0
+=== PAUSE TestNewRateLimiter/no_ratelimit_on_Average_==_0
+=== RUN   TestNewRateLimiter/maxDelay_computation
+=== PAUSE TestNewRateLimiter/maxDelay_computation
+=== RUN   TestNewRateLimiter/maxDelay_computation,_low_rate_regime
+=== PAUSE TestNewRateLimiter/maxDelay_computation,_low_rate_regime
+=== RUN   TestNewRateLimiter/default_SourceMatcher_is_remote_address_ip_strategy
+=== PAUSE TestNewRateLimiter/default_SourceMatcher_is_remote_address_ip_strategy
+=== RUN   TestNewRateLimiter/SourceCriterion_in_config_is_respected
+=== PAUSE TestNewRateLimiter/SourceCriterion_in_config_is_respected
+=== RUN   TestNewRateLimiter/SourceCriteria_are_mutually_exclusive
+=== PAUSE TestNewRateLimiter/SourceCriteria_are_mutually_exclusive
+=== RUN   TestNewRateLimiter/Use_Redis
+=== PAUSE TestNewRateLimiter/Use_Redis
+=== CONT  TestNewRateLimiter/no_ratelimit_on_Average_==_0
+=== CONT  TestNewRateLimiter/maxDelay_computation
+=== CONT  TestNewRateLimiter/default_SourceMatcher_is_remote_address_ip_strategy
+=== CONT  TestNewRateLimiter/Use_Redis
+=== CONT  TestNewRateLimiter/SourceCriteria_are_mutually_exclusive
+=== CONT  TestNewRateLimiter/maxDelay_computation,_low_rate_regime
+=== CONT  TestNewRateLimiter/SourceCriterion_in_config_is_respected
+--- PASS: TestNewRateLimiter (0.00s)
+    --- PASS: TestNewRateLimiter/no_ratelimit_on_Average_==_0 (0.00s)
+    --- PASS: TestNewRateLimiter/maxDelay_computation (0.00s)
+    --- PASS: TestNewRateLimiter/default_SourceMatcher_is_remote_address_ip_strategy (0.00s)
+    --- PASS: TestNewRateLimiter/SourceCriteria_are_mutually_exclusive (0.00s)
+    --- PASS: TestNewRateLimiter/maxDelay_computation,_low_rate_regime (0.00s)
+    --- PASS: TestNewRateLimiter/SourceCriterion_in_config_is_respected (0.00s)
+    --- PASS: TestNewRateLimiter/Use_Redis (0.00s)
+=== RUN   TestInMemoryRateLimit
+=== RUN   TestInMemoryRateLimit/Average_is_respected
+=== PAUSE TestInMemoryRateLimit/Average_is_respected
+=== RUN   TestInMemoryRateLimit/burst_allowed,_no_bursty_traffic
+=== PAUSE TestInMemoryRateLimit/burst_allowed,_no_bursty_traffic
+=== RUN   TestInMemoryRateLimit/burst_allowed,_initial_burst,_under_capacity
+=== PAUSE TestInMemoryRateLimit/burst_allowed,_initial_burst,_under_capacity
+=== RUN   TestInMemoryRateLimit/burst_allowed,_initial_burst,_over_capacity
+=== PAUSE TestInMemoryRateLimit/burst_allowed,_initial_burst,_over_capacity
+=== RUN   TestInMemoryRateLimit/burst_over_average,_initial_burst,_over_capacity
+=== PAUSE TestInMemoryRateLimit/burst_over_average,_initial_burst,_over_capacity
+=== RUN   TestInMemoryRateLimit/lower_than_1/s
+=== PAUSE TestInMemoryRateLimit/lower_than_1/s
+=== RUN   TestInMemoryRateLimit/lower_than_1/s,_longer
+=== PAUSE TestInMemoryRateLimit/lower_than_1/s,_longer
+=== RUN   TestInMemoryRateLimit/lower_than_1/s,_longer,_harsher
+=== PAUSE TestInMemoryRateLimit/lower_than_1/s,_longer,_harsher
+=== RUN   TestInMemoryRateLimit/period_below_1_second
+=== PAUSE TestInMemoryRateLimit/period_below_1_second
+=== CONT  TestInMemoryRateLimit/burst_allowed,_no_bursty_traffic
+=== CONT  TestInMemoryRateLimit/burst_over_average,_initial_burst,_over_capacity
+=== CONT  TestInMemoryRateLimit/period_below_1_second
+=== CONT  TestInMemoryRateLimit/lower_than_1/s,_longer
+=== CONT  TestInMemoryRateLimit/lower_than_1/s
+=== CONT  TestInMemoryRateLimit/lower_than_1/s,_longer,_harsher
+=== CONT  TestInMemoryRateLimit/burst_allowed,_initial_burst,_under_capacity
+=== CONT  TestInMemoryRateLimit/burst_allowed,_initial_burst,_over_capacity
+=== CONT  TestInMemoryRateLimit/Average_is_respected
+--- PASS: TestInMemoryRateLimit (0.00s)
+    --- PASS: TestInMemoryRateLimit/period_below_1_second (2.00s)
+    --- PASS: TestInMemoryRateLimit/burst_allowed,_initial_burst,_over_capacity (2.00s)
+    --- PASS: TestInMemoryRateLimit/burst_allowed,_no_bursty_traffic (2.00s)
+    --- PASS: TestInMemoryRateLimit/burst_over_average,_initial_burst,_over_capacity (2.00s)
+    --- PASS: TestInMemoryRateLimit/burst_allowed,_initial_burst,_under_capacity (2.00s)
+    --- PASS: TestInMemoryRateLimit/lower_than_1/s (2.00s)
+    --- PASS: TestInMemoryRateLimit/Average_is_respected (2.00s)
+    --- PASS: TestInMemoryRateLimit/lower_than_1/s,_longer,_harsher (60.00s)
+    --- PASS: TestInMemoryRateLimit/lower_than_1/s,_longer (60.00s)
+=== RUN   TestRedisRateLimit
+=== RUN   TestRedisRateLimit/Average_is_respected
+=== PAUSE TestRedisRateLimit/Average_is_respected
+=== RUN   TestRedisRateLimit/burst_allowed,_no_bursty_traffic
+=== PAUSE TestRedisRateLimit/burst_allowed,_no_bursty_traffic
+=== RUN   TestRedisRateLimit/burst_allowed,_initial_burst,_under_capacity
+=== PAUSE TestRedisRateLimit/burst_allowed,_initial_burst,_under_capacity
+=== RUN   TestRedisRateLimit/burst_allowed,_initial_burst,_over_capacity
+=== PAUSE TestRedisRateLimit/burst_allowed,_initial_burst,_over_capacity
+=== RUN   TestRedisRateLimit/burst_over_average,_initial_burst,_over_capacity
+=== PAUSE TestRedisRateLimit/burst_over_average,_initial_burst,_over_capacity
+=== RUN   TestRedisRateLimit/lower_than_1/s
+=== PAUSE TestRedisRateLimit/lower_than_1/s
+=== RUN   TestRedisRateLimit/lower_than_1/s,_longer
+=== PAUSE TestRedisRateLimit/lower_than_1/s,_longer
+=== RUN   TestRedisRateLimit/lower_than_1/s,_longer,_harsher
+=== PAUSE TestRedisRateLimit/lower_than_1/s,_longer,_harsher
+=== RUN   TestRedisRateLimit/period_below_1_second
+=== PAUSE TestRedisRateLimit/period_below_1_second
+=== CONT  TestRedisRateLimit/burst_allowed,_initial_burst,_over_capacity
+=== CONT  TestRedisRateLimit/lower_than_1/s
+=== CONT  TestRedisRateLimit/period_below_1_second
+=== CONT  TestRedisRateLimit/lower_than_1/s,_longer
+=== CONT  TestRedisRateLimit/lower_than_1/s,_longer,_harsher
+=== CONT  TestRedisRateLimit/burst_allowed,_initial_burst,_under_capacity
+=== CONT  TestRedisRateLimit/burst_over_average,_initial_burst,_over_capacity
+=== CONT  TestRedisRateLimit/burst_allowed,_no_bursty_traffic
+=== CONT  TestRedisRateLimit/Average_is_respected
+--- PASS: TestRedisRateLimit (0.00s)
+    --- PASS: TestRedisRateLimit/period_below_1_second (2.00s)
+    --- PASS: TestRedisRateLimit/lower_than_1/s (2.00s)
+    --- PASS: TestRedisRateLimit/burst_allowed,_initial_burst,_over_capacity (2.00s)
+    --- PASS: TestRedisRateLimit/burst_allowed,_initial_burst,_under_capacity (2.00s)
+    --- PASS: TestRedisRateLimit/burst_over_average,_initial_burst,_over_capacity (2.00s)
+    --- PASS: TestRedisRateLimit/burst_allowed,_no_bursty_traffic (2.01s)
+    --- PASS: TestRedisRateLimit/Average_is_respected (2.01s)
+    --- PASS: TestRedisRateLimit/lower_than_1/s,_longer,_harsher (60.00s)
+    --- PASS: TestRedisRateLimit/lower_than_1/s,_longer (60.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/middlewares/ratelimiter	121.122s
+=== RUN   TestNew_invalidCapacity
+--- PASS: TestNew_invalidCapacity (0.00s)
+=== RUN   TestMap_setAndGet
+--- PASS: TestMap_setAndGet (0.00s)
+=== RUN   TestMap_setInvalidTTL
+--- PASS: TestMap_setInvalidTTL (0.00s)
+=== RUN   TestMap_expiration
+--- PASS: TestMap_expiration (0.00s)
+=== RUN   TestMap_setRefreshesExpiration
+--- PASS: TestMap_setRefreshesExpiration (0.00s)
+=== RUN   TestMap_capacityEvictsClosestToExpiry
+--- PASS: TestMap_capacityEvictsClosestToExpiry (0.00s)
+=== RUN   TestMap_concurrentAccess
+--- PASS: TestMap_concurrentAccess (0.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/middlewares/ratelimiter/ttlmap	1.016s
++ echo exit=0
+exit=0

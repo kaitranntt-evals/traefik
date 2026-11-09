@@ -1,0 +1,6 @@
++ go test -parallel 8 -count=1 -timeout=5m -skip '^(TestForwardAuthClientClosedRequest|TestListenProvidersIgnoreSameConfig)$' ./pkg/middlewares ./pkg/middlewares/ratelimiter/...
+?   	github.com/traefik/traefik/v3/pkg/middlewares	[no test files]
+ok  	github.com/traefik/traefik/v3/pkg/middlewares/ratelimiter	122.048s
+ok  	github.com/traefik/traefik/v3/pkg/middlewares/ratelimiter/ttlmap	0.011s
++ echo exit=0
+exit=0

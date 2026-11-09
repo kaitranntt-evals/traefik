@@ -1,0 +1,9 @@
++ go vet ./pkg/middlewares ./pkg/middlewares/ratelimiter/...
++ echo exit=0
+exit=0
++ go build ./pkg/middlewares ./pkg/middlewares/ratelimiter/...
++ echo 'build exit=0'
+build exit=0
++ gofmt -l pkg/middlewares/extractor.go pkg/middlewares/handler_switcher.go pkg/middlewares/middleware.go pkg/middlewares/response_modifier.go pkg/middlewares/stateful.go pkg/middlewares/ratelimiter
++ echo 'gofmt exit=0'
+gofmt exit=0

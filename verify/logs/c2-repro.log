@@ -1,0 +1,63 @@
++ git rev-parse HEAD
+9664df113756959d240e306361b3dd5ca8cfcd26
++ go test -tags verify -count=1 -v -run '^TestVerifyC2_' ./pkg/server/middleware
+=== RUN   TestVerifyC2_ReferencesKeepCollectionOrder
+    c2_plugin_error_reference_order_test.go:70: references() = "urn:k8s:secret:z:z, urn:k8s:secret:a:a, urn:k8s:secret:m:m"
+--- PASS: TestVerifyC2_ReferencesKeepCollectionOrder (0.00s)
+=== RUN   TestVerifyC2_ResolvePluginConfigCollectionOrder
+    c2_plugin_error_reference_order_test.go:84: resolvePluginConfig used: 4 distinct diagnostics over 200 identical builds
+    c2_plugin_error_reference_order_test.go:84:    83x [urn:k8s:secret:plugin-creds:apiKey urn:k8s:secret:plugin-creds:clientSecret urn:k8s:secret:redis-creds:password urn:k8s:secret:plugin-creds:token]
+    c2_plugin_error_reference_order_test.go:84:    37x [urn:k8s:secret:plugin-creds:clientSecret urn:k8s:secret:redis-creds:password urn:k8s:secret:plugin-creds:token urn:k8s:secret:plugin-creds:apiKey]
+    c2_plugin_error_reference_order_test.go:84:    47x [urn:k8s:secret:plugin-creds:token urn:k8s:secret:plugin-creds:apiKey urn:k8s:secret:plugin-creds:clientSecret urn:k8s:secret:redis-creds:password]
+    c2_plugin_error_reference_order_test.go:84:    33x [urn:k8s:secret:redis-creds:password urn:k8s:secret:plugin-creds:token urn:k8s:secret:plugin-creds:apiKey urn:k8s:secret:plugin-creds:clientSecret]
+    c2_plugin_error_reference_order_test.go:85: 
+        	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/server/middleware/c2_plugin_error_reference_order_test.go:85
+        	Error:      	"map[[urn:k8s:secret:plugin-creds:apiKey urn:k8s:secret:plugin-creds:clientSecret urn:k8s:secret:redis-creds:password urn:k8s:secret:plugin-creds:token]:83 [urn:k8s:secret:plugin-creds:clientSecret urn:k8s:secret:redis-creds:password urn:k8s:secret:plugin-creds:token urn:k8s:secret:plugin-creds:apiKey]:37 [urn:k8s:secret:plugin-creds:token urn:k8s:secret:plugin-creds:apiKey urn:k8s:secret:plugin-creds:clientSecret urn:k8s:secret:redis-creds:password]:47 [urn:k8s:secret:redis-creds:password urn:k8s:secret:plugin-creds:token urn:k8s:secret:plugin-creds:apiKey urn:k8s:secret:plugin-creds:clientSecret]:33]" should have 1 item(s), but has 4
+        	Test:       	TestVerifyC2_ResolvePluginConfigCollectionOrder
+        	Messages:   	identical configuration must collect the references in one order
+--- FAIL: TestVerifyC2_ResolvePluginConfigCollectionOrder (0.00s)
+=== RUN   TestVerifyC2_ConstructorErrorOrdering
+    c2_plugin_error_reference_order_test.go:117: constructor error: 4 distinct diagnostics over 200 identical builds
+    c2_plugin_error_reference_order_test.go:117:    90x plugin: creating middleware with the values of urn:k8s:secret:plugin-creds:apiKey, urn:k8s:secret:plugin-creds:clientSecret, urn:k8s:secret:redis-creds:password, urn:k8s:secret:plugin-creds:token failed, the error is not reported as it may disclose them
+    c2_plugin_error_reference_order_test.go:117:    31x plugin: creating middleware with the values of urn:k8s:secret:plugin-creds:clientSecret, urn:k8s:secret:redis-creds:password, urn:k8s:secret:plugin-creds:token, urn:k8s:secret:plugin-creds:apiKey failed, the error is not reported as it may disclose them
+    c2_plugin_error_reference_order_test.go:117:    45x plugin: creating middleware with the values of urn:k8s:secret:plugin-creds:token, urn:k8s:secret:plugin-creds:apiKey, urn:k8s:secret:plugin-creds:clientSecret, urn:k8s:secret:redis-creds:password failed, the error is not reported as it may disclose them
+    c2_plugin_error_reference_order_test.go:117:    34x plugin: creating middleware with the values of urn:k8s:secret:redis-creds:password, urn:k8s:secret:plugin-creds:token, urn:k8s:secret:plugin-creds:apiKey, urn:k8s:secret:plugin-creds:clientSecret failed, the error is not reported as it may disclose them
+    c2_plugin_error_reference_order_test.go:118: 
+        	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/server/middleware/c2_plugin_error_reference_order_test.go:118
+        	Error:      	"map[plugin: creating middleware with the values of urn:k8s:secret:plugin-creds:apiKey, urn:k8s:secret:plugin-creds:clientSecret, urn:k8s:secret:redis-creds:password, urn:k8s:secret:plugin-creds:token failed, the error is not reported as it may disclose them:90 plugin: creating middleware with the values of urn:k8s:secret:plugin-creds:clientSecret, urn:k8s:secret:redis-creds:password, urn:k8s:secret:plugin-creds:token, urn:k8s:secret:plugin-creds:apiKey failed, the error is not reported as it may disclose them:31 plugin: creating middleware with the values of urn:k8s:secret:plugin-creds:token, urn:k8s:secret:plugin-creds:apiKey, urn:k8s:secret:plugin-creds:clientSecret, urn:k8s:secret:redis-creds:password failed, the error is not reported as it may disclose them:45 plugin: creating middleware with the values of urn:k8s:secret:redis-creds:password, urn:k8s:secret:plugin-creds:token, urn:k8s:secret:plugin-creds:apiKey, urn:k8s:secret:plugin-creds:clientSecret failed, the error is not reported as it may disclose them:34]" should have 1 item(s), but has 4
+        	Test:       	TestVerifyC2_ConstructorErrorOrdering
+        	Messages:   	identical configuration must produce one diagnostic
+--- FAIL: TestVerifyC2_ConstructorErrorOrdering (0.00s)
+=== RUN   TestVerifyC2_BuildErrorOrdering
+    c2_plugin_error_reference_order_test.go:136: build error: 4 distinct diagnostics over 200 identical builds
+    c2_plugin_error_reference_order_test.go:136:    97x plugin: invalid configuration with the values of urn:k8s:secret:plugin-creds:apiKey, urn:k8s:secret:plugin-creds:clientSecret, urn:k8s:secret:redis-creds:password, urn:k8s:secret:plugin-creds:token
+    c2_plugin_error_reference_order_test.go:136:    42x plugin: invalid configuration with the values of urn:k8s:secret:plugin-creds:clientSecret, urn:k8s:secret:redis-creds:password, urn:k8s:secret:plugin-creds:token, urn:k8s:secret:plugin-creds:apiKey
+    c2_plugin_error_reference_order_test.go:136:    26x plugin: invalid configuration with the values of urn:k8s:secret:plugin-creds:token, urn:k8s:secret:plugin-creds:apiKey, urn:k8s:secret:plugin-creds:clientSecret, urn:k8s:secret:redis-creds:password
+    c2_plugin_error_reference_order_test.go:136:    35x plugin: invalid configuration with the values of urn:k8s:secret:redis-creds:password, urn:k8s:secret:plugin-creds:token, urn:k8s:secret:plugin-creds:apiKey, urn:k8s:secret:plugin-creds:clientSecret
+    c2_plugin_error_reference_order_test.go:137: 
+        	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/server/middleware/c2_plugin_error_reference_order_test.go:137
+        	Error:      	"map[plugin: invalid configuration with the values of urn:k8s:secret:plugin-creds:apiKey, urn:k8s:secret:plugin-creds:clientSecret, urn:k8s:secret:redis-creds:password, urn:k8s:secret:plugin-creds:token:97 plugin: invalid configuration with the values of urn:k8s:secret:plugin-creds:clientSecret, urn:k8s:secret:redis-creds:password, urn:k8s:secret:plugin-creds:token, urn:k8s:secret:plugin-creds:apiKey:42 plugin: invalid configuration with the values of urn:k8s:secret:plugin-creds:token, urn:k8s:secret:plugin-creds:apiKey, urn:k8s:secret:plugin-creds:clientSecret, urn:k8s:secret:redis-creds:password:26 plugin: invalid configuration with the values of urn:k8s:secret:redis-creds:password, urn:k8s:secret:plugin-creds:token, urn:k8s:secret:plugin-creds:apiKey, urn:k8s:secret:plugin-creds:clientSecret:35]" should have 1 item(s), but has 4
+        	Test:       	TestVerifyC2_BuildErrorOrdering
+        	Messages:   	identical configuration must produce one diagnostic
+--- FAIL: TestVerifyC2_BuildErrorOrdering (0.00s)
+=== RUN   TestVerifyC2_MiddlewareInfoErrAccumulates
+    c2_plugin_error_reference_order_test.go:162: MiddlewareInfo.Err holds 4 entries after 20 routers built the same middleware
+    c2_plugin_error_reference_order_test.go:164:   plugin: creating middleware with the values of urn:k8s:secret:plugin-creds:token, urn:k8s:secret:plugin-creds:apiKey, urn:k8s:secret:plugin-creds:clientSecret, urn:k8s:secret:redis-creds:password failed, the error is not reported as it may disclose them
+    c2_plugin_error_reference_order_test.go:164:   plugin: creating middleware with the values of urn:k8s:secret:plugin-creds:clientSecret, urn:k8s:secret:redis-creds:password, urn:k8s:secret:plugin-creds:token, urn:k8s:secret:plugin-creds:apiKey failed, the error is not reported as it may disclose them
+    c2_plugin_error_reference_order_test.go:164:   plugin: creating middleware with the values of urn:k8s:secret:plugin-creds:apiKey, urn:k8s:secret:plugin-creds:clientSecret, urn:k8s:secret:redis-creds:password, urn:k8s:secret:plugin-creds:token failed, the error is not reported as it may disclose them
+    c2_plugin_error_reference_order_test.go:164:   plugin: creating middleware with the values of urn:k8s:secret:redis-creds:password, urn:k8s:secret:plugin-creds:token, urn:k8s:secret:plugin-creds:apiKey, urn:k8s:secret:plugin-creds:clientSecret failed, the error is not reported as it may disclose them
+    c2_plugin_error_reference_order_test.go:166: 
+        	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/server/middleware/c2_plugin_error_reference_order_test.go:166
+        	Error:      	"[plugin: creating middleware with the values of urn:k8s:secret:plugin-creds:token, urn:k8s:secret:plugin-creds:apiKey, urn:k8s:secret:plugin-creds:clientSecret, urn:k8s:secret:redis-creds:password failed, the error is not reported as it may disclose them plugin: creating middleware with the values of urn:k8s:secret:plugin-creds:clientSecret, urn:k8s:secret:redis-creds:password, urn:k8s:secret:plugin-creds:token, urn:k8s:secret:plugin-creds:apiKey failed, the error is not reported as it may disclose them plugin: creating middleware with the values of urn:k8s:secret:plugin-creds:apiKey, urn:k8s:secret:plugin-creds:clientSecret, urn:k8s:secret:redis-creds:password, urn:k8s:secret:plugin-creds:token failed, the error is not reported as it may disclose them plugin: creating middleware with the values of urn:k8s:secret:redis-creds:password, urn:k8s:secret:plugin-creds:token, urn:k8s:secret:plugin-creds:apiKey, urn:k8s:secret:plugin-creds:clientSecret failed, the error is not reported as it may disclose them]" should have 1 item(s), but has 4
+        	Test:       	TestVerifyC2_MiddlewareInfoErrAccumulates
+        	Messages:   	one failing middleware must report one error
+--- FAIL: TestVerifyC2_MiddlewareInfoErrAccumulates (0.00s)
+=== RUN   TestVerifyC2_ControlSingleReference
+    c2_plugin_error_reference_order_test.go:190: single reference: 1 distinct diagnostics over 200 identical builds
+    c2_plugin_error_reference_order_test.go:190:   200x plugin: creating middleware with the values of urn:k8s:secret:plugin-creds:token failed, the error is not reported as it may disclose them
+--- PASS: TestVerifyC2_ControlSingleReference (0.00s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/server/middleware	0.038s
+FAIL
++ echo exit=1
+exit=1

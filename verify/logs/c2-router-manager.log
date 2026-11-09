@@ -1,0 +1,32 @@
++ go test -tags verify -count=1 -v -run '^TestVerifyC2_RouterManager' ./pkg/server/router
+=== RUN   TestVerifyC2_RouterManagerAPIErrors
+    c2_router_manager_api_errors_test.go:98: middleware plugin@kubernetescrd as the API reports it:
+        {
+          "status": "disabled",
+          "error": [
+            "plugin: creating middleware with the values of urn:k8s:secret:plugin-creds:apiKey, urn:k8s:secret:plugin-creds:clientSecret, urn:k8s:secret:redis-creds:password, urn:k8s:secret:plugin-creds:token failed, the error is not reported as it may disclose them",
+            "plugin: creating middleware with the values of urn:k8s:secret:plugin-creds:clientSecret, urn:k8s:secret:redis-creds:password, urn:k8s:secret:plugin-creds:token, urn:k8s:secret:plugin-creds:apiKey failed, the error is not reported as it may disclose them",
+            "plugin: creating middleware with the values of urn:k8s:secret:plugin-creds:token, urn:k8s:secret:plugin-creds:apiKey, urn:k8s:secret:plugin-creds:clientSecret, urn:k8s:secret:redis-creds:password failed, the error is not reported as it may disclose them",
+            "plugin: creating middleware with the values of urn:k8s:secret:redis-creds:password, urn:k8s:secret:plugin-creds:token, urn:k8s:secret:plugin-creds:apiKey, urn:k8s:secret:plugin-creds:clientSecret failed, the error is not reported as it may disclose them"
+          ]
+        }
+    c2_router_manager_api_errors_test.go:108: router app0@kubernetescrd status=disabled error=["plugin: creating middleware with the values of urn:k8s:secret:plugin-creds:apiKey, urn:k8s:secret:plugin-creds:clientSecret, urn:k8s:secret:redis-creds:password, urn:k8s:secret:plugin-creds:token failed, the error is not reported as it may disclose them"]
+    c2_router_manager_api_errors_test.go:108: router app1@kubernetescrd status=disabled error=["plugin: creating middleware with the values of urn:k8s:secret:redis-creds:password, urn:k8s:secret:plugin-creds:token, urn:k8s:secret:plugin-creds:apiKey, urn:k8s:secret:plugin-creds:clientSecret failed, the error is not reported as it may disclose them"]
+    c2_router_manager_api_errors_test.go:108: router app2@kubernetescrd status=disabled error=["plugin: creating middleware with the values of urn:k8s:secret:plugin-creds:apiKey, urn:k8s:secret:plugin-creds:clientSecret, urn:k8s:secret:redis-creds:password, urn:k8s:secret:plugin-creds:token failed, the error is not reported as it may disclose them"]
+    c2_router_manager_api_errors_test.go:108: router app3@kubernetescrd status=disabled error=["plugin: creating middleware with the values of urn:k8s:secret:plugin-creds:apiKey, urn:k8s:secret:plugin-creds:clientSecret, urn:k8s:secret:redis-creds:password, urn:k8s:secret:plugin-creds:token failed, the error is not reported as it may disclose them"]
+    c2_router_manager_api_errors_test.go:108: router app4@kubernetescrd status=disabled error=["plugin: creating middleware with the values of urn:k8s:secret:plugin-creds:clientSecret, urn:k8s:secret:redis-creds:password, urn:k8s:secret:plugin-creds:token, urn:k8s:secret:plugin-creds:apiKey failed, the error is not reported as it may disclose them"]
+    c2_router_manager_api_errors_test.go:108: router app5@kubernetescrd status=disabled error=["plugin: creating middleware with the values of urn:k8s:secret:plugin-creds:clientSecret, urn:k8s:secret:redis-creds:password, urn:k8s:secret:plugin-creds:token, urn:k8s:secret:plugin-creds:apiKey failed, the error is not reported as it may disclose them"]
+    c2_router_manager_api_errors_test.go:108: router app6@kubernetescrd status=disabled error=["plugin: creating middleware with the values of urn:k8s:secret:plugin-creds:clientSecret, urn:k8s:secret:redis-creds:password, urn:k8s:secret:plugin-creds:token, urn:k8s:secret:plugin-creds:apiKey failed, the error is not reported as it may disclose them"]
+    c2_router_manager_api_errors_test.go:108: router app7@kubernetescrd status=disabled error=["plugin: creating middleware with the values of urn:k8s:secret:plugin-creds:token, urn:k8s:secret:plugin-creds:apiKey, urn:k8s:secret:plugin-creds:clientSecret, urn:k8s:secret:redis-creds:password failed, the error is not reported as it may disclose them"]
+    c2_router_manager_api_errors_test.go:112: distinct router error strings for the one failure: 4
+    c2_router_manager_api_errors_test.go:114: 
+        	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/server/router/c2_router_manager_api_errors_test.go:114
+        	Error:      	"[plugin: creating middleware with the values of urn:k8s:secret:plugin-creds:apiKey, urn:k8s:secret:plugin-creds:clientSecret, urn:k8s:secret:redis-creds:password, urn:k8s:secret:plugin-creds:token failed, the error is not reported as it may disclose them plugin: creating middleware with the values of urn:k8s:secret:plugin-creds:clientSecret, urn:k8s:secret:redis-creds:password, urn:k8s:secret:plugin-creds:token, urn:k8s:secret:plugin-creds:apiKey failed, the error is not reported as it may disclose them plugin: creating middleware with the values of urn:k8s:secret:plugin-creds:token, urn:k8s:secret:plugin-creds:apiKey, urn:k8s:secret:plugin-creds:clientSecret, urn:k8s:secret:redis-creds:password failed, the error is not reported as it may disclose them plugin: creating middleware with the values of urn:k8s:secret:redis-creds:password, urn:k8s:secret:plugin-creds:token, urn:k8s:secret:plugin-creds:apiKey, urn:k8s:secret:plugin-creds:clientSecret failed, the error is not reported as it may disclose them]" should have 1 item(s), but has 4
+        	Test:       	TestVerifyC2_RouterManagerAPIErrors
+        	Messages:   	one failing middleware must report one error
+--- FAIL: TestVerifyC2_RouterManagerAPIErrors (0.00s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/server/router	0.033s
+FAIL
++ echo exit=1
+exit=1

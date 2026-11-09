@@ -1,0 +1,28 @@
+$ git apply verify/patches/c2-sorted-references.diff   # control mutation: sort inside references()
+ pkg/server/middleware/secrets.go | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+$ go test -tags verify -count=1 -v -run "^TestVerifyC2_" ./pkg/server/middleware
+    c2_plugin_error_reference_order_test.go:70: references() = "urn:k8s:secret:a:a, urn:k8s:secret:m:m, urn:k8s:secret:z:z"
+--- FAIL: TestVerifyC2_ReferencesKeepCollectionOrder (0.00s)
+    c2_plugin_error_reference_order_test.go:84: resolvePluginConfig used: 4 distinct diagnostics over 200 identical builds
+--- FAIL: TestVerifyC2_ResolvePluginConfigCollectionOrder (0.00s)
+    c2_plugin_error_reference_order_test.go:117: constructor error: 1 distinct diagnostics over 200 identical builds
+--- PASS: TestVerifyC2_ConstructorErrorOrdering (0.00s)
+    c2_plugin_error_reference_order_test.go:136: build error: 1 distinct diagnostics over 200 identical builds
+--- PASS: TestVerifyC2_BuildErrorOrdering (0.00s)
+    c2_plugin_error_reference_order_test.go:162: MiddlewareInfo.Err holds 1 entries after 20 routers built the same middleware
+--- PASS: TestVerifyC2_MiddlewareInfoErrAccumulates (0.00s)
+    c2_plugin_error_reference_order_test.go:190: single reference: 1 distinct diagnostics over 200 identical builds
+--- PASS: TestVerifyC2_ControlSingleReference (0.00s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/server/middleware	0.031s
+FAIL
+exit=1
+$ go test -tags verify -count=1 -v -run "^TestVerifyC2_RouterManager" ./pkg/server/router
+          "error": [
+            "plugin: creating middleware with the values of urn:k8s:secret:plugin-creds:apiKey, urn:k8s:secret:plugin-creds:clientSecret, urn:k8s:secret:plugin-creds:token, urn:k8s:secret:redis-creds:password failed, the error is not reported as it may disclose them"
+    c2_router_manager_api_errors_test.go:112: distinct router error strings for the one failure: 1
+--- PASS: TestVerifyC2_RouterManagerAPIErrors (0.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/server/router	0.035s
+exit=0

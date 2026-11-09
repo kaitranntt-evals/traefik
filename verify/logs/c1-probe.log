@@ -1,0 +1,37 @@
++ go test -tags verify -count=1 -v -run '^TestVerifyC1_' ./pkg/server/middleware
+=== RUN   TestVerifyC1_AssertedDiagnosticsAreSecretIndependent
+=== RUN   TestVerifyC1_AssertedDiagnosticsAreSecretIndependent/decoding_error_quoting_the_value
+    c1_plugin_error_secret_independence_test.go:69: asserted diagnostic        : "plugin: cannot decode token \"urn:k8s:secret:plugin:token\""
+    c1_plugin_error_secret_independence_test.go:70: configured Secret value    : "s3cr3t"
+    c1_plugin_error_secret_independence_test.go:71: asserted text minus the ref: "plugin: cannot decode token \"\"" (contains the configured value: false)
+    c1_plugin_error_secret_independence_test.go:96: Secret="s3cr3t"                             plugin saw ["s3cr3t" "urn:k8s:secret:plugin:token"] -> Then() err "plugin: cannot decode token \"urn:k8s:secret:plugin:token\"" ; MiddlewareInfo.Err ["plugin: cannot decode token \"urn:k8s:secret:plugin:token\""]
+    c1_plugin_error_secret_independence_test.go:96: Secret="Zq7#kP2x-9fLm"                      plugin saw ["Zq7#kP2x-9fLm" "urn:k8s:secret:plugin:token"] -> Then() err "plugin: cannot decode token \"urn:k8s:secret:plugin:token\"" ; MiddlewareInfo.Err ["plugin: cannot decode token \"urn:k8s:secret:plugin:token\""]
+    c1_plugin_error_secret_independence_test.go:96: Secret="hunter2"                            plugin saw ["hunter2" "urn:k8s:secret:plugin:token"] -> Then() err "plugin: cannot decode token \"urn:k8s:secret:plugin:token\"" ; MiddlewareInfo.Err ["plugin: cannot decode token \"urn:k8s:secret:plugin:token\""]
+    c1_plugin_error_secret_independence_test.go:96: Secret="correct horse battery staple"       plugin saw ["correct horse battery staple" "urn:k8s:secret:plugin:token"] -> Then() err "plugin: cannot decode token \"urn:k8s:secret:plugin:token\"" ; MiddlewareInfo.Err ["plugin: cannot decode token \"urn:k8s:secret:plugin:token\""]
+    c1_plugin_error_secret_independence_test.go:96: Secret="0123456789abcdef0123456789abcdef"   plugin saw ["0123456789abcdef0123456789abcdef" "urn:k8s:secret:plugin:token"] -> Then() err "plugin: cannot decode token \"urn:k8s:secret:plugin:token\"" ; MiddlewareInfo.Err ["plugin: cannot decode token \"urn:k8s:secret:plugin:token\""]
+=== RUN   TestVerifyC1_AssertedDiagnosticsAreSecretIndependent/value_equal_to_a_word_of_the_error
+    c1_plugin_error_secret_independence_test.go:69: asserted diagnostic        : "plugin: invalid token"
+    c1_plugin_error_secret_independence_test.go:70: configured Secret value    : "invalid"
+    c1_plugin_error_secret_independence_test.go:71: asserted text minus the ref: "plugin: invalid token" (contains the configured value: true)
+    c1_plugin_error_secret_independence_test.go:96: Secret="invalid"                            plugin saw ["invalid" "urn:k8s:secret:plugin:token"] -> Then() err "plugin: invalid token" ; MiddlewareInfo.Err ["plugin: invalid token"]
+    c1_plugin_error_secret_independence_test.go:96: Secret="Zq7#kP2x-9fLm"                      plugin saw ["Zq7#kP2x-9fLm" "urn:k8s:secret:plugin:token"] -> Then() err "plugin: invalid token" ; MiddlewareInfo.Err ["plugin: invalid token"]
+    c1_plugin_error_secret_independence_test.go:96: Secret="hunter2"                            plugin saw ["hunter2" "urn:k8s:secret:plugin:token"] -> Then() err "plugin: invalid token" ; MiddlewareInfo.Err ["plugin: invalid token"]
+    c1_plugin_error_secret_independence_test.go:96: Secret="correct horse battery staple"       plugin saw ["correct horse battery staple" "urn:k8s:secret:plugin:token"] -> Then() err "plugin: invalid token" ; MiddlewareInfo.Err ["plugin: invalid token"]
+    c1_plugin_error_secret_independence_test.go:96: Secret="0123456789abcdef0123456789abcdef"   plugin saw ["0123456789abcdef0123456789abcdef" "urn:k8s:secret:plugin:token"] -> Then() err "plugin: invalid token" ; MiddlewareInfo.Err ["plugin: invalid token"]
+=== RUN   TestVerifyC1_AssertedDiagnosticsAreSecretIndependent/error_only_with_the_value
+    c1_plugin_error_secret_independence_test.go:69: asserted diagnostic        : "plugin: invalid configuration referencing urn:k8s:secret:plugin:token: error details are hidden as they may contain Secret values"
+    c1_plugin_error_secret_independence_test.go:70: configured Secret value    : "s3cr3t"
+    c1_plugin_error_secret_independence_test.go:71: asserted text minus the ref: "plugin: invalid configuration referencing : error details are hidden as they may contain Secret values" (contains the configured value: false)
+    c1_plugin_error_secret_independence_test.go:96: Secret="s3cr3t"                             plugin saw ["s3cr3t" "urn:k8s:secret:plugin:token"] -> Then() err "plugin: invalid configuration referencing urn:k8s:secret:plugin:token: error details are hidden as they may contain Secret values" ; MiddlewareInfo.Err ["plugin: invalid configuration referencing urn:k8s:secret:plugin:token: error details are hidden as they may contain Secret values"]
+    c1_plugin_error_secret_independence_test.go:96: Secret="Zq7#kP2x-9fLm"                      plugin saw ["Zq7#kP2x-9fLm" "urn:k8s:secret:plugin:token"] -> Then() err "plugin: invalid configuration referencing urn:k8s:secret:plugin:token: error details are hidden as they may contain Secret values" ; MiddlewareInfo.Err ["plugin: invalid configuration referencing urn:k8s:secret:plugin:token: error details are hidden as they may contain Secret values"]
+    c1_plugin_error_secret_independence_test.go:96: Secret="hunter2"                            plugin saw ["hunter2" "urn:k8s:secret:plugin:token"] -> Then() err "plugin: invalid configuration referencing urn:k8s:secret:plugin:token: error details are hidden as they may contain Secret values" ; MiddlewareInfo.Err ["plugin: invalid configuration referencing urn:k8s:secret:plugin:token: error details are hidden as they may contain Secret values"]
+    c1_plugin_error_secret_independence_test.go:96: Secret="correct horse battery staple"       plugin saw ["correct horse battery staple" "urn:k8s:secret:plugin:token"] -> Then() err "plugin: invalid configuration referencing urn:k8s:secret:plugin:token: error details are hidden as they may contain Secret values" ; MiddlewareInfo.Err ["plugin: invalid configuration referencing urn:k8s:secret:plugin:token: error details are hidden as they may contain Secret values"]
+    c1_plugin_error_secret_independence_test.go:96: Secret="0123456789abcdef0123456789abcdef"   plugin saw ["0123456789abcdef0123456789abcdef" "urn:k8s:secret:plugin:token"] -> Then() err "plugin: invalid configuration referencing urn:k8s:secret:plugin:token: error details are hidden as they may contain Secret values" ; MiddlewareInfo.Err ["plugin: invalid configuration referencing urn:k8s:secret:plugin:token: error details are hidden as they may contain Secret values"]
+--- PASS: TestVerifyC1_AssertedDiagnosticsAreSecretIndependent (0.00s)
+    --- PASS: TestVerifyC1_AssertedDiagnosticsAreSecretIndependent/decoding_error_quoting_the_value (0.00s)
+    --- PASS: TestVerifyC1_AssertedDiagnosticsAreSecretIndependent/value_equal_to_a_word_of_the_error (0.00s)
+    --- PASS: TestVerifyC1_AssertedDiagnosticsAreSecretIndependent/error_only_with_the_value (0.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/server/middleware	0.028s
++ echo exit=0
+exit=0

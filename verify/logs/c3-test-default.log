@@ -1,0 +1,10 @@
++ go version
+go version go1.26.3 linux/amd64
++ git rev-parse HEAD
+84614aa0ce1af141b9fbdeae2980b79e1f53ba73
++ go test -count=1 -timeout=5m -skip '^(TestForwardAuthClientClosedRequest|TestListenProvidersIgnoreSameConfig)$' ./pkg/middlewares ./pkg/middlewares/ratelimiter/...
+?   	github.com/traefik/traefik/v3/pkg/middlewares	[no test files]
+ok  	github.com/traefik/traefik/v3/pkg/middlewares/ratelimiter	120.044s
+ok  	github.com/traefik/traefik/v3/pkg/middlewares/ratelimiter/ttlmap	0.004s
++ echo exit=0
+exit=0

@@ -1,0 +1,423 @@
+$ go test -count=1 ./pkg/server/middleware   # branch own tests, no verify tag
+ok  	github.com/traefik/traefik/v3/pkg/server/middleware	0.064s
+exit=0
+$ go test -race -count=5 -timeout=5m -run "^TestEval_ProviderToBuilder_Plugin(BuildErrorRedaction|CachedErrorRedaction)$" ./pkg/provider/kubernetes/crd   # eval fixtures, byte-exact
+--- FAIL: TestEval_ProviderToBuilder_PluginCachedErrorRedaction (0.00s)
+    --- FAIL: TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true (0.56s)
+        eval_provider_to_builder_runtime_test.go:689: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:689
+            	Error:      	"plugin: plugin build failed: internal error" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+            	Messages:   	cached plugin errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:691: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:691
+            	Error:      	"plugin: plugin build failed: internal error" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+            	Messages:   	stored cached errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+            	Messages:   	cached errors and their causes must not disclose credentials
+        eval_provider_to_builder_runtime_test.go:689: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:689
+            	Error:      	"plugin: plugin build failed: internal error" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+            	Messages:   	cached plugin errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:691: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:691
+            	Error:      	"plugin: plugin build failed: internal error" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+            	Messages:   	stored cached errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+            	Messages:   	cached errors and their causes must not disclose credentials
+    --- FAIL: TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false (0.56s)
+        eval_provider_to_builder_runtime_test.go:689: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:689
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached plugin errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:691: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:691
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	stored cached errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached errors and their causes must not disclose credentials
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached errors and their causes must not disclose credentials
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached errors and their causes must not disclose credentials
+        eval_provider_to_builder_runtime_test.go:689: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:689
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached plugin errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:691: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:691
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	stored cached errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached errors and their causes must not disclose credentials
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached errors and their causes must not disclose credentials
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached errors and their causes must not disclose credentials
+--- FAIL: TestEval_ProviderToBuilder_PluginCachedErrorRedaction (0.00s)
+    --- FAIL: TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true (0.02s)
+        eval_provider_to_builder_runtime_test.go:689: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:689
+            	Error:      	"plugin: plugin build failed: internal error" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+            	Messages:   	cached plugin errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:691: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:691
+            	Error:      	"plugin: plugin build failed: internal error" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+            	Messages:   	stored cached errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+            	Messages:   	cached errors and their causes must not disclose credentials
+        eval_provider_to_builder_runtime_test.go:689: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:689
+            	Error:      	"plugin: plugin build failed: internal error" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+            	Messages:   	cached plugin errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:691: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:691
+            	Error:      	"plugin: plugin build failed: internal error" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+            	Messages:   	stored cached errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+            	Messages:   	cached errors and their causes must not disclose credentials
+    --- FAIL: TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false (0.05s)
+        eval_provider_to_builder_runtime_test.go:689: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:689
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached plugin errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:691: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:691
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	stored cached errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached errors and their causes must not disclose credentials
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached errors and their causes must not disclose credentials
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached errors and their causes must not disclose credentials
+        eval_provider_to_builder_runtime_test.go:689: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:689
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached plugin errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:691: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:691
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	stored cached errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached errors and their causes must not disclose credentials
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached errors and their causes must not disclose credentials
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached errors and their causes must not disclose credentials
+--- FAIL: TestEval_ProviderToBuilder_PluginCachedErrorRedaction (0.00s)
+    --- FAIL: TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true (0.04s)
+        eval_provider_to_builder_runtime_test.go:689: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:689
+            	Error:      	"plugin: plugin build failed: internal error" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+            	Messages:   	cached plugin errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:691: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:691
+            	Error:      	"plugin: plugin build failed: internal error" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+            	Messages:   	stored cached errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+            	Messages:   	cached errors and their causes must not disclose credentials
+        eval_provider_to_builder_runtime_test.go:689: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:689
+            	Error:      	"plugin: plugin build failed: internal error" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+            	Messages:   	cached plugin errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:691: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:691
+            	Error:      	"plugin: plugin build failed: internal error" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+            	Messages:   	stored cached errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+            	Messages:   	cached errors and their causes must not disclose credentials
+    --- FAIL: TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false (0.04s)
+        eval_provider_to_builder_runtime_test.go:689: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:689
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached plugin errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:691: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:691
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	stored cached errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached errors and their causes must not disclose credentials
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached errors and their causes must not disclose credentials
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached errors and their causes must not disclose credentials
+        eval_provider_to_builder_runtime_test.go:689: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:689
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached plugin errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:691: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:691
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	stored cached errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached errors and their causes must not disclose credentials
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached errors and their causes must not disclose credentials
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached errors and their causes must not disclose credentials
+--- FAIL: TestEval_ProviderToBuilder_PluginCachedErrorRedaction (0.00s)
+    --- FAIL: TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true (0.04s)
+        eval_provider_to_builder_runtime_test.go:689: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:689
+            	Error:      	"plugin: plugin build failed: internal error" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+            	Messages:   	cached plugin errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:691: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:691
+            	Error:      	"plugin: plugin build failed: internal error" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+            	Messages:   	stored cached errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+            	Messages:   	cached errors and their causes must not disclose credentials
+        eval_provider_to_builder_runtime_test.go:689: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:689
+            	Error:      	"plugin: plugin build failed: internal error" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+            	Messages:   	cached plugin errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:691: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:691
+            	Error:      	"plugin: plugin build failed: internal error" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+            	Messages:   	stored cached errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+            	Messages:   	cached errors and their causes must not disclose credentials
+    --- FAIL: TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false (0.05s)
+        eval_provider_to_builder_runtime_test.go:689: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:689
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached plugin errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:691: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:691
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	stored cached errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached errors and their causes must not disclose credentials
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached errors and their causes must not disclose credentials
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached errors and their causes must not disclose credentials
+        eval_provider_to_builder_runtime_test.go:689: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:689
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached plugin errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:691: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:691
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	stored cached errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached errors and their causes must not disclose credentials
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached errors and their causes must not disclose credentials
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached errors and their causes must not disclose credentials
+--- FAIL: TestEval_ProviderToBuilder_PluginCachedErrorRedaction (0.00s)
+    --- FAIL: TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false (0.02s)
+        eval_provider_to_builder_runtime_test.go:689: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:689
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached plugin errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:691: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:691
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	stored cached errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached errors and their causes must not disclose credentials
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached errors and their causes must not disclose credentials
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached errors and their causes must not disclose credentials
+        eval_provider_to_builder_runtime_test.go:689: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:689
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached plugin errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:691: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:691
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	stored cached errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached errors and their causes must not disclose credentials
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached errors and their causes must not disclose credentials
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin: plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+            	Messages:   	cached errors and their causes must not disclose credentials
+    --- FAIL: TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true (0.05s)
+        eval_provider_to_builder_runtime_test.go:689: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:689
+            	Error:      	"plugin: plugin build failed: internal error" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+            	Messages:   	cached plugin errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:691: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:691
+            	Error:      	"plugin: plugin build failed: internal error" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+            	Messages:   	stored cached errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+            	Messages:   	cached errors and their causes must not disclose credentials
+        eval_provider_to_builder_runtime_test.go:689: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:689
+            	Error:      	"plugin: plugin build failed: internal error" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+            	Messages:   	cached plugin errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:691: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:691
+            	Error:      	"plugin: plugin build failed: internal error" does not contain "urn:k8s:secret:name:key"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+            	Messages:   	stored cached errors must retain the credential reference
+        eval_provider_to_builder_runtime_test.go:694: 
+            	Error Trace:	/home/ubuntu/repos/wt-c2/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+            	Error:      	"plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+            	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+            	Messages:   	cached errors and their causes must not disclose credentials
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd	8.452s
+FAIL
+exit=1
