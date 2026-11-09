@@ -462,7 +462,14 @@ Both package scopes build; `./pkg/middlewares` has no test files; every selected
 
 ## C4
 
-Target: the audited branch `traefik-secret-references-in-middlewares-perfect` at `84614aa0ce1af141b9fbdeae2980b79e1f53ba73`, in `~/repos/traefik`. `lint.md` does not exist in the repository; the repository documents no extra `go vet` options (the task's lint guideline is plain `go vet <packages>`).
+Target: the audited branch `traefik-secret-references-in-middlewares-perfect` at `84614aa0ce1af141b9fbdeae2980b79e1f53ba73`, in `~/repos/traefik`. `lint.md` does not exist in the repository, and no `go vet` invocation appears in its Markdown, YAML or Makefile files, so there are no repository-specific vet options to apply (the task's lint guideline is plain `go vet <packages>`):
+
+```console
+$ ls lint.md
+ls: cannot access 'lint.md': No such file or directory
+$ grep -rn "go vet" --include='*.md' --include='*.yaml' --include='*.yml' --include=Makefile --exclude-dir=verify --exclude-dir=node_modules . ; echo "exit=$?"
+exit=1
+```
 
 ```console
 $ git rev-parse HEAD
