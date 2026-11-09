@@ -1,27 +1,30 @@
+refs=2 builds=2000 distinct_diagnostics=2 of_which_rotations_of_sorted_order=2 MiddlewareInfo.Err_entries_after_2000_shared_builds=2
 refs=3 builds=2000 distinct_diagnostics=3 of_which_rotations_of_sorted_order=3 MiddlewareInfo.Err_entries_after_2000_shared_builds=3
 refs=4 builds=2000 distinct_diagnostics=4 of_which_rotations_of_sorted_order=4 MiddlewareInfo.Err_entries_after_2000_shared_builds=4
 refs=8 builds=2000 distinct_diagnostics=8 of_which_rotations_of_sorted_order=8 MiddlewareInfo.Err_entries_after_2000_shared_builds=8
-refs=9 builds=2000 distinct_diagnostics=1952 of_which_rotations_of_sorted_order=2 MiddlewareInfo.Err_entries_after_2000_shared_builds=1276
-refs=12 builds=2000 distinct_diagnostics=1999 of_which_rotations_of_sorted_order=0 MiddlewareInfo.Err_entries_after_2000_shared_builds=1910
+refs=9 builds=2000 distinct_diagnostics=1944 of_which_rotations_of_sorted_order=4 MiddlewareInfo.Err_entries_after_2000_shared_builds=1261
+refs=12 builds=2000 distinct_diagnostics=1999 of_which_rotations_of_sorted_order=0 MiddlewareInfo.Err_entries_after_2000_shared_builds=1897
 refs=4 builds=2000 distinct_diagnostics=6 of_which_rotations_of_sorted_order=3 MiddlewareInfo.Err_entries_after_2000_shared_builds=6
---- PASS: TestVerifyC2Scale_DistinctOrderingsBySize (0.14s)
-ok  	github.com/traefik/traefik/v3/pkg/server/middleware	0.170s
+--- PASS: TestVerifyC2Scale_DistinctOrderingsBySize (0.16s)
+ok  	github.com/traefik/traefik/v3/pkg/server/middleware	0.195s
 --- run 1 exit=0
+refs=2 builds=2000 distinct_diagnostics=2 of_which_rotations_of_sorted_order=2 MiddlewareInfo.Err_entries_after_2000_shared_builds=2
 refs=3 builds=2000 distinct_diagnostics=3 of_which_rotations_of_sorted_order=3 MiddlewareInfo.Err_entries_after_2000_shared_builds=3
 refs=4 builds=2000 distinct_diagnostics=4 of_which_rotations_of_sorted_order=4 MiddlewareInfo.Err_entries_after_2000_shared_builds=4
 refs=8 builds=2000 distinct_diagnostics=8 of_which_rotations_of_sorted_order=8 MiddlewareInfo.Err_entries_after_2000_shared_builds=8
-refs=9 builds=2000 distinct_diagnostics=1945 of_which_rotations_of_sorted_order=4 MiddlewareInfo.Err_entries_after_2000_shared_builds=1254
-refs=12 builds=2000 distinct_diagnostics=2000 of_which_rotations_of_sorted_order=1 MiddlewareInfo.Err_entries_after_2000_shared_builds=1909
-refs=4 builds=2000 distinct_diagnostics=6 of_which_rotations_of_sorted_order=3 MiddlewareInfo.Err_entries_after_2000_shared_builds=6
---- PASS: TestVerifyC2Scale_DistinctOrderingsBySize (0.12s)
-ok  	github.com/traefik/traefik/v3/pkg/server/middleware	0.147s
---- run 2 exit=0
-refs=3 builds=2000 distinct_diagnostics=3 of_which_rotations_of_sorted_order=3 MiddlewareInfo.Err_entries_after_2000_shared_builds=3
-refs=4 builds=2000 distinct_diagnostics=4 of_which_rotations_of_sorted_order=4 MiddlewareInfo.Err_entries_after_2000_shared_builds=4
-refs=8 builds=2000 distinct_diagnostics=8 of_which_rotations_of_sorted_order=8 MiddlewareInfo.Err_entries_after_2000_shared_builds=8
-refs=9 builds=2000 distinct_diagnostics=1962 of_which_rotations_of_sorted_order=5 MiddlewareInfo.Err_entries_after_2000_shared_builds=1238
-refs=12 builds=2000 distinct_diagnostics=2000 of_which_rotations_of_sorted_order=1 MiddlewareInfo.Err_entries_after_2000_shared_builds=1913
+refs=9 builds=2000 distinct_diagnostics=1952 of_which_rotations_of_sorted_order=5 MiddlewareInfo.Err_entries_after_2000_shared_builds=1225
+refs=12 builds=2000 distinct_diagnostics=2000 of_which_rotations_of_sorted_order=0 MiddlewareInfo.Err_entries_after_2000_shared_builds=1901
 refs=4 builds=2000 distinct_diagnostics=6 of_which_rotations_of_sorted_order=3 MiddlewareInfo.Err_entries_after_2000_shared_builds=6
 --- PASS: TestVerifyC2Scale_DistinctOrderingsBySize (0.15s)
-ok  	github.com/traefik/traefik/v3/pkg/server/middleware	0.174s
+ok  	github.com/traefik/traefik/v3/pkg/server/middleware	0.185s
+--- run 2 exit=0
+refs=2 builds=2000 distinct_diagnostics=2 of_which_rotations_of_sorted_order=2 MiddlewareInfo.Err_entries_after_2000_shared_builds=2
+refs=3 builds=2000 distinct_diagnostics=3 of_which_rotations_of_sorted_order=3 MiddlewareInfo.Err_entries_after_2000_shared_builds=3
+refs=4 builds=2000 distinct_diagnostics=4 of_which_rotations_of_sorted_order=4 MiddlewareInfo.Err_entries_after_2000_shared_builds=4
+refs=8 builds=2000 distinct_diagnostics=8 of_which_rotations_of_sorted_order=8 MiddlewareInfo.Err_entries_after_2000_shared_builds=8
+refs=9 builds=2000 distinct_diagnostics=1938 of_which_rotations_of_sorted_order=3 MiddlewareInfo.Err_entries_after_2000_shared_builds=1276
+refs=12 builds=2000 distinct_diagnostics=1999 of_which_rotations_of_sorted_order=0 MiddlewareInfo.Err_entries_after_2000_shared_builds=1897
+refs=4 builds=2000 distinct_diagnostics=6 of_which_rotations_of_sorted_order=3 MiddlewareInfo.Err_entries_after_2000_shared_builds=6
+--- PASS: TestVerifyC2Scale_DistinctOrderingsBySize (0.15s)
+ok  	github.com/traefik/traefik/v3/pkg/server/middleware	0.211s
 --- run 3 exit=0

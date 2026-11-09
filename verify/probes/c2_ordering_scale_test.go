@@ -76,6 +76,7 @@ func TestVerifyC2Scale_DistinctOrderingsBySize(t *testing.T) {
 		refs   int
 		config func() *dynamic.Middleware
 	}{
+		{desc: "flat 2 references", refs: 2, config: func() *dynamic.Middleware { return verifyC2ScaleFlat(2) }},
 		{desc: "flat 3 references", refs: 3, config: func() *dynamic.Middleware { return verifyC2ScaleFlat(3) }},
 		{desc: "flat 4 references", refs: 4, config: func() *dynamic.Middleware { return verifyC2ScaleFlat(4) }},
 		{desc: "flat 8 references", refs: 8, config: func() *dynamic.Middleware { return verifyC2ScaleFlat(8) }},

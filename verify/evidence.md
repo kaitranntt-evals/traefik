@@ -299,27 +299,44 @@ exit=1
 
 ### Scale probe (`verify/probes/c2_ordering_scale_test.go`)
 
-This probe was written after the repro above showed exactly 4 orderings for 4 references, to see how the count moves with the number of references; it was not predicted in advance. 2000 identical builds per row, three runs:
+This probe was written after the repro above showed exactly 4 orderings for 4 references, to see how the count moves with the number of references; the 3 to 12 reference rows were not predicted in advance (the 2-reference row was added later with the stated expectation of 2 orderings). 2000 identical builds per row, three consecutive runs, complete output:
 
 ```console
 $ cp verify/probes/c2_ordering_scale_test.go ../wt-c2/pkg/server/middleware/
-$ cd ../wt-c2 && go test -tags verify -count=1 -v -run '^TestVerifyC2Scale_' ./pkg/server/middleware
+$ cd ../wt-c2 && for i in 1 2 3; do go test -tags verify -count=1 -v -run '^TestVerifyC2Scale_' ./pkg/server/middleware 2>&1 | grep -E "refs=|^(ok|FAIL|---)" | sed -E 's/^ +c2_ordering_scale_test.go:[0-9]+: //'; echo "--- run $i exit=${PIPESTATUS[0]}"; done
+refs=2 builds=2000 distinct_diagnostics=2 of_which_rotations_of_sorted_order=2 MiddlewareInfo.Err_entries_after_2000_shared_builds=2
 refs=3 builds=2000 distinct_diagnostics=3 of_which_rotations_of_sorted_order=3 MiddlewareInfo.Err_entries_after_2000_shared_builds=3
 refs=4 builds=2000 distinct_diagnostics=4 of_which_rotations_of_sorted_order=4 MiddlewareInfo.Err_entries_after_2000_shared_builds=4
 refs=8 builds=2000 distinct_diagnostics=8 of_which_rotations_of_sorted_order=8 MiddlewareInfo.Err_entries_after_2000_shared_builds=8
-refs=9 builds=2000 distinct_diagnostics=1952 of_which_rotations_of_sorted_order=2 MiddlewareInfo.Err_entries_after_2000_shared_builds=1276
-refs=12 builds=2000 distinct_diagnostics=1999 of_which_rotations_of_sorted_order=0 MiddlewareInfo.Err_entries_after_2000_shared_builds=1910
+refs=9 builds=2000 distinct_diagnostics=1944 of_which_rotations_of_sorted_order=4 MiddlewareInfo.Err_entries_after_2000_shared_builds=1261
+refs=12 builds=2000 distinct_diagnostics=1999 of_which_rotations_of_sorted_order=0 MiddlewareInfo.Err_entries_after_2000_shared_builds=1897
 refs=4 builds=2000 distinct_diagnostics=6 of_which_rotations_of_sorted_order=3 MiddlewareInfo.Err_entries_after_2000_shared_builds=6
+--- PASS: TestVerifyC2Scale_DistinctOrderingsBySize (0.16s)
+ok  	github.com/traefik/traefik/v3/pkg/server/middleware	0.195s
 --- run 1 exit=0
-refs=9 builds=2000 distinct_diagnostics=1945 ... MiddlewareInfo.Err_entries_after_2000_shared_builds=1254
-refs=12 builds=2000 distinct_diagnostics=2000 ... MiddlewareInfo.Err_entries_after_2000_shared_builds=1909
+refs=2 builds=2000 distinct_diagnostics=2 of_which_rotations_of_sorted_order=2 MiddlewareInfo.Err_entries_after_2000_shared_builds=2
+refs=3 builds=2000 distinct_diagnostics=3 of_which_rotations_of_sorted_order=3 MiddlewareInfo.Err_entries_after_2000_shared_builds=3
+refs=4 builds=2000 distinct_diagnostics=4 of_which_rotations_of_sorted_order=4 MiddlewareInfo.Err_entries_after_2000_shared_builds=4
+refs=8 builds=2000 distinct_diagnostics=8 of_which_rotations_of_sorted_order=8 MiddlewareInfo.Err_entries_after_2000_shared_builds=8
+refs=9 builds=2000 distinct_diagnostics=1952 of_which_rotations_of_sorted_order=5 MiddlewareInfo.Err_entries_after_2000_shared_builds=1225
+refs=12 builds=2000 distinct_diagnostics=2000 of_which_rotations_of_sorted_order=0 MiddlewareInfo.Err_entries_after_2000_shared_builds=1901
+refs=4 builds=2000 distinct_diagnostics=6 of_which_rotations_of_sorted_order=3 MiddlewareInfo.Err_entries_after_2000_shared_builds=6
+--- PASS: TestVerifyC2Scale_DistinctOrderingsBySize (0.15s)
+ok  	github.com/traefik/traefik/v3/pkg/server/middleware	0.185s
 --- run 2 exit=0
-refs=9 builds=2000 distinct_diagnostics=1962 ... MiddlewareInfo.Err_entries_after_2000_shared_builds=1238
-refs=12 builds=2000 distinct_diagnostics=2000 ... MiddlewareInfo.Err_entries_after_2000_shared_builds=1913
+refs=2 builds=2000 distinct_diagnostics=2 of_which_rotations_of_sorted_order=2 MiddlewareInfo.Err_entries_after_2000_shared_builds=2
+refs=3 builds=2000 distinct_diagnostics=3 of_which_rotations_of_sorted_order=3 MiddlewareInfo.Err_entries_after_2000_shared_builds=3
+refs=4 builds=2000 distinct_diagnostics=4 of_which_rotations_of_sorted_order=4 MiddlewareInfo.Err_entries_after_2000_shared_builds=4
+refs=8 builds=2000 distinct_diagnostics=8 of_which_rotations_of_sorted_order=8 MiddlewareInfo.Err_entries_after_2000_shared_builds=8
+refs=9 builds=2000 distinct_diagnostics=1938 of_which_rotations_of_sorted_order=3 MiddlewareInfo.Err_entries_after_2000_shared_builds=1276
+refs=12 builds=2000 distinct_diagnostics=1999 of_which_rotations_of_sorted_order=0 MiddlewareInfo.Err_entries_after_2000_shared_builds=1897
+refs=4 builds=2000 distinct_diagnostics=6 of_which_rotations_of_sorted_order=3 MiddlewareInfo.Err_entries_after_2000_shared_builds=6
+--- PASS: TestVerifyC2Scale_DistinctOrderingsBySize (0.15s)
+ok  	github.com/traefik/traefik/v3/pkg/server/middleware	0.211s
 --- run 3 exit=0
 ```
 
-(`verify/logs/c2-scale.log`; rows for 3, 4, 8 references and the nested case were identical in all three runs. The last row is 2 top-level plus 2 nested references.) Observed: with up to 8 top-level references the distinct orderings equal the reference count; with 9 or 12 nearly every build produced a new ordering. I did not investigate why the shared-configuration count is lower than the fresh-configuration count for 9 and 12 references.
+(`verify/logs/c2-scale.log`. The last `refs=4` row of each run is 2 top-level plus 2 nested references; the other rows are flat.) Observed: with 2 to 8 top-level references the number of distinct orderings equals the reference count; with 9 and 12 references nearly every build produced a new ordering. I did not investigate why the shared-configuration count is lower than the fresh-configuration count for 9 and 12 references.
 
 ### Impact reasoning
 
@@ -344,7 +361,18 @@ FAIL	github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd	8.452s
 exit=1
 ```
 
-(`verify/logs/c2-existing-checks.log`.) The branch's own tests pass, so they do not observe the ordering. The eval's plugin-error fixtures use a single reference (`urn:k8s:secret:name:key`), so they cannot observe ordering either; their failure on this branch is on different assertions (an error cached by the plugin mock is reported with the Secret value) and concerns a behavior that is outside C2 and was not adjudicated here.
+(`verify/logs/c2-existing-checks.log`.) The branch's own tests pass, so they do not observe the ordering. Every configuration load in the eval's two plugin-error fixtures uses `with_plugin_read_secret.yml`, which holds a single reference, so they cannot observe ordering either:
+
+```console
+$ awk 'NR>=371 && NR<=700' ~/eval_tests/tests/eval_provider_to_builder_runtime_test.go | grep -c 'LoadConfiguration'
+7
+$ awk 'NR>=371 && NR<=700' ~/eval_tests/tests/eval_provider_to_builder_runtime_test.go | grep -c 'with_plugin_read_secret.yml'
+7
+$ grep -n 'urn:' pkg/provider/kubernetes/crd/fixtures/with_plugin_read_secret.yml
+21:      secret: urn:k8s:secret:name:key
+```
+
+Their failure on this branch is on different assertions (an error cached by the plugin mock is reported with the Secret value) and concerns a behavior that is outside C2 and was not adjudicated here.
 
 ## C3
 
