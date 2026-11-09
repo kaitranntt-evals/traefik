@@ -1,0 +1,67 @@
+=== RUN   TestVerifyC1_ReferenceKeyVersusLoaderSelectedKey
+middleware           | Secret.Data keys                   | reference in routing configuration               | ref key       | loader-selected key      | same?
+basic-auth-key       | auth                               | urn:k8s:secret:basic-auth-key:users.0            | users.0       | auth                     | false (ref key exists in Secret: false, bound value: "alice")
+    c1_reference_key_probe_test.go:171: 
+        	Error Trace:	/home/ubuntu/repos/wt-32a38a91/pkg/provider/kubernetes/crd/c1_reference_key_probe_test.go:171
+        	Error:      	Should be true
+        	Test:       	TestVerifyC1_ReferenceKeyVersusLoaderSelectedKey
+        	Messages:   	basic-auth-key: reference "urn:k8s:secret:basic-auth-key:users.0" names key "users.0" but the loader selected key [auth]
+basic-auth-key       | auth                               | urn:k8s:secret:basic-auth-key:users.1            | users.1       | auth                     | false (ref key exists in Secret: false, bound value: "bob")
+    c1_reference_key_probe_test.go:171: 
+        	Error Trace:	/home/ubuntu/repos/wt-32a38a91/pkg/provider/kubernetes/crd/c1_reference_key_probe_test.go:171
+        	Error:      	Should be true
+        	Test:       	TestVerifyC1_ReferenceKeyVersusLoaderSelectedKey
+        	Messages:   	basic-auth-key: reference "urn:k8s:secret:basic-auth-key:users.1" names key "users.1" but the loader selected key [auth]
+basic-users-key      | users                              | urn:k8s:secret:basic-users-key:users.0           | users.0       | users                    | false (ref key exists in Secret: false, bound value: "carol")
+    c1_reference_key_probe_test.go:171: 
+        	Error Trace:	/home/ubuntu/repos/wt-32a38a91/pkg/provider/kubernetes/crd/c1_reference_key_probe_test.go:171
+        	Error:      	Should be true
+        	Test:       	TestVerifyC1_ReferenceKeyVersusLoaderSelectedKey
+        	Messages:   	basic-users-key: reference "urn:k8s:secret:basic-users-key:users.0" names key "users.0" but the loader selected key [users]
+digest-htdigest-key  | htdigest                           | urn:k8s:secret:digest-htdigest-key:users.0       | users.0       | htdigest                 | false (ref key exists in Secret: false, bound value: "dave")
+    c1_reference_key_probe_test.go:171: 
+        	Error Trace:	/home/ubuntu/repos/wt-32a38a91/pkg/provider/kubernetes/crd/c1_reference_key_probe_test.go:171
+        	Error:      	Should be true
+        	Test:       	TestVerifyC1_ReferenceKeyVersusLoaderSelectedKey
+        	Messages:   	digest-htdigest-key: reference "urn:k8s:secret:digest-htdigest-key:users.0" names key "users.0" but the loader selected key [htdigest]
+fwd-ca-cacrt         | ca.crt                             | urn:k8s:secret:ca-cacrt:ca.crt                   | ca.crt        | ca.crt                   | true (ref key exists in Secret: true, bound value: "PEM-FROM-ca.crt")
+fwd-ca-tlsca         | tls.ca                             | urn:k8s:secret:ca-tlsca:ca.crt                   | ca.crt        | tls.ca                   | false (ref key exists in Secret: false, bound value: "PEM-FROM-tls.ca")
+    c1_reference_key_probe_test.go:171: 
+        	Error Trace:	/home/ubuntu/repos/wt-32a38a91/pkg/provider/kubernetes/crd/c1_reference_key_probe_test.go:171
+        	Error:      	Should be true
+        	Test:       	TestVerifyC1_ReferenceKeyVersusLoaderSelectedKey
+        	Messages:   	fwd-ca-tlsca: reference "urn:k8s:secret:ca-tlsca:ca.crt" names key "ca.crt" but the loader selected key [tls.ca]
+fwd-ca-custom        | corp-root.pem                      | urn:k8s:secret:ca-custom:ca.crt                  | ca.crt        | corp-root.pem            | false (ref key exists in Secret: false, bound value: "PEM-FROM-corp-root.pem")
+    c1_reference_key_probe_test.go:171: 
+        	Error Trace:	/home/ubuntu/repos/wt-32a38a91/pkg/provider/kubernetes/crd/c1_reference_key_probe_test.go:171
+        	Error:      	Should be true
+        	Test:       	TestVerifyC1_ReferenceKeyVersusLoaderSelectedKey
+        	Messages:   	fwd-ca-custom: reference "urn:k8s:secret:ca-custom:ca.crt" names key "ca.crt" but the loader selected key [corp-root.pem]
+fwd-ca-both          | ca.crt,tls.ca                      | urn:k8s:secret:ca-both:ca.crt                    | ca.crt        | tls.ca                   | false (ref key exists in Secret: true, bound value: "PEM-FROM-tls.ca-IN-BOTH")
+    c1_reference_key_probe_test.go:171: 
+        	Error Trace:	/home/ubuntu/repos/wt-32a38a91/pkg/provider/kubernetes/crd/c1_reference_key_probe_test.go:171
+        	Error:      	Should be true
+        	Test:       	TestVerifyC1_ReferenceKeyVersusLoaderSelectedKey
+        	Messages:   	fwd-ca-both: reference "urn:k8s:secret:ca-both:ca.crt" names key "ca.crt" but the loader selected key [tls.ca]
+redis-ca-tlsca       | tls.ca                             | urn:k8s:secret:ca-tlsca:ca.crt                   | ca.crt        | tls.ca                   | false (ref key exists in Secret: false, bound value: "PEM-FROM-tls.ca")
+    c1_reference_key_probe_test.go:171: 
+        	Error Trace:	/home/ubuntu/repos/wt-32a38a91/pkg/provider/kubernetes/crd/c1_reference_key_probe_test.go:171
+        	Error:      	Should be true
+        	Test:       	TestVerifyC1_ReferenceKeyVersusLoaderSelectedKey
+        	Messages:   	redis-ca-tlsca: reference "urn:k8s:secret:ca-tlsca:ca.crt" names key "ca.crt" but the loader selected key [tls.ca]
+redis-ca-custom      | corp-root.pem                      | urn:k8s:secret:ca-custom:ca.crt                  | ca.crt        | corp-root.pem            | false (ref key exists in Secret: false, bound value: "PEM-FROM-corp-root.pem")
+    c1_reference_key_probe_test.go:171: 
+        	Error Trace:	/home/ubuntu/repos/wt-32a38a91/pkg/provider/kubernetes/crd/c1_reference_key_probe_test.go:171
+        	Error:      	Should be true
+        	Test:       	TestVerifyC1_ReferenceKeyVersusLoaderSelectedKey
+        	Messages:   	redis-ca-custom: reference "urn:k8s:secret:ca-custom:ca.crt" names key "ca.crt" but the loader selected key [corp-root.pem]
+redis-ca-both        | ca.crt,tls.ca                      | urn:k8s:secret:ca-both:ca.crt                    | ca.crt        | tls.ca                   | false (ref key exists in Secret: true, bound value: "PEM-FROM-tls.ca-IN-BOTH")
+    c1_reference_key_probe_test.go:171: 
+        	Error Trace:	/home/ubuntu/repos/wt-32a38a91/pkg/provider/kubernetes/crd/c1_reference_key_probe_test.go:171
+        	Error:      	Should be true
+        	Test:       	TestVerifyC1_ReferenceKeyVersusLoaderSelectedKey
+        	Messages:   	redis-ca-both: reference "urn:k8s:secret:ca-both:ca.crt" names key "ca.crt" but the loader selected key [tls.ca]
+--- FAIL: TestVerifyC1_ReferenceKeyVersusLoaderSelectedKey (0.06s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd	0.100s
+FAIL

@@ -1,0 +1,42 @@
+=== RUN   TestVerifyC2_RedisInlineURNPrefixedPassword
+C2 buildConstructor error: rateLimit: redis password: unknown secret reference urn:k8s:secret:this-is-my-literal-redis-password
+C2 BuildMiddlewareChain(...).Then error: rateLimit: redis password: unknown secret reference urn:k8s:secret:this-is-my-literal-redis-password
+C2 runtime MiddlewareInfo: status="disabled" err=["rateLimit: redis password: unknown secret reference urn:k8s:secret:this-is-my-literal-redis-password"]
+C2 configuration password after build: "urn:k8s:secret:this-is-my-literal-redis-password"
+C2 credentials received by the Redis server (client options in effect): []
+    c2_redis_inline_password_probe_test.go:171: 
+        	Error Trace:	/home/ubuntu/repos/wt-59e46302/pkg/server/middleware/c2_redis_inline_password_probe_test.go:171
+        	Error:      	Received unexpected error:
+        	            	rateLimit: redis password: unknown secret reference urn:k8s:secret:this-is-my-literal-redis-password
+        	Test:       	TestVerifyC2_RedisInlineURNPrefixedPassword
+        	Messages:   	buildConstructor must accept a literal inline password
+--- FAIL: TestVerifyC2_RedisInlineURNPrefixedPassword (0.00s)
+=== RUN   TestVerifyC2_InlineCredentialClassification
+C2 IsSecretReference("urn:k8s:secret:this-is-my-literal-redis-password") = true
+C2 Secrets.Resolve [nil bindings, urn-prefixed literal]: value="" err=unknown secret reference urn:k8s:secret:this-is-my-literal-redis-password
+C2 Secrets.Resolve [empty bindings, urn-prefixed literal]: value="" err=unknown secret reference urn:k8s:secret:this-is-my-literal-redis-password
+C2 Secrets.Resolve [nil bindings, ordinary literal (control)]: value="ordinary-password" err=<nil>
+C2 Middleware.ResolveSecrets (Secrets == nil: true): resolved-nil=true err=rateLimit: redis password: unknown secret reference urn:k8s:secret:this-is-my-literal-redis-password
+    c2_resolve_classification_probe_test.go:38: 
+        	Error Trace:	/home/ubuntu/repos/wt-59e46302/pkg/server/middleware/c2_resolve_classification_probe_test.go:38
+        	Error:      	Received unexpected error:
+        	            	unknown secret reference urn:k8s:secret:this-is-my-literal-redis-password
+        	Test:       	TestVerifyC2_InlineCredentialClassification
+        	Messages:   	a literal inline password must not be treated as an unresolved Secret reference
+    c2_resolve_classification_probe_test.go:39: 
+        	Error Trace:	/home/ubuntu/repos/wt-59e46302/pkg/server/middleware/c2_resolve_classification_probe_test.go:39
+        	Error:      	Not equal: 
+        	            	expected: "urn:k8s:secret:this-is-my-literal-redis-password"
+        	            	actual  : ""
+        	            	
+        	            	Diff:
+        	            	--- Expected
+        	            	+++ Actual
+        	            	@@ -1 +1 @@
+        	            	-urn:k8s:secret:this-is-my-literal-redis-password
+        	            	+
+        	Test:       	TestVerifyC2_InlineCredentialClassification
+--- FAIL: TestVerifyC2_InlineCredentialClassification (0.00s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/server/middleware	0.030s
+FAIL

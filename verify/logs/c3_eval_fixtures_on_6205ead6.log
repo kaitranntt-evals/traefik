@@ -1,0 +1,522 @@
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction
+=== PAUSE TestEval_ProviderToBuilder_PluginBuildErrorRedaction
+=== RUN   TestEval_ProviderToBuilder_PluginCachedErrorRedaction
+=== PAUSE TestEval_ProviderToBuilder_PluginCachedErrorRedaction
+=== CONT  TestEval_ProviderToBuilder_PluginBuildErrorRedaction
+=== CONT  TestEval_ProviderToBuilder_PluginCachedErrorRedaction
+=== RUN   TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+=== PAUSE TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+=== RUN   TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+=== PAUSE TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+=== RUN   TestEval_ProviderToBuilder_PluginCachedErrorRedaction/constructor/opaque=false
+=== PAUSE TestEval_ProviderToBuilder_PluginCachedErrorRedaction/constructor/opaque=false
+=== RUN   TestEval_ProviderToBuilder_PluginCachedErrorRedaction/constructor/opaque=true
+=== PAUSE TestEval_ProviderToBuilder_PluginCachedErrorRedaction/constructor/opaque=true
+=== CONT  TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false
+=== CONT  TestEval_ProviderToBuilder_PluginCachedErrorRedaction/constructor/opaque=false
+=== CONT  TestEval_ProviderToBuilder_PluginCachedErrorRedaction/constructor/opaque=true
+=== CONT  TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=false
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=false/unrelated_baseline
+=== NAME  TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+    eval_provider_to_builder_runtime_test.go:689: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:689
+        	Error:      	"plugin: plugin build failed: internal error" does not contain "urn:k8s:secret:name:key"
+        	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+        	Messages:   	cached plugin errors must retain the credential reference
+    eval_provider_to_builder_runtime_test.go:691: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:691
+        	Error:      	"plugin: plugin build failed: internal error" does not contain "urn:k8s:secret:name:key"
+        	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+        	Messages:   	stored cached errors must retain the credential reference
+=== NAME  TestEval_ProviderToBuilder_PluginCachedErrorRedaction/constructor/opaque=true
+    eval_provider_to_builder_runtime_test.go:689: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:689
+        	Error:      	"plugin constructor failed: internal error" does not contain "urn:k8s:secret:name:key"
+        	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/constructor/opaque=true
+        	Messages:   	cached plugin errors must retain the credential reference
+=== NAME  TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+    eval_provider_to_builder_runtime_test.go:694: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+        	Error:      	"plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+        	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+        	Messages:   	cached errors and their causes must not disclose credentials
+=== NAME  TestEval_ProviderToBuilder_PluginCachedErrorRedaction/constructor/opaque=true
+    eval_provider_to_builder_runtime_test.go:691: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:691
+        	Error:      	"plugin constructor failed: internal error" does not contain "urn:k8s:secret:name:key"
+        	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/constructor/opaque=true
+        	Messages:   	stored cached errors must retain the credential reference
+    eval_provider_to_builder_runtime_test.go:694: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+        	Error:      	"plugin constructor rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+        	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/constructor/opaque=true
+        	Messages:   	cached errors and their causes must not disclose credentials
+    eval_provider_to_builder_runtime_test.go:689: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:689
+        	Error:      	"plugin constructor failed: internal error" does not contain "urn:k8s:secret:name:key"
+        	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/constructor/opaque=true
+=== NAME  TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+    eval_provider_to_builder_runtime_test.go:689: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:689
+        	Error:      	"plugin: plugin build failed: internal error" does not contain "urn:k8s:secret:name:key"
+        	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+        	Messages:   	cached plugin errors must retain the credential reference
+    eval_provider_to_builder_runtime_test.go:691: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:691
+        	Error:      	"plugin: plugin build failed: internal error" does not contain "urn:k8s:secret:name:key"
+        	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+        	Messages:   	stored cached errors must retain the credential reference
+    eval_provider_to_builder_runtime_test.go:694: 
+=== NAME  TestEval_ProviderToBuilder_PluginCachedErrorRedaction/constructor/opaque=true
+        	Messages:   	cached plugin errors must retain the credential reference
+    eval_provider_to_builder_runtime_test.go:691: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:691
+        	Error:      	"plugin constructor failed: internal error" does not contain "urn:k8s:secret:name:key"
+        	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/constructor/opaque=true
+        	Messages:   	stored cached errors must retain the credential reference
+    eval_provider_to_builder_runtime_test.go:694: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+        	Error:      	"plugin constructor rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+        	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/constructor/opaque=true
+        	Messages:   	cached errors and their causes must not disclose credentials
+=== NAME  TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:694
+        	Error:      	"plugin build rejected credential \"eval_cached_plugin_secret_q9\"" should not contain "eval_cached_plugin_secret_q9"
+        	Test:       	TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true
+        	Messages:   	cached errors and their causes must not disclose credentials
+--- FAIL: TestEval_ProviderToBuilder_PluginCachedErrorRedaction (0.00s)
+    --- PASS: TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=false (0.17s)
+    --- FAIL: TestEval_ProviderToBuilder_PluginCachedErrorRedaction/constructor/opaque=true (0.17s)
+    --- FAIL: TestEval_ProviderToBuilder_PluginCachedErrorRedaction/build/opaque=true (0.17s)
+    --- PASS: TestEval_ProviderToBuilder_PluginCachedErrorRedaction/constructor/opaque=false (0.17s)
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=false/type_label_collision_(string)
+    eval_provider_to_builder_runtime_test.go:525: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:525
+        	Error:      	Not equal: 
+        	            	expected: []string{"'token' expected type 'int', got unconvertible type 'string', value: \"urn:k8s:secret:name:key\"", "plugin: 'token' expected type 'int', got unconvertible type 'string', value: \"urn:k8s:secret:name:key\"", "plugin: 'token' expected type 'int', got unconvertible type 'string', value: \"urn:k8s:secret:name:key\""}
+        	            	actual  : []string{"invalid configuration using the secret references urn:k8s:secret:name:key", "plugin: invalid configuration using the secret references urn:k8s:secret:name:key", "plugin: invalid configuration using the secret references urn:k8s:secret:name:key"}
+        	            	
+        	            	Diff:
+        	            	--- Expected
+        	            	+++ Actual
+        	            	@@ -1,5 +1,5 @@
+        	            	 ([]string) (len=3) {
+        	            	- (string) (len=94) "'token' expected type 'int', got unconvertible type 'string', value: \"urn:k8s:secret:name:key\"",
+        	            	- (string) (len=102) "plugin: 'token' expected type 'int', got unconvertible type 'string', value: \"urn:k8s:secret:name:key\"",
+        	            	- (string) (len=102) "plugin: 'token' expected type 'int', got unconvertible type 'string', value: \"urn:k8s:secret:name:key\""
+        	            	+ (string) (len=73) "invalid configuration using the secret references urn:k8s:secret:name:key",
+        	            	+ (string) (len=81) "plugin: invalid configuration using the secret references urn:k8s:secret:name:key",
+        	            	+ (string) (len=81) "plugin: invalid configuration using the secret references urn:k8s:secret:name:key"
+        	            	 }
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=false/type_label_collision_(string)
+        	Messages:   	returned, unwrapped, and stored diagnostics must not depend on the Secret value
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=false/field_label_collision_(token)
+    eval_provider_to_builder_runtime_test.go:525: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:525
+        	Error:      	Not equal: 
+        	            	expected: []string{"'token' expected type 'int', got unconvertible type 'string', value: \"urn:k8s:secret:name:key\"", "plugin: 'token' expected type 'int', got unconvertible type 'string', value: \"urn:k8s:secret:name:key\"", "plugin: 'token' expected type 'int', got unconvertible type 'string', value: \"urn:k8s:secret:name:key\""}
+        	            	actual  : []string{"invalid configuration using the secret references urn:k8s:secret:name:key", "plugin: invalid configuration using the secret references urn:k8s:secret:name:key", "plugin: invalid configuration using the secret references urn:k8s:secret:name:key"}
+        	            	
+        	            	Diff:
+        	            	--- Expected
+        	            	+++ Actual
+        	            	@@ -1,5 +1,5 @@
+        	            	 ([]string) (len=3) {
+        	            	- (string) (len=94) "'token' expected type 'int', got unconvertible type 'string', value: \"urn:k8s:secret:name:key\"",
+        	            	- (string) (len=102) "plugin: 'token' expected type 'int', got unconvertible type 'string', value: \"urn:k8s:secret:name:key\"",
+        	            	- (string) (len=102) "plugin: 'token' expected type 'int', got unconvertible type 'string', value: \"urn:k8s:secret:name:key\""
+        	            	+ (string) (len=73) "invalid configuration using the secret references urn:k8s:secret:name:key",
+        	            	+ (string) (len=81) "plugin: invalid configuration using the secret references urn:k8s:secret:name:key",
+        	            	+ (string) (len=81) "plugin: invalid configuration using the secret references urn:k8s:secret:name:key"
+        	            	 }
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=false/field_label_collision_(token)
+        	Messages:   	returned, unwrapped, and stored diagnostics must not depend on the Secret value
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=false/escaped_payload
+    eval_provider_to_builder_runtime_test.go:511: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:511
+        	Error:      	"plugin: 'token' expected type 'int', got unconvertible type 'string', value: \"eval_escape_p4ss\\\"w0rd\\\\x\\n'end\"" does not contain "urn:k8s:secret:name:key"
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=false/escaped_payload
+        	Messages:   	top-level error diagnostic must contain URN reference
+    eval_provider_to_builder_runtime_test.go:513: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:513
+        	Error:      	"plugin: 'token' expected type 'int', got unconvertible type 'string', value: \"eval_escape_p4ss\\\"w0rd\\\\x\\n'end\"" does not contain "urn:k8s:secret:name:key"
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=false/escaped_payload
+        	Messages:   	stored middleware error must contain URN reference
+    eval_provider_to_builder_runtime_test.go:519: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:519
+        	Error:      	"'token' expected type 'int', got unconvertible type 'string', value: \"eval_escape_p4ss\\\"w0rd\\\\x\\n'end\"" should not contain "eval_escape_p4ss"
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=false/escaped_payload
+        	Messages:   	diagnostic must not leak credential sentinel
+    eval_provider_to_builder_runtime_test.go:519: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:519
+        	Error:      	"plugin: 'token' expected type 'int', got unconvertible type 'string', value: \"eval_escape_p4ss\\\"w0rd\\\\x\\n'end\"" should not contain "eval_escape_p4ss"
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=false/escaped_payload
+        	Messages:   	diagnostic must not leak credential sentinel
+    eval_provider_to_builder_runtime_test.go:519: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:519
+        	Error:      	"plugin: 'token' expected type 'int', got unconvertible type 'string', value: \"eval_escape_p4ss\\\"w0rd\\\\x\\n'end\"" should not contain "eval_escape_p4ss"
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=false/escaped_payload
+        	Messages:   	diagnostic must not leak credential sentinel
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=false/single-line_quote_and_backslash_escaping
+    eval_provider_to_builder_runtime_test.go:511: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:511
+        	Error:      	"plugin: 'token' expected type 'int', got unconvertible type 'string', value: \"qx7Lead\\\"qx7Mid\\\\qx7Tail\"" does not contain "urn:k8s:secret:name:key"
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=false/single-line_quote_and_backslash_escaping
+        	Messages:   	top-level error diagnostic must contain URN reference
+    eval_provider_to_builder_runtime_test.go:513: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:513
+        	Error:      	"plugin: 'token' expected type 'int', got unconvertible type 'string', value: \"qx7Lead\\\"qx7Mid\\\\qx7Tail\"" does not contain "urn:k8s:secret:name:key"
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=false/single-line_quote_and_backslash_escaping
+        	Messages:   	stored middleware error must contain URN reference
+    eval_provider_to_builder_runtime_test.go:519: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:519
+        	Error:      	"'token' expected type 'int', got unconvertible type 'string', value: \"qx7Lead\\\"qx7Mid\\\\qx7Tail\"" should not contain "qx7Lead"
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=false/single-line_quote_and_backslash_escaping
+        	Messages:   	diagnostic must not leak credential sentinel
+    eval_provider_to_builder_runtime_test.go:519: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:519
+        	Error:      	"'token' expected type 'int', got unconvertible type 'string', value: \"qx7Lead\\\"qx7Mid\\\\qx7Tail\"" should not contain "qx7Mid"
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=false/single-line_quote_and_backslash_escaping
+        	Messages:   	diagnostic must not leak credential sentinel
+    eval_provider_to_builder_runtime_test.go:519: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:519
+        	Error:      	"'token' expected type 'int', got unconvertible type 'string', value: \"qx7Lead\\\"qx7Mid\\\\qx7Tail\"" should not contain "qx7Tail"
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=false/single-line_quote_and_backslash_escaping
+        	Messages:   	diagnostic must not leak credential sentinel
+    eval_provider_to_builder_runtime_test.go:519: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:519
+        	Error:      	"plugin: 'token' expected type 'int', got unconvertible type 'string', value: \"qx7Lead\\\"qx7Mid\\\\qx7Tail\"" should not contain "qx7Lead"
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=false/single-line_quote_and_backslash_escaping
+        	Messages:   	diagnostic must not leak credential sentinel
+    eval_provider_to_builder_runtime_test.go:519: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:519
+        	Error:      	"plugin: 'token' expected type 'int', got unconvertible type 'string', value: \"qx7Lead\\\"qx7Mid\\\\qx7Tail\"" should not contain "qx7Mid"
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=false/single-line_quote_and_backslash_escaping
+        	Messages:   	diagnostic must not leak credential sentinel
+    eval_provider_to_builder_runtime_test.go:519: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:519
+        	Error:      	"plugin: 'token' expected type 'int', got unconvertible type 'string', value: \"qx7Lead\\\"qx7Mid\\\\qx7Tail\"" should not contain "qx7Tail"
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=false/single-line_quote_and_backslash_escaping
+        	Messages:   	diagnostic must not leak credential sentinel
+    eval_provider_to_builder_runtime_test.go:519: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:519
+        	Error:      	"plugin: 'token' expected type 'int', got unconvertible type 'string', value: \"qx7Lead\\\"qx7Mid\\\\qx7Tail\"" should not contain "qx7Lead"
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=false/single-line_quote_and_backslash_escaping
+        	Messages:   	diagnostic must not leak credential sentinel
+    eval_provider_to_builder_runtime_test.go:519: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:519
+        	Error:      	"plugin: 'token' expected type 'int', got unconvertible type 'string', value: \"qx7Lead\\\"qx7Mid\\\\qx7Tail\"" should not contain "qx7Mid"
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=false/single-line_quote_and_backslash_escaping
+        	Messages:   	diagnostic must not leak credential sentinel
+    eval_provider_to_builder_runtime_test.go:519: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:519
+        	Error:      	"plugin: 'token' expected type 'int', got unconvertible type 'string', value: \"qx7Lead\\\"qx7Mid\\\\qx7Tail\"" should not contain "qx7Tail"
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=false/single-line_quote_and_backslash_escaping
+        	Messages:   	diagnostic must not leak credential sentinel
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=false/whitespace-only_payload
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=false/empty_secret_value
+    eval_provider_to_builder_runtime_test.go:511: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:511
+        	Error:      	"plugin: 'token' expected type 'int', got unconvertible type 'string', value: \"\"" does not contain "urn:k8s:secret:name:key"
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=false/empty_secret_value
+        	Messages:   	top-level error diagnostic must contain URN reference
+    eval_provider_to_builder_runtime_test.go:513: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:513
+        	Error:      	"plugin: 'token' expected type 'int', got unconvertible type 'string', value: \"\"" does not contain "urn:k8s:secret:name:key"
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=false/empty_secret_value
+        	Messages:   	stored middleware error must contain URN reference
+    eval_provider_to_builder_runtime_test.go:525: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:525
+        	Error:      	Not equal: 
+        	            	expected: []string{"'token' expected type 'int', got unconvertible type 'string', value: \"urn:k8s:secret:name:key\"", "plugin: 'token' expected type 'int', got unconvertible type 'string', value: \"urn:k8s:secret:name:key\"", "plugin: 'token' expected type 'int', got unconvertible type 'string', value: \"urn:k8s:secret:name:key\""}
+        	            	actual  : []string{"'token' expected type 'int', got unconvertible type 'string', value: \"\"", "plugin: 'token' expected type 'int', got unconvertible type 'string', value: \"\"", "plugin: 'token' expected type 'int', got unconvertible type 'string', value: \"\""}
+        	            	
+        	            	Diff:
+        	            	--- Expected
+        	            	+++ Actual
+        	            	@@ -1,5 +1,5 @@
+        	            	 ([]string) (len=3) {
+        	            	- (string) (len=94) "'token' expected type 'int', got unconvertible type 'string', value: \"urn:k8s:secret:name:key\"",
+        	            	- (string) (len=102) "plugin: 'token' expected type 'int', got unconvertible type 'string', value: \"urn:k8s:secret:name:key\"",
+        	            	- (string) (len=102) "plugin: 'token' expected type 'int', got unconvertible type 'string', value: \"urn:k8s:secret:name:key\""
+        	            	+ (string) (len=71) "'token' expected type 'int', got unconvertible type 'string', value: \"\"",
+        	            	+ (string) (len=79) "plugin: 'token' expected type 'int', got unconvertible type 'string', value: \"\"",
+        	            	+ (string) (len=79) "plugin: 'token' expected type 'int', got unconvertible type 'string', value: \"\""
+        	            	 }
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=false/empty_secret_value
+        	Messages:   	returned, unwrapped, and stored diagnostics must not depend on the Secret value
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=true
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=true/unrelated_baseline
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=true/type_label_collision_(string)
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=true/field_label_collision_(token)
+    eval_provider_to_builder_runtime_test.go:525: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:525
+        	Error:      	Not equal: 
+        	            	expected: []string{"invalid token", "plugin: invalid token", "plugin: invalid token"}
+        	            	actual  : []string{"invalid configuration using the secret references urn:k8s:secret:name:key", "plugin: invalid configuration using the secret references urn:k8s:secret:name:key", "plugin: invalid configuration using the secret references urn:k8s:secret:name:key"}
+        	            	
+        	            	Diff:
+        	            	--- Expected
+        	            	+++ Actual
+        	            	@@ -1,5 +1,5 @@
+        	            	 ([]string) (len=3) {
+        	            	- (string) (len=13) "invalid token",
+        	            	- (string) (len=21) "plugin: invalid token",
+        	            	- (string) (len=21) "plugin: invalid token"
+        	            	+ (string) (len=73) "invalid configuration using the secret references urn:k8s:secret:name:key",
+        	            	+ (string) (len=81) "plugin: invalid configuration using the secret references urn:k8s:secret:name:key",
+        	            	+ (string) (len=81) "plugin: invalid configuration using the secret references urn:k8s:secret:name:key"
+        	            	 }
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=true/field_label_collision_(token)
+        	Messages:   	returned, unwrapped, and stored diagnostics must not depend on the Secret value
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=true/escaped_payload
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=true/single-line_quote_and_backslash_escaping
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=true/whitespace-only_payload
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=true/empty_secret_value
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=false
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=false/unrelated_baseline
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=false/type_label_collision_(string)
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=false/field_label_collision_(token)
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=false/escaped_payload
+    eval_provider_to_builder_runtime_test.go:511: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:511
+        	Error:      	"'token' expected type 'int', got unconvertible type 'string', value: \"eval_escape_p4ss\\\"w0rd\\\\x\\n'end\"" does not contain "urn:k8s:secret:name:key"
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=false/escaped_payload
+        	Messages:   	top-level error diagnostic must contain URN reference
+    eval_provider_to_builder_runtime_test.go:513: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:513
+        	Error:      	"'token' expected type 'int', got unconvertible type 'string', value: \"eval_escape_p4ss\\\"w0rd\\\\x\\n'end\"" does not contain "urn:k8s:secret:name:key"
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=false/escaped_payload
+        	Messages:   	stored middleware error must contain URN reference
+    eval_provider_to_builder_runtime_test.go:519: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:519
+        	Error:      	"'token' expected type 'int', got unconvertible type 'string', value: \"eval_escape_p4ss\\\"w0rd\\\\x\\n'end\"" should not contain "eval_escape_p4ss"
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=false/escaped_payload
+        	Messages:   	diagnostic must not leak credential sentinel
+    eval_provider_to_builder_runtime_test.go:519: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:519
+        	Error:      	"'token' expected type 'int', got unconvertible type 'string', value: \"eval_escape_p4ss\\\"w0rd\\\\x\\n'end\"" should not contain "eval_escape_p4ss"
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=false/escaped_payload
+        	Messages:   	diagnostic must not leak credential sentinel
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=false/single-line_quote_and_backslash_escaping
+    eval_provider_to_builder_runtime_test.go:511: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:511
+        	Error:      	"'token' expected type 'int', got unconvertible type 'string', value: \"qx7Lead\\\"qx7Mid\\\\qx7Tail\"" does not contain "urn:k8s:secret:name:key"
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=false/single-line_quote_and_backslash_escaping
+        	Messages:   	top-level error diagnostic must contain URN reference
+    eval_provider_to_builder_runtime_test.go:513: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:513
+        	Error:      	"'token' expected type 'int', got unconvertible type 'string', value: \"qx7Lead\\\"qx7Mid\\\\qx7Tail\"" does not contain "urn:k8s:secret:name:key"
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=false/single-line_quote_and_backslash_escaping
+        	Messages:   	stored middleware error must contain URN reference
+    eval_provider_to_builder_runtime_test.go:519: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:519
+        	Error:      	"'token' expected type 'int', got unconvertible type 'string', value: \"qx7Lead\\\"qx7Mid\\\\qx7Tail\"" should not contain "qx7Lead"
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=false/single-line_quote_and_backslash_escaping
+        	Messages:   	diagnostic must not leak credential sentinel
+    eval_provider_to_builder_runtime_test.go:519: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:519
+        	Error:      	"'token' expected type 'int', got unconvertible type 'string', value: \"qx7Lead\\\"qx7Mid\\\\qx7Tail\"" should not contain "qx7Mid"
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=false/single-line_quote_and_backslash_escaping
+        	Messages:   	diagnostic must not leak credential sentinel
+    eval_provider_to_builder_runtime_test.go:519: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:519
+        	Error:      	"'token' expected type 'int', got unconvertible type 'string', value: \"qx7Lead\\\"qx7Mid\\\\qx7Tail\"" should not contain "qx7Tail"
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=false/single-line_quote_and_backslash_escaping
+        	Messages:   	diagnostic must not leak credential sentinel
+    eval_provider_to_builder_runtime_test.go:519: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:519
+        	Error:      	"'token' expected type 'int', got unconvertible type 'string', value: \"qx7Lead\\\"qx7Mid\\\\qx7Tail\"" should not contain "qx7Lead"
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=false/single-line_quote_and_backslash_escaping
+        	Messages:   	diagnostic must not leak credential sentinel
+    eval_provider_to_builder_runtime_test.go:519: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:519
+        	Error:      	"'token' expected type 'int', got unconvertible type 'string', value: \"qx7Lead\\\"qx7Mid\\\\qx7Tail\"" should not contain "qx7Mid"
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=false/single-line_quote_and_backslash_escaping
+        	Messages:   	diagnostic must not leak credential sentinel
+    eval_provider_to_builder_runtime_test.go:519: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:519
+        	Error:      	"'token' expected type 'int', got unconvertible type 'string', value: \"qx7Lead\\\"qx7Mid\\\\qx7Tail\"" should not contain "qx7Tail"
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=false/single-line_quote_and_backslash_escaping
+        	Messages:   	diagnostic must not leak credential sentinel
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=false/whitespace-only_payload
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=false/empty_secret_value
+    eval_provider_to_builder_runtime_test.go:511: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:511
+        	Error:      	"'token' expected type 'int', got unconvertible type 'string', value: \"\"" does not contain "urn:k8s:secret:name:key"
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=false/empty_secret_value
+        	Messages:   	top-level error diagnostic must contain URN reference
+    eval_provider_to_builder_runtime_test.go:513: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:513
+        	Error:      	"'token' expected type 'int', got unconvertible type 'string', value: \"\"" does not contain "urn:k8s:secret:name:key"
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=false/empty_secret_value
+        	Messages:   	stored middleware error must contain URN reference
+    eval_provider_to_builder_runtime_test.go:525: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:525
+        	Error:      	Not equal: 
+        	            	expected: []string{"invalid configuration using the secret references urn:k8s:secret:name:key", "invalid configuration using the secret references urn:k8s:secret:name:key"}
+        	            	actual  : []string{"'token' expected type 'int', got unconvertible type 'string', value: \"\"", "'token' expected type 'int', got unconvertible type 'string', value: \"\""}
+        	            	
+        	            	Diff:
+        	            	--- Expected
+        	            	+++ Actual
+        	            	@@ -1,4 +1,4 @@
+        	            	 ([]string) (len=2) {
+        	            	- (string) (len=73) "invalid configuration using the secret references urn:k8s:secret:name:key",
+        	            	- (string) (len=73) "invalid configuration using the secret references urn:k8s:secret:name:key"
+        	            	+ (string) (len=71) "'token' expected type 'int', got unconvertible type 'string', value: \"\"",
+        	            	+ (string) (len=71) "'token' expected type 'int', got unconvertible type 'string', value: \"\""
+        	            	 }
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=false/empty_secret_value
+        	Messages:   	returned, unwrapped, and stored diagnostics must not depend on the Secret value
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=true
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=true/unrelated_baseline
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=true/type_label_collision_(string)
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=true/field_label_collision_(token)
+    eval_provider_to_builder_runtime_test.go:525: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:525
+        	Error:      	Not equal: 
+        	            	expected: []string{"invalid token", "invalid token"}
+        	            	actual  : []string{"invalid configuration using the secret references urn:k8s:secret:name:key", "invalid configuration using the secret references urn:k8s:secret:name:key"}
+        	            	
+        	            	Diff:
+        	            	--- Expected
+        	            	+++ Actual
+        	            	@@ -1,4 +1,4 @@
+        	            	 ([]string) (len=2) {
+        	            	- (string) (len=13) "invalid token",
+        	            	- (string) (len=13) "invalid token"
+        	            	+ (string) (len=73) "invalid configuration using the secret references urn:k8s:secret:name:key",
+        	            	+ (string) (len=73) "invalid configuration using the secret references urn:k8s:secret:name:key"
+        	            	 }
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=true/field_label_collision_(token)
+        	Messages:   	returned, unwrapped, and stored diagnostics must not depend on the Secret value
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=true/escaped_payload
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=true/single-line_quote_and_backslash_escaping
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=true/whitespace-only_payload
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=true/empty_secret_value
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build_stage_wrapped_cause
+    eval_provider_to_builder_runtime_test.go:587: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:583
+        	            				/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:587
+        	Error:      	"underlying failure with secret: qx9SecretWrappedCause" should not contain "qx9SecretWrappedCause"
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build_stage_wrapped_cause
+        	Messages:   	wrapped cause must not leak secret sentinel
+    eval_provider_to_builder_runtime_test.go:588: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:583
+        	            				/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:588
+        	Error:      	"underlying failure with secret: ry8DistinctWrappedCause" should not contain "ry8DistinctWrappedCause"
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build_stage_wrapped_cause
+        	Messages:   	wrapped cause must not leak secret sentinel
+    eval_provider_to_builder_runtime_test.go:589: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:589
+        	Error:      	Not equal: 
+        	            	expected: []string{"plugin build failed: internal error", "plugin: plugin build failed: internal error", "underlying failure with secret: qx9SecretWrappedCause", "plugin: plugin build failed: internal error"}
+        	            	actual  : []string{"plugin build failed: internal error", "plugin: plugin build failed: internal error", "underlying failure with secret: ry8DistinctWrappedCause", "plugin: plugin build failed: internal error"}
+        	            	
+        	            	Diff:
+        	            	--- Expected
+        	            	+++ Actual
+        	            	@@ -3,3 +3,3 @@
+        	            	  (string) (len=43) "plugin: plugin build failed: internal error",
+        	            	- (string) (len=53) "underlying failure with secret: qx9SecretWrappedCause",
+        	            	+ (string) (len=55) "underlying failure with secret: ry8DistinctWrappedCause",
+        	            	  (string) (len=43) "plugin: plugin build failed: internal error"
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build_stage_wrapped_cause
+        	Messages:   	returned, unwrapped, and stored diagnostics must not depend on the Secret value
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor_stage_wrapped_cause
+    eval_provider_to_builder_runtime_test.go:587: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:583
+        	            				/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:587
+        	Error:      	"underlying constructor failure with secret: qx9SecretWrappedCause" should not contain "qx9SecretWrappedCause"
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor_stage_wrapped_cause
+        	Messages:   	wrapped cause must not leak secret sentinel
+    eval_provider_to_builder_runtime_test.go:588: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:583
+        	            				/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:588
+        	Error:      	"underlying constructor failure with secret: ry8DistinctWrappedCause" should not contain "ry8DistinctWrappedCause"
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor_stage_wrapped_cause
+        	Messages:   	wrapped cause must not leak secret sentinel
+    eval_provider_to_builder_runtime_test.go:589: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:589
+        	Error:      	Not equal: 
+        	            	expected: []string{"plugin constructor failed: internal error", "underlying constructor failure with secret: qx9SecretWrappedCause", "plugin constructor failed: internal error"}
+        	            	actual  : []string{"plugin constructor failed: internal error", "underlying constructor failure with secret: ry8DistinctWrappedCause", "plugin constructor failed: internal error"}
+        	            	
+        	            	Diff:
+        	            	--- Expected
+        	            	+++ Actual
+        	            	@@ -2,3 +2,3 @@
+        	            	  (string) (len=41) "plugin constructor failed: internal error",
+        	            	- (string) (len=65) "underlying constructor failure with secret: qx9SecretWrappedCause",
+        	            	+ (string) (len=67) "underlying constructor failure with secret: ry8DistinctWrappedCause",
+        	            	  (string) (len=41) "plugin constructor failed: internal error"
+        	Test:       	TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor_stage_wrapped_cause
+        	Messages:   	returned, unwrapped, and stored diagnostics must not depend on the Secret value
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/plugin_rejected_value:_'%s'/unrelated_baseline
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/plugin_rejected_value:_'%s'/escaped_payload
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/plugin_rejected_value:_'%s'/single-line_quote_and_backslash_escaping
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/plugin_rejected_value:_%s/unrelated_baseline
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/plugin_rejected_value:_%s/escaped_payload
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/plugin_rejected_value:_%s/single-line_quote_and_backslash_escaping
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/plugin_rejected_value:_'%s'/unrelated_baseline
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/plugin_rejected_value:_'%s'/escaped_payload
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/plugin_rejected_value:_'%s'/single-line_quote_and_backslash_escaping
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/plugin_rejected_value:_%s/unrelated_baseline
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/plugin_rejected_value:_%s/escaped_payload
+=== RUN   TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/plugin_rejected_value:_%s/single-line_quote_and_backslash_escaping
+--- FAIL: TestEval_ProviderToBuilder_PluginBuildErrorRedaction (1.55s)
+    --- FAIL: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build (0.38s)
+        --- FAIL: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=false (0.19s)
+            --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=false/unrelated_baseline (0.03s)
+            --- FAIL: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=false/type_label_collision_(string) (0.03s)
+            --- FAIL: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=false/field_label_collision_(token) (0.03s)
+            --- FAIL: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=false/escaped_payload (0.03s)
+            --- FAIL: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=false/single-line_quote_and_backslash_escaping (0.03s)
+            --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=false/whitespace-only_payload (0.03s)
+            --- FAIL: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=false/empty_secret_value (0.02s)
+        --- FAIL: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=true (0.19s)
+            --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=true/unrelated_baseline (0.02s)
+            --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=true/type_label_collision_(string) (0.03s)
+            --- FAIL: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=true/field_label_collision_(token) (0.02s)
+            --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=true/escaped_payload (0.03s)
+            --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=true/single-line_quote_and_backslash_escaping (0.03s)
+            --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=true/whitespace-only_payload (0.03s)
+            --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/constant_error=true/empty_secret_value (0.03s)
+    --- FAIL: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor (0.50s)
+        --- FAIL: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=false (0.27s)
+            --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=false/unrelated_baseline (0.03s)
+            --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=false/type_label_collision_(string) (0.03s)
+            --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=false/field_label_collision_(token) (0.04s)
+            --- FAIL: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=false/escaped_payload (0.04s)
+            --- FAIL: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=false/single-line_quote_and_backslash_escaping (0.03s)
+            --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=false/whitespace-only_payload (0.04s)
+            --- FAIL: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=false/empty_secret_value (0.06s)
+        --- FAIL: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=true (0.23s)
+            --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=true/unrelated_baseline (0.02s)
+            --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=true/type_label_collision_(string) (0.02s)
+            --- FAIL: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=true/field_label_collision_(token) (0.04s)
+            --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=true/escaped_payload (0.03s)
+            --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=true/single-line_quote_and_backslash_escaping (0.04s)
+            --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=true/whitespace-only_payload (0.03s)
+            --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/constant_error=true/empty_secret_value (0.03s)
+    --- FAIL: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build_stage_wrapped_cause (0.06s)
+    --- FAIL: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor_stage_wrapped_cause (0.08s)
+    --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/plugin_rejected_value:_'%s'/unrelated_baseline (0.03s)
+    --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/plugin_rejected_value:_'%s'/escaped_payload (0.03s)
+    --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/plugin_rejected_value:_'%s'/single-line_quote_and_backslash_escaping (0.02s)
+    --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/plugin_rejected_value:_%s/unrelated_baseline (0.03s)
+    --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/plugin_rejected_value:_%s/escaped_payload (0.02s)
+    --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/build/plugin_rejected_value:_%s/single-line_quote_and_backslash_escaping (0.03s)
+    --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/plugin_rejected_value:_'%s'/unrelated_baseline (0.02s)
+    --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/plugin_rejected_value:_'%s'/escaped_payload (0.04s)
+    --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/plugin_rejected_value:_'%s'/single-line_quote_and_backslash_escaping (0.03s)
+    --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/plugin_rejected_value:_%s/unrelated_baseline (0.03s)
+    --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/plugin_rejected_value:_%s/escaped_payload (0.02s)
+    --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/plugin_rejected_value:_%s/single-line_quote_and_backslash_escaping (0.05s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd	1.638s
+FAIL

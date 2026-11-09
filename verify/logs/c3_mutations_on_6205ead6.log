@@ -1,0 +1,52 @@
+== M0: unmodified production code (test instrumented with one t.Logf)
+        secrets_test.go:194: C3 Err inspected by the assertion: []
+        secrets_test.go:194: C3 Err inspected by the assertion: []
+        secrets_test.go:194: C3 Err inspected by the assertion: []
+    --- PASS: TestBuilder_buildConstructor_pluginSecretReference (0.00s)
+        --- PASS: TestBuilder_buildConstructor_pluginSecretReference/no_error (0.00s)
+        --- PASS: TestBuilder_buildConstructor_pluginSecretReference/secret_value_equal_to_a_word_of_the_error (0.00s)
+        --- PASS: TestBuilder_buildConstructor_pluginSecretReference/error_not_revealing_the_value (0.00s)
+        --- PASS: TestBuilder_buildConstructor_pluginSecretReference/decoding_error_quoting_the_value (0.00s)
+    PASS
+    ok  	github.com/traefik/traefik/v3/pkg/server/middleware	0.029s
+== M1: buildConstructor records the plugin failure with the resolved (secret) configuration in MiddlewareInfo.Err
+     pkg/server/middleware/middlewares.go | 1 +
+     1 file changed, 1 insertion(+)
+        secrets_test.go:194: C3 Err inspected by the assertion: ["plugin: rejected configuration map[test:map[nested:map[token:secret-token] token:secret-token]]"]
+        secrets_test.go:194: C3 Err inspected by the assertion: ["plugin: rejected configuration map[test:map[nested:map[token:secret-token] token:secret-token]]"]
+        secrets_test.go:194: C3 Err inspected by the assertion: ["plugin: rejected configuration map[test:map[nested:map[token:type] token:type]]"]
+    --- PASS: TestBuilder_buildConstructor_pluginSecretReference (0.00s)
+        --- PASS: TestBuilder_buildConstructor_pluginSecretReference/no_error (0.00s)
+        --- PASS: TestBuilder_buildConstructor_pluginSecretReference/error_not_revealing_the_value (0.00s)
+        --- PASS: TestBuilder_buildConstructor_pluginSecretReference/decoding_error_quoting_the_value (0.00s)
+        --- PASS: TestBuilder_buildConstructor_pluginSecretReference/secret_value_equal_to_a_word_of_the_error (0.00s)
+    PASS
+    ok  	github.com/traefik/traefik/v3/pkg/server/middleware	0.031s
+== M2: BuildMiddlewareChain no longer records any error (AddError calls removed)
+     pkg/server/middleware/middlewares.go | 3 ---
+     1 file changed, 3 deletions(-)
+        secrets_test.go:194: C3 Err inspected by the assertion: []
+        secrets_test.go:194: C3 Err inspected by the assertion: []
+        secrets_test.go:194: C3 Err inspected by the assertion: []
+    --- PASS: TestBuilder_buildConstructor_pluginSecretReference (0.00s)
+        --- PASS: TestBuilder_buildConstructor_pluginSecretReference/secret_value_equal_to_a_word_of_the_error (0.00s)
+        --- PASS: TestBuilder_buildConstructor_pluginSecretReference/no_error (0.00s)
+        --- PASS: TestBuilder_buildConstructor_pluginSecretReference/decoding_error_quoting_the_value (0.00s)
+        --- PASS: TestBuilder_buildConstructor_pluginSecretReference/error_not_revealing_the_value (0.00s)
+    PASS
+    ok  	github.com/traefik/traefik/v3/pkg/server/middleware	0.035s
+== M3 (sensitivity control): buildConstructor records the bare Secret value as an Err entry
+     pkg/server/middleware/middlewares.go | 3 +++
+     1 file changed, 3 insertions(+)
+        secrets_test.go:194: C3 Err inspected by the assertion: ["type"]
+        secrets_test.go:194: C3 Err inspected by the assertion: ["secret-token"]
+        secrets_test.go:194: C3 Err inspected by the assertion: ["secret-token"]
+    --- FAIL: TestBuilder_buildConstructor_pluginSecretReference (0.00s)
+        --- PASS: TestBuilder_buildConstructor_pluginSecretReference/no_error (0.00s)
+        --- FAIL: TestBuilder_buildConstructor_pluginSecretReference/secret_value_equal_to_a_word_of_the_error (0.00s)
+        --- FAIL: TestBuilder_buildConstructor_pluginSecretReference/decoding_error_quoting_the_value (0.00s)
+        --- FAIL: TestBuilder_buildConstructor_pluginSecretReference/error_not_revealing_the_value (0.00s)
+    FAIL
+    FAIL	github.com/traefik/traefik/v3/pkg/server/middleware	0.034s
+    FAIL
+== restored: 0 modified tracked files left

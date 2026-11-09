@@ -1,0 +1,15 @@
+middleware           | Secret.Data keys                   | reference in routing configuration               | ref key       | loader-selected key      | same?
+basic-auth-key       | auth                               | urn:k8s:secret:basic-auth-key:auth               | auth          | auth                     | true (ref key exists in Secret: true)
+basic-auth-key       | auth                               | urn:k8s:secret:basic-auth-key:auth               | auth          | auth                     | true (ref key exists in Secret: true)
+basic-users-key      | users                              | urn:k8s:secret:basic-users-key:users             | users         | users                    | true (ref key exists in Secret: true)
+digest-htdigest-key  | htdigest                           | urn:k8s:secret:digest-htdigest-key:htdigest      | htdigest      | htdigest                 | true (ref key exists in Secret: true)
+fwd-ca-cacrt         | ca.crt                             | "PEM-FROM-ca.crt"                                | (inline)      | -                        | n/a
+fwd-ca-tlsca         | tls.ca                             | "PEM-FROM-tls.ca"                                | (inline)      | -                        | n/a
+fwd-ca-custom        | corp-root.pem                      | "PEM-FROM-corp-root.pem"                         | (inline)      | -                        | n/a
+fwd-ca-both          | ca.crt,tls.ca                      | "PEM-FROM-tls.ca-IN-BOTH"                        | (inline)      | -                        | n/a
+redis-ca-tlsca       | tls.ca                             | "PEM-FROM-tls.ca"                                | (inline)      | -                        | n/a
+redis-ca-custom      | corp-root.pem                      | "PEM-FROM-corp-root.pem"                         | (inline)      | -                        | n/a
+redis-ca-both        | ca.crt,tls.ca                      | "PEM-FROM-tls.ca-IN-BOTH"                        | (inline)      | -                        | n/a
+--- PASS: TestVerifyC1_ReferenceKeyVersusLoaderSelectedKey (0.06s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd	0.080s

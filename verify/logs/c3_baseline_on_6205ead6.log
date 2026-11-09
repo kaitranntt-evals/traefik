@@ -1,0 +1,20 @@
+=== RUN   TestBuilder_buildConstructor_pluginSecretReference
+=== RUN   TestBuilder_buildConstructor_pluginSecretReference/no_error
+=== PAUSE TestBuilder_buildConstructor_pluginSecretReference/no_error
+=== RUN   TestBuilder_buildConstructor_pluginSecretReference/decoding_error_quoting_the_value
+=== PAUSE TestBuilder_buildConstructor_pluginSecretReference/decoding_error_quoting_the_value
+=== RUN   TestBuilder_buildConstructor_pluginSecretReference/secret_value_equal_to_a_word_of_the_error
+=== PAUSE TestBuilder_buildConstructor_pluginSecretReference/secret_value_equal_to_a_word_of_the_error
+=== RUN   TestBuilder_buildConstructor_pluginSecretReference/error_not_revealing_the_value
+=== PAUSE TestBuilder_buildConstructor_pluginSecretReference/error_not_revealing_the_value
+=== CONT  TestBuilder_buildConstructor_pluginSecretReference/no_error
+=== CONT  TestBuilder_buildConstructor_pluginSecretReference/error_not_revealing_the_value
+=== CONT  TestBuilder_buildConstructor_pluginSecretReference/secret_value_equal_to_a_word_of_the_error
+=== CONT  TestBuilder_buildConstructor_pluginSecretReference/decoding_error_quoting_the_value
+--- PASS: TestBuilder_buildConstructor_pluginSecretReference (0.00s)
+    --- PASS: TestBuilder_buildConstructor_pluginSecretReference/no_error (0.00s)
+    --- PASS: TestBuilder_buildConstructor_pluginSecretReference/error_not_revealing_the_value (0.00s)
+    --- PASS: TestBuilder_buildConstructor_pluginSecretReference/secret_value_equal_to_a_word_of_the_error (0.00s)
+    --- PASS: TestBuilder_buildConstructor_pluginSecretReference/decoding_error_quoting_the_value (0.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/server/middleware	0.039s

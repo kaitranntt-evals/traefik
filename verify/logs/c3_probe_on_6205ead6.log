@@ -1,0 +1,31 @@
+=== RUN   TestVerifyC3_CallPathLeavesErrEmpty
+C3 call path buildConstructor: returned error = "plugin: failed to decode configuration: 'token' expected type 'int', got unconvertible type 'string', value: 'urn:k8s:secret:pluginsecret:token'"
+C3 call path buildConstructor: MiddlewareInfo.Err = []string(nil) (len 0)
+C3 the test's assertion on that Err: rejected=false
+C3 call path BuildMiddlewareChain: MiddlewareInfo.Err = ["plugin: failed to decode configuration: 'token' expected type 'int', got unconvertible type 'string', value: 'urn:k8s:secret:pluginsecret:token'"]
+--- PASS: TestVerifyC3_CallPathLeavesErrEmpty (0.00s)
+=== RUN   TestVerifyC3_AssertionAgainstDefectiveStates
+C3 part 1: nil Err (nothing recorded)                   | defective=true  | assert.NotContains(Err, secret) rejects=false | assert.Equal([]string{expectedErr}, Err) rejects=true
+    c3_stored_diagnostic_assertion_probe_test.go:96: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/server/middleware/c3_stored_diagnostic_assertion_probe_test.go:96
+        	Error:      	Should be true
+        	Test:       	TestVerifyC3_AssertionAgainstDefectiveStates
+        	Messages:   	the stored-diagnostic assertion accepts a defective state: part 1: nil Err (nothing recorded)
+C3 part 1: empty Err (nothing recorded)                 | defective=true  | assert.NotContains(Err, secret) rejects=false | assert.Equal([]string{expectedErr}, Err) rejects=true
+    c3_stored_diagnostic_assertion_probe_test.go:96: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/server/middleware/c3_stored_diagnostic_assertion_probe_test.go:96
+        	Error:      	Should be true
+        	Test:       	TestVerifyC3_AssertionAgainstDefectiveStates
+        	Messages:   	the stored-diagnostic assertion accepts a defective state: part 1: empty Err (nothing recorded)
+C3 part 2: Err entry embedding the secret value         | defective=true  | assert.NotContains(Err, secret) rejects=false | assert.Equal([]string{expectedErr}, Err) rejects=true
+    c3_stored_diagnostic_assertion_probe_test.go:96: 
+        	Error Trace:	/home/ubuntu/repos/wt-6205ead6/pkg/server/middleware/c3_stored_diagnostic_assertion_probe_test.go:96
+        	Error:      	Should be true
+        	Test:       	TestVerifyC3_AssertionAgainstDefectiveStates
+        	Messages:   	the stored-diagnostic assertion accepts a defective state: part 2: Err entry embedding the secret value
+C3 control: Err entry equal to the bare secret value    | defective=true  | assert.NotContains(Err, secret) rejects=true  | assert.Equal([]string{expectedErr}, Err) rejects=true
+C3 control: sanitized Err entry                         | defective=false | assert.NotContains(Err, secret) rejects=false | assert.Equal([]string{expectedErr}, Err) rejects=false
+--- FAIL: TestVerifyC3_AssertionAgainstDefectiveStates (0.00s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/server/middleware	0.042s
+FAIL

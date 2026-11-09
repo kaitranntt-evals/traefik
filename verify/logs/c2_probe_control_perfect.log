@@ -1,0 +1,11 @@
+=== RUN   TestVerifyC2_RedisInlineURNPrefixedPassword
+C2 buildConstructor error: <nil>
+C2 constructor(next) [ratelimiter.New -> newRedisLimiter] error: <nil>
+C2 BuildMiddlewareChain(...).Then error: <nil>
+C2 runtime MiddlewareInfo: status="enabled" err=[]
+C2 configuration password after build: "urn:k8s:secret:this-is-my-literal-redis-password"
+C2 request through the limiter: HTTP 200
+C2 credentials received by the Redis server (client options in effect): [["hello" "3" "auth" "default" "urn:k8s:secret:this-is-my-literal-redis-password"] ["auth" "urn:k8s:secret:this-is-my-literal-redis-password"]]
+--- PASS: TestVerifyC2_RedisInlineURNPrefixedPassword (0.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/server/middleware	0.033s
