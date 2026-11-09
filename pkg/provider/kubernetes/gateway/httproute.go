@@ -126,7 +126,7 @@ func (p *Provider) loadHTTPRoute(ctx context.Context, gatewayName, gatewayNamesp
 
 	for ri, routeRule := range route.Spec.Rules {
 		for _, match := range routeRule.Matches {
-			rule, priority := buildMatchRule(hostnames, match)
+			rule, priority := buildMatchRule(hostnames, listener.MoreSpecificHostnames, match)
 			router := dynamic.Router{
 				// "default" stands for the default rule syntax in Traefik v3, i.e. the v3 syntax.
 				RuleSyntax:  "default",
@@ -724,25 +724,28 @@ func (p *Provider) loadServersTransport(namespace string, policy *gatev1.Backend
 	}
 }
 
+// hostExpression returns the Host matcher expression for the given hostname.
+// A Gateway API wildcard hostname matches one or more labels (*.example.com matches
+// both foo.example.com and bar.foo.example.com), which is the Traefik double wildcard.
+func hostExpression(hostname gatev1.Hostname) string {
+	host := string(hostname)
+	if strings.HasPrefix(host, "*.") {
+		return "*" + host
+	}
+
+	return host
+}
+
 func buildHostRule(hostnames []gatev1.Hostname) (string, int) {
 	var rules []string
 	var priority int
 
 	for _, hostname := range hostnames {
-		host := string(hostname)
-
-		if priority < len(host) {
-			priority = len(host)
+		if priority < len(hostname) {
+			priority = len(hostname)
 		}
 
-		wildcard := strings.Count(host, "*")
-		if wildcard == 0 {
-			rules = append(rules, fmt.Sprintf("Host(%q)", host))
-			continue
-		}
-
-		host = strings.Replace(regexp.QuoteMeta(host), `\*\.`, `[a-z0-9-\.]+\.`, 1)
-		rules = append(rules, fmt.Sprintf("HostRegexp(%q)", fmt.Sprintf("^%s$", host)))
+		rules = append(rules, fmt.Sprintf("Host(%q)", hostExpression(hostname)))
 	}
 
 	switch len(rules) {
@@ -753,6 +756,30 @@ func buildHostRule(hostnames []gatev1.Hostname) (string, int) {
 	default:
 		return fmt.Sprintf("(%s)", strings.Join(rules, " || ")), priority
 	}
+}
+
+// buildHostExclusionRule builds the rule part discarding the requests for the excluded hostnames.
+// Listener isolation requires a request to be served only by the routes of the listener
+// with the most specific hostname matching it, so the routes of a listener must not
+// match the requests for the hostnames of the more specific listeners of the same port.
+func buildHostExclusionRule(hostnames, excludedHostnames []gatev1.Hostname) string {
+	var rules []string
+	for _, excludedHostname := range excludedHostnames {
+		// An excluded hostname that none of the route hostnames can match is left out,
+		// as it would only make the rule harder to read.
+		if _, ok := findMatchingHostnames(&excludedHostname, hostnames); !ok {
+			continue
+		}
+
+		rules = append(rules, fmt.Sprintf("!Host(%q)", hostExpression(excludedHostname)))
+	}
+
+	return strings.Join(rules, " && ")
+}
+
+// joinRules joins the non-empty rules with the AND operator.
+func joinRules(rules ...string) string {
+	return strings.Join(slices.DeleteFunc(rules, func(rule string) bool { return rule == "" }), " && ")
 }
 
 // buildMatchRule builds the route rule and computes its priority.
@@ -766,7 +793,8 @@ func buildHostRule(hostnames []gatev1.Hostname) (string, int) {
 // * Largest number of query param matches (+10 each).
 //
 // In case of multiple matches for a route, the maximum priority among all matches is retain.
-func buildMatchRule(hostnames []gatev1.Hostname, match gatev1.HTTPRouteMatch) (string, int) {
+// The excluded hostnames are the ones of the more specific listeners, see buildHostExclusionRule.
+func buildMatchRule(hostnames, excludedHostnames []gatev1.Hostname, match gatev1.HTTPRouteMatch) (string, int) {
 	path := ptr.Deref(match.Path, gatev1.HTTPPathMatch{
 		Type:  new(gatev1.PathMatchPathPrefix),
 		Value: new("/"),
@@ -795,14 +823,12 @@ func buildMatchRule(hostnames []gatev1.Hostname, match gatev1.HTTPRouteMatch) (s
 	matchRulesStr := strings.Join(matchRules, " && ")
 
 	hostRule, hostPriority := buildHostRule(hostnames)
-
-	if hostRule == "" {
-		return matchRulesStr, priority
+	if hostRule != "" {
+		// A route with a host should match over the same route with no host.
+		priority += hostPriority
 	}
 
-	// A route with a host should match over the same route with no host.
-	priority += hostPriority
-	return hostRule + " && " + matchRulesStr, priority
+	return joinRules(hostRule, buildHostExclusionRule(hostnames, excludedHostnames), matchRulesStr), priority
 }
 
 func buildPathRule(pathMatch gatev1.HTTPPathMatch) (string, int) {

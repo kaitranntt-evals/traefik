@@ -24,6 +24,7 @@ The table below lists all the available matchers:
 | <a id="opt-HeaderRegexpkey-regexp" href="#opt-HeaderRegexpkey-regexp" title="#opt-HeaderRegexpkey-regexp">[```HeaderRegexp(`key`, `regexp`)```](#header-and-headerregexp)</a> | Matches requests containing a header named `key` matching `regexp`.            |
 | <a id="opt-Hostdomain" href="#opt-Hostdomain" title="#opt-Hostdomain">[```Host(`domain`)```](#host-and-hostregexp)</a> | Matches requests host set to `domain`. Supports wildcard subdomain matching (e.g. `*.example.com`, `**.example.com`). |
 | <a id="opt-HostRegexpregexp" href="#opt-HostRegexpregexp" title="#opt-HostRegexpregexp">[```HostRegexp(`regexp`)```](#host-and-hostregexp)</a> | Matches requests host matching `regexp`.                                       |
+| <a id="opt-HostSNIdomain" href="#opt-HostSNIdomain" title="#opt-HostSNIdomain">[```HostSNI(`domain`)```](#hostsni)</a> | Matches requests carried by a TLS connection whose Server Name Indication is `domain`. Supports wildcard subdomain matching (e.g. `*.example.com`, `**.example.com`). |
 | <a id="opt-Methodmethod" href="#opt-Methodmethod" title="#opt-Methodmethod">[```Method(`method`)```](#method)</a> | Matches requests method set to `method`.                                       |
 | <a id="opt-Pathpath" href="#opt-Pathpath" title="#opt-Pathpath">[```Path(`path`)```](#path-pathprefix-and-pathregexp)</a> | Matches requests path set to `path`.                                           |
 | <a id="opt-PathPrefixprefix" href="#opt-PathPrefixprefix" title="#opt-PathPrefixprefix">[```PathPrefix(`prefix`)```](#path-pathprefix-and-pathregexp)</a> | Matches requests path prefix set to `prefix`.                                  |
@@ -76,6 +77,27 @@ These matchers will match the request's host in lowercase.
 | <a id="opt-Match-requests-sent-to-any-subdomain-of-example-com" href="#opt-Match-requests-sent-to-any-subdomain-of-example-com" title="#opt-Match-requests-sent-to-any-subdomain-of-example-com">Match requests sent to any subdomain of `example.com`.</a> | ```Host(`**.example.com`)``` |
 | <a id="opt-Match-requests-with-Host-set-to-either-example-com-or-example-org" href="#opt-Match-requests-with-Host-set-to-either-example-com-or-example-org" title="#opt-Match-requests-with-Host-set-to-either-example-com-or-example-org">Match requests with `Host` set to either `example.com` or `example.org`.</a> | ```HostRegexp(`^example\.(com|org)$`)``` |
 | <a id="opt-Match-Host-case-insensitively" href="#opt-Match-Host-case-insensitively" title="#opt-Match-Host-case-insensitively">Match `Host` [case-insensitively](https://en.wikipedia.org/wiki/Case_sensitivity).</a> | ```HostRegexp(`(?i)^example\.(com|org)$`)``` |
+
+### HostSNI
+
+The `HostSNI` matcher allows matching requests based on the Server Name Indication (SNI) of the TLS connection carrying them,
+that is the server name the client indicated when establishing the connection, rather than the host of the request itself.
+
+As the Server Name Indication is an extension of the TLS protocol, requests that are not carried by a TLS connection never match,
+except with the ```HostSNI(`*`)``` catch-all, which matches every request as ```Host(`*`)``` does.
+
+This matcher does not support non-ASCII characters, use punycode encoded values ([rfc 3492](https://tools.ietf.org/html/rfc3492)) to match such domains.
+It supports the same wildcard subdomain matching as the `Host` matcher.
+
+Combined with the `Host` matcher, it allows detecting the requests misdirected to a router:
+an HTTP/2 client can reuse a connection established for a server name to send requests for another host covered by the same certificate,
+which the server should reject with a `421 Misdirected Request` status (see [RFC 7540, section 9.1.2](https://datatracker.ietf.org/doc/html/rfc7540#section-9.1.2)).
+
+| Behavior                                                        | Rule                                                                    |
+|-----------------------------------------------------------------|:------------------------------------------------------------------------|
+| <a id="opt-Match-requests-carried-by-a-TLS-connection-established-for-example-com" href="#opt-Match-requests-carried-by-a-TLS-connection-established-for-example-com" title="#opt-Match-requests-carried-by-a-TLS-connection-established-for-example-com">Match requests carried by a TLS connection established for `example.com`.</a> | ```HostSNI(`example.com`)``` |
+| <a id="opt-Match-requests-carried-by-a-TLS-connection-established-for-any-subdomain-of-example-com" href="#opt-Match-requests-carried-by-a-TLS-connection-established-for-any-subdomain-of-example-com" title="#opt-Match-requests-carried-by-a-TLS-connection-established-for-any-subdomain-of-example-com">Match requests carried by a TLS connection established for any subdomain of `example.com`.</a> | ```HostSNI(`**.example.com`)``` |
+| <a id="opt-Match-requests-for-example-com-misdirected-through-a-TLS-connection-established-for-another-server-name" href="#opt-Match-requests-for-example-com-misdirected-through-a-TLS-connection-established-for-another-server-name" title="#opt-Match-requests-for-example-com-misdirected-through-a-TLS-connection-established-for-another-server-name">Match requests for `example.com` misdirected through a TLS connection established for another server name.</a> | ```Host(`example.com`) && !HostSNI(`example.com`)``` |
 
 ### Method
 

@@ -127,7 +127,7 @@ func (p *Provider) loadGRPCRoute(ctx context.Context, gatewayName, gatewayNamesp
 		}
 
 		for _, match := range matches {
-			rule, priority := buildGRPCMatchRule(hostnames, match)
+			rule, priority := buildGRPCMatchRule(hostnames, listener.MoreSpecificHostnames, match)
 
 			router := dynamic.Router{
 				// "default" stands for the default rule syntax in Traefik v3, i.e. the v3 syntax.
@@ -475,7 +475,9 @@ func (p *Provider) loadGRPCServers(gatewayName, namespace string, route *gatev1.
 	return lb, serversTransport, nil
 }
 
-func buildGRPCMatchRule(hostnames []gatev1.Hostname, match gatev1.GRPCRouteMatch) (string, int) {
+// buildGRPCMatchRule builds the route rule and computes its priority.
+// The excluded hostnames are the ones of the more specific listeners, see buildHostExclusionRule.
+func buildGRPCMatchRule(hostnames, excludedHostnames []gatev1.Hostname, match gatev1.GRPCRouteMatch) (string, int) {
 	var matchRules []string
 
 	methodRule := buildGRPCMethodRule(match.Method)
@@ -485,12 +487,13 @@ func buildGRPCMatchRule(hostnames []gatev1.Hostname, match gatev1.GRPCRouteMatch
 	matchRules = append(matchRules, headerRules...)
 
 	matchRulesStr := strings.Join(matchRules, " && ")
+	exclusionRule := buildHostExclusionRule(hostnames, excludedHostnames)
 
 	hostRule, priority := buildHostRule(hostnames)
 	if hostRule == "" {
-		return matchRulesStr, len(matchRulesStr)
+		return joinRules(exclusionRule, matchRulesStr), len(matchRulesStr)
 	}
-	return hostRule + " && " + matchRulesStr, priority + len(matchRulesStr)
+	return joinRules(hostRule, exclusionRule, matchRulesStr), priority + len(matchRulesStr)
 }
 
 func buildGRPCMethodRule(method *gatev1.GRPCMethodMatch) string {

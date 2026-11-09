@@ -18,6 +18,7 @@ var httpFuncs = matcherBuilderFuncs{
 	"Method":       expectNParameters(method, 1),
 	"Host":         expectNParameters(host, 1),
 	"HostRegexp":   expectNParameters(hostRegexp, 1),
+	"HostSNI":      expectNParameters(hostSNI, 1),
 	"Path":         expectNParameters(path, 1),
 	"PathRegexp":   expectNParameters(pathRegexp, 1),
 	"PathPrefix":   expectNParameters(pathPrefix, 1),
@@ -143,6 +144,40 @@ func hostRegexp(tree *matchersTree, hosts ...string) error {
 	tree.matcher = func(req *http.Request) bool {
 		return re.MatchString(requestdecorator.GetCanonicalHost(req.Context())) ||
 			re.MatchString(requestdecorator.GetCNAMEFlatten(req.Context()))
+	}
+
+	return nil
+}
+
+// hostSNI matches the server name the client indicated (SNI) when establishing the TLS connection carrying the request.
+// Comparing it with the Host allows detecting the requests misdirected to a router,
+// typically when an HTTP/2 client reuses a connection established for another server name (RFC 7540, section 9.1.2).
+func hostSNI(tree *matchersTree, hosts ...string) error {
+	hostExpr := hosts[0]
+
+	if hostExpr == "*" {
+		// As for the TCP HostSNI matcher, * matches every server name, empty or not,
+		// which includes the requests that do not come through a TLS connection.
+		tree.matcher = func(req *http.Request) bool { return true }
+		return nil
+	}
+
+	if !muxer.IsASCII(hostExpr) {
+		return fmt.Errorf("invalid value %q for HostSNI matcher, non-ASCII characters are not allowed", hostExpr)
+	}
+
+	if strings.Contains(hostExpr, "*") && !wildcardHost.MatchString(hostExpr) {
+		return fmt.Errorf("invalid value %q for HostSNI matcher, a wildcard is either the catch-all \"*\" or a \"*.\" or \"**.\" prefix", hostExpr)
+	}
+
+	hostExpr = strings.TrimSuffix(strings.ToLower(hostExpr), ".")
+
+	tree.matcher = func(req *http.Request) bool {
+		if req.TLS == nil || req.TLS.ServerName == "" {
+			return false
+		}
+
+		return muxer.DomainMatchHostExpression(req.TLS.ServerName, hostExpr)
 	}
 
 	return nil

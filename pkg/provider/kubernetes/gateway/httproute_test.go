@@ -45,7 +45,7 @@ func Test_buildHostRule(t *testing.T) {
 				"bar.foo",
 				"foo.foo",
 			},
-			expectedRule:     `(HostRegexp("^[a-z0-9-\\.]+\\.bar\\.foo$") || Host("bar.foo") || Host("foo.foo"))`,
+			expectedRule:     `(Host("**.bar.foo") || Host("bar.foo") || Host("foo.foo"))`,
 			expectedPriority: 9,
 		},
 		{
@@ -53,7 +53,7 @@ func Test_buildHostRule(t *testing.T) {
 			hostnames: []gatev1.Hostname{
 				"*.bar.foo",
 			},
-			expectedRule:     `HostRegexp("^[a-z0-9-\\.]+\\.bar\\.foo$")`,
+			expectedRule:     `Host("**.bar.foo")`,
 			expectedPriority: 9,
 		},
 	}
@@ -69,14 +69,61 @@ func Test_buildHostRule(t *testing.T) {
 	}
 }
 
+func Test_buildHostExclusionRule(t *testing.T) {
+	testCases := []struct {
+		desc              string
+		hostnames         []gatev1.Hostname
+		excludedHostnames []gatev1.Hostname
+		expectedRule      string
+	}{
+		{
+			desc:         "No excluded hostname",
+			hostnames:    []gatev1.Hostname{"foo.example.com"},
+			expectedRule: "",
+		},
+		{
+			desc:              "No hostname excludes every excluded hostname",
+			excludedHostnames: []gatev1.Hostname{"*.foo.example.com", "abc.foo.example.com"},
+			expectedRule:      `!Host("**.foo.example.com") && !Host("abc.foo.example.com")`,
+		},
+		{
+			desc:              "Wildcard hostname excludes the hostnames it covers",
+			hostnames:         []gatev1.Hostname{"*.example.com"},
+			excludedHostnames: []gatev1.Hostname{"*.foo.example.com", "abc.foo.example.com", "example.org"},
+			expectedRule:      `!Host("**.foo.example.com") && !Host("abc.foo.example.com")`,
+		},
+		{
+			desc:              "Hostname excludes the wildcard covering it",
+			hostnames:         []gatev1.Hostname{"abc.foo.example.com"},
+			excludedHostnames: []gatev1.Hostname{"*.foo.example.com", "example.org"},
+			expectedRule:      `!Host("**.foo.example.com")`,
+		},
+		{
+			desc:              "Hostnames not matching the excluded hostnames",
+			hostnames:         []gatev1.Hostname{"example.org", "*.example.org"},
+			excludedHostnames: []gatev1.Hostname{"*.example.com", "abc.foo.example.com"},
+			expectedRule:      "",
+		},
+	}
+
+	for _, test := range testCases {
+		t.Run(test.desc, func(t *testing.T) {
+			t.Parallel()
+
+			assert.Equal(t, test.expectedRule, buildHostExclusionRule(test.hostnames, test.excludedHostnames))
+		})
+	}
+}
+
 func Test_buildMatchRule(t *testing.T) {
 	testCases := []struct {
-		desc             string
-		match            gatev1.HTTPRouteMatch
-		hostnames        []gatev1.Hostname
-		expectedRule     string
-		expectedPriority int
-		expectedError    bool
+		desc              string
+		match             gatev1.HTTPRouteMatch
+		hostnames         []gatev1.Hostname
+		excludedHostnames []gatev1.Hostname
+		expectedRule      string
+		expectedPriority  int
+		expectedError     bool
 	}{
 		{
 			desc:             "Empty rule and matches",
@@ -88,6 +135,25 @@ func Test_buildMatchRule(t *testing.T) {
 			hostnames:        []gatev1.Hostname{"foo.com"},
 			expectedRule:     `Host("foo.com") && PathPrefix("/")`,
 			expectedPriority: 8,
+		},
+		{
+			desc:              "Excluded hostnames without Host rule",
+			excludedHostnames: []gatev1.Hostname{"*.foo.com", "bar.foo.com"},
+			expectedRule:      `!Host("**.foo.com") && !Host("bar.foo.com") && PathPrefix("/")`,
+			expectedPriority:  1,
+		},
+		{
+			desc:              "Excluded hostnames with Host rule",
+			hostnames:         []gatev1.Hostname{"*.com"},
+			excludedHostnames: []gatev1.Hostname{"*.foo.com", "bar.foo.com", "foo.org"},
+			match: gatev1.HTTPRouteMatch{
+				Path: new(gatev1.HTTPPathMatch{
+					Type:  new(gatev1.PathMatchExact),
+					Value: new("/foo"),
+				}),
+			},
+			expectedRule:     `Host("**.com") && !Host("**.foo.com") && !Host("bar.foo.com") && Path("/foo")`,
+			expectedPriority: 100005,
 		},
 		{
 			desc: "One HTTPRouteMatch with nil HTTPHeaderMatch",
@@ -197,7 +263,7 @@ func Test_buildMatchRule(t *testing.T) {
 		t.Run(test.desc, func(t *testing.T) {
 			t.Parallel()
 
-			rule, priority := buildMatchRule(test.hostnames, test.match)
+			rule, priority := buildMatchRule(test.hostnames, test.excludedHostnames, test.match)
 			assert.Equal(t, test.expectedRule, rule)
 			assert.Equal(t, test.expectedPriority, priority)
 		})

@@ -9,12 +9,13 @@ import (
 
 func Test_buildGRPCMatchRule(t *testing.T) {
 	testCases := []struct {
-		desc             string
-		match            gatev1.GRPCRouteMatch
-		hostnames        []gatev1.Hostname
-		expectedRule     string
-		expectedPriority int
-		expectedError    bool
+		desc              string
+		match             gatev1.GRPCRouteMatch
+		hostnames         []gatev1.Hostname
+		excludedHostnames []gatev1.Hostname
+		expectedRule      string
+		expectedPriority  int
+		expectedError     bool
 	}{
 		{
 			desc:             "Empty rule and matches",
@@ -26,6 +27,19 @@ func Test_buildGRPCMatchRule(t *testing.T) {
 			hostnames:        []gatev1.Hostname{"foo.com"},
 			expectedRule:     `Host("foo.com") && PathPrefix("/")`,
 			expectedPriority: 22,
+		},
+		{
+			desc:              "Excluded hostnames without Host rule",
+			excludedHostnames: []gatev1.Hostname{"*.foo.com", "bar.foo.com"},
+			expectedRule:      `!Host("**.foo.com") && !Host("bar.foo.com") && PathPrefix("/")`,
+			expectedPriority:  15,
+		},
+		{
+			desc:              "Excluded hostnames with Host rule",
+			hostnames:         []gatev1.Hostname{"*.com"},
+			excludedHostnames: []gatev1.Hostname{"*.foo.com", "bar.foo.com", "foo.org"},
+			expectedRule:      `Host("**.com") && !Host("**.foo.com") && !Host("bar.foo.com") && PathPrefix("/")`,
+			expectedPriority:  20,
 		},
 		{
 			desc: "One GRPCRouteMatch with no GRPCHeaderMatch",
@@ -84,7 +98,7 @@ func Test_buildGRPCMatchRule(t *testing.T) {
 		t.Run(test.desc, func(t *testing.T) {
 			t.Parallel()
 
-			rule, priority := buildGRPCMatchRule(test.hostnames, test.match)
+			rule, priority := buildGRPCMatchRule(test.hostnames, test.excludedHostnames, test.match)
 			assert.Equal(t, test.expectedRule, rule)
 			assert.Equal(t, test.expectedPriority, priority)
 		})

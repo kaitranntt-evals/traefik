@@ -3,6 +3,7 @@ package gateway
 import (
 	"errors"
 	"fmt"
+	"math"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -1022,27 +1023,27 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				},
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
-						"httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-103fc02323de64ca0fc6": {
+						"httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-5af0a8dc466bcb103301": {
 							EntryPoints: []string{"web"},
-							Service:     "httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-103fc02323de64ca0fc6-wrr",
-							Rule:        `(Host("foo.com") || HostRegexp("^[a-z0-9-\\.]+\\.bar\\.com$")) && PathPrefix("/")`,
+							Service:     "httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-5af0a8dc466bcb103301-wrr",
+							Rule:        `(Host("foo.com") || Host("**.bar.com")) && PathPrefix("/")`,
 							Priority:    11,
 							RuleSyntax:  "default",
 						},
 					},
 					Middlewares: map[string]*dynamic.Middleware{},
 					Services: map[string]*dynamic.Service{
-						"httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-103fc02323de64ca0fc6-wrr": {
+						"httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-5af0a8dc466bcb103301-wrr": {
 							Weighted: &dynamic.WeightedRoundRobin{
 								Services: []dynamic.WRRService{
 									{
-										Name:   "httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-103fc02323de64ca0fc6-svc-default-whoami-0",
+										Name:   "httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-5af0a8dc466bcb103301-svc-default-whoami-0",
 										Weight: new(1),
 									},
 								},
 							},
 						},
-						"httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-103fc02323de64ca0fc6-svc-default-whoami-0": {
+						"httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-5af0a8dc466bcb103301-svc-default-whoami-0": {
 							LoadBalancer: &dynamic.ServersLoadBalancer{
 								Strategy: dynamic.BalancerStrategyWRR,
 								Servers: []dynamic.Server{
@@ -1084,27 +1085,27 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				},
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
-						"httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-bbb3a544c0474e2ab466": {
+						"httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-764e519b9557509caa7d": {
 							EntryPoints: []string{"web"},
-							Service:     "httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-bbb3a544c0474e2ab466-wrr",
-							Rule:        `(Host("foo.com") || HostRegexp("^[a-z0-9-\\.]+\\.foo\\.com$")) && PathPrefix("/")`,
+							Service:     "httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-764e519b9557509caa7d-wrr",
+							Rule:        `(Host("foo.com") || Host("**.foo.com")) && PathPrefix("/")`,
 							Priority:    11,
 							RuleSyntax:  "default",
 						},
 					},
 					Middlewares: map[string]*dynamic.Middleware{},
 					Services: map[string]*dynamic.Service{
-						"httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-bbb3a544c0474e2ab466-wrr": {
+						"httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-764e519b9557509caa7d-wrr": {
 							Weighted: &dynamic.WeightedRoundRobin{
 								Services: []dynamic.WRRService{
 									{
-										Name:   "httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-bbb3a544c0474e2ab466-svc-default-whoami-0",
+										Name:   "httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-764e519b9557509caa7d-svc-default-whoami-0",
 										Weight: new(1),
 									},
 								},
 							},
 						},
-						"httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-bbb3a544c0474e2ab466-svc-default-whoami-0": {
+						"httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-764e519b9557509caa7d-svc-default-whoami-0": {
 							LoadBalancer: &dynamic.ServersLoadBalancer{
 								Strategy: dynamic.BalancerStrategyWRR,
 								Servers: []dynamic.Server{
@@ -10315,6 +10316,705 @@ func TestCrossProviderNamespaces_TLSRoute(t *testing.T) {
 			}
 
 			assert.Equal(t, test.wantError, hasError)
+		})
+	}
+}
+
+func Test_isMoreSpecificHostname(t *testing.T) {
+	testCases := []struct {
+		desc      string
+		candidate *gatev1.Hostname
+		hostname  *gatev1.Hostname
+		expected  bool
+	}{
+		{
+			desc:     "No candidate hostname",
+			hostname: new(gatev1.Hostname("foo.example.com")),
+			expected: false,
+		},
+		{
+			desc:      "No hostname",
+			candidate: new(gatev1.Hostname("*.example.com")),
+			expected:  true,
+		},
+		{
+			desc:      "No candidate hostname and no hostname",
+			candidate: nil,
+			hostname:  nil,
+			expected:  false,
+		},
+		{
+			desc:      "Same hostnames",
+			candidate: new(gatev1.Hostname("*.example.com")),
+			hostname:  new(gatev1.Hostname("*.example.com")),
+			expected:  false,
+		},
+		{
+			desc:      "Hostname covered by the wildcard",
+			candidate: new(gatev1.Hostname("foo.example.com")),
+			hostname:  new(gatev1.Hostname("*.example.com")),
+			expected:  true,
+		},
+		{
+			desc:      "Nested hostname covered by the wildcard",
+			candidate: new(gatev1.Hostname("abc.foo.example.com")),
+			hostname:  new(gatev1.Hostname("*.example.com")),
+			expected:  true,
+		},
+		{
+			desc:      "Wildcard covered by the wildcard",
+			candidate: new(gatev1.Hostname("*.foo.example.com")),
+			hostname:  new(gatev1.Hostname("*.example.com")),
+			expected:  true,
+		},
+		{
+			desc:      "Wildcard covering the hostname",
+			candidate: new(gatev1.Hostname("*.example.com")),
+			hostname:  new(gatev1.Hostname("foo.example.com")),
+			expected:  false,
+		},
+		{
+			desc:      "Wildcard covering the wildcard",
+			candidate: new(gatev1.Hostname("*.example.com")),
+			hostname:  new(gatev1.Hostname("*.foo.example.com")),
+			expected:  false,
+		},
+		{
+			desc:      "Apex of the wildcard",
+			candidate: new(gatev1.Hostname("example.com")),
+			hostname:  new(gatev1.Hostname("*.example.com")),
+			expected:  false,
+		},
+		{
+			desc:      "Unrelated hostnames",
+			candidate: new(gatev1.Hostname("foo.example.org")),
+			hostname:  new(gatev1.Hostname("*.example.com")),
+			expected:  false,
+		},
+		{
+			desc:      "Different exact hostnames",
+			candidate: new(gatev1.Hostname("bar.example.com")),
+			hostname:  new(gatev1.Hostname("foo.example.com")),
+			expected:  false,
+		},
+	}
+
+	for _, test := range testCases {
+		t.Run(test.desc, func(t *testing.T) {
+			t.Parallel()
+
+			assert.Equal(t, test.expected, isMoreSpecificHostname(test.candidate, test.hostname))
+		})
+	}
+}
+
+func Test_buildMisdirectedRequestRule(t *testing.T) {
+	testCases := []struct {
+		desc                  string
+		hostname              *gatev1.Hostname
+		moreSpecificHostnames []gatev1.Hostname
+		expectedRule          string
+	}{
+		{
+			desc:         "No hostname and no more specific hostname",
+			expectedRule: "",
+		},
+		{
+			desc:         "Hostname without more specific hostname",
+			hostname:     new(gatev1.Hostname("second-example.org")),
+			expectedRule: `Host("second-example.org") && !HostSNI("second-example.org")`,
+		},
+		{
+			desc:                  "Wildcard hostname with more specific hostname",
+			hostname:              new(gatev1.Hostname("*.wildcard.org")),
+			moreSpecificHostnames: []gatev1.Hostname{"fourth-example.wildcard.org"},
+			expectedRule:          `Host("**.wildcard.org") && !Host("fourth-example.wildcard.org") && (!HostSNI("**.wildcard.org") || HostSNI("fourth-example.wildcard.org"))`,
+		},
+		{
+			desc:                  "No hostname with more specific hostnames",
+			moreSpecificHostnames: []gatev1.Hostname{"*.wildcard.org", "second-example.org"},
+			expectedRule:          `!Host("**.wildcard.org") && !Host("second-example.org") && (HostSNI("**.wildcard.org") || HostSNI("second-example.org"))`,
+		},
+		{
+			desc:                  "No hostname with one more specific hostname",
+			moreSpecificHostnames: []gatev1.Hostname{"second-example.org"},
+			expectedRule:          `!Host("second-example.org") && HostSNI("second-example.org")`,
+		},
+	}
+
+	for _, test := range testCases {
+		t.Run(test.desc, func(t *testing.T) {
+			t.Parallel()
+
+			assert.Equal(t, test.expectedRule, buildMisdirectedRequestRule(test.hostname, test.moreSpecificHostnames))
+		})
+	}
+}
+
+func Test_isolateListeners(t *testing.T) {
+	gateway := &gatev1.Gateway{ObjectMeta: metav1.ObjectMeta{Name: "my-gateway", Namespace: "default"}}
+
+	listeners := []gatewayListener{
+		{Name: "https", Port: 443, Protocol: gatev1.HTTPSProtocolType, EPName: "websecure", Attached: true},
+		{Name: "https-with-hostname", Port: 443, Protocol: gatev1.HTTPSProtocolType, Hostname: new(gatev1.Hostname("second-example.org")), EPName: "websecure", Attached: true},
+		{Name: "https-with-wildcard-hostname", Port: 443, Protocol: gatev1.HTTPSProtocolType, Hostname: new(gatev1.Hostname("*.wildcard.org")), EPName: "websecure", Attached: true},
+		// Not attached, this listener must neither be isolated nor isolate the others.
+		{Name: "https-detached", Port: 443, Protocol: gatev1.HTTPSProtocolType, Hostname: new(gatev1.Hostname("fourth-example.wildcard.org")), EPName: "websecure"},
+		// Alone on its port, this listener has nothing to be isolated from.
+		{Name: "https-alone", Port: 8443, Protocol: gatev1.HTTPSProtocolType, Hostname: new(gatev1.Hostname("alone.example.org")), EPName: "other", Attached: true},
+		// HTTP listeners are isolated from each other, but never from the HTTPS ones.
+		{Name: "http", Port: 80, Protocol: gatev1.HTTPProtocolType, EPName: "web", Attached: true},
+		{Name: "http-with-wildcard-hostname", Port: 80, Protocol: gatev1.HTTPProtocolType, Hostname: new(gatev1.Hostname("*.wildcard.org")), EPName: "web", Attached: true},
+		// Only HTTP and HTTPS listeners are concerned.
+		{Name: "tls", Port: 443, Protocol: gatev1.TLSProtocolType, Hostname: new(gatev1.Hostname("tls.example.org")), EPName: "websecure", Attached: true},
+	}
+
+	conf := &dynamic.Configuration{
+		HTTP: &dynamic.HTTPConfiguration{
+			Routers:  map[string]*dynamic.Router{},
+			Services: map[string]*dynamic.Service{},
+		},
+	}
+
+	isolateListeners(gateway, listeners, conf)
+
+	moreSpecificHostnames := map[string][]gatev1.Hostname{}
+	for _, listener := range listeners {
+		moreSpecificHostnames[listener.Name] = listener.MoreSpecificHostnames
+	}
+	assert.Equal(t, map[string][]gatev1.Hostname{
+		"https":                        {"*.wildcard.org", "second-example.org"},
+		"https-with-hostname":          nil,
+		"https-with-wildcard-hostname": nil,
+		"https-detached":               nil,
+		"https-alone":                  nil,
+		"http":                         {"*.wildcard.org"},
+		"http-with-wildcard-hostname":  nil,
+		"tls":                          nil,
+	}, moreSpecificHostnames)
+
+	// Only the HTTPS listeners sharing their port get a router rejecting the misdirected requests.
+	var rules []string
+	for name, router := range conf.HTTP.Routers {
+		rules = append(rules, router.Rule)
+
+		assert.Equal(t, []string{"websecure"}, router.EntryPoints)
+		assert.Equal(t, math.MaxInt32, router.Priority)
+		assert.Equal(t, "default", router.RuleSyntax)
+		assert.Equal(t, &dynamic.RouterTLSConfig{}, router.TLS)
+		assert.Equal(t, name+"-wrr", router.Service)
+
+		require.Contains(t, conf.HTTP.Services, router.Service)
+		assert.Equal(t, &dynamic.Service{
+			Weighted: &dynamic.WeightedRoundRobin{
+				Services: []dynamic.WRRService{
+					{
+						Name:   "misdirected-request",
+						Status: new(http.StatusMisdirectedRequest),
+						Weight: new(1),
+					},
+				},
+			},
+		}, conf.HTTP.Services[router.Service])
+	}
+	assert.Len(t, conf.HTTP.Services, len(conf.HTTP.Routers))
+	assert.ElementsMatch(t, []string{
+		`!Host("**.wildcard.org") && !Host("second-example.org") && (HostSNI("**.wildcard.org") || HostSNI("second-example.org"))`,
+		`Host("second-example.org") && !HostSNI("second-example.org")`,
+		`Host("**.wildcard.org") && !HostSNI("**.wildcard.org")`,
+	}, rules)
+}
+
+func TestLoadHTTPRoutes_listenerIsolation(t *testing.T) {
+	testCases := []struct {
+		desc        string
+		paths       []string
+		entryPoints map[string]Entrypoint
+		expected    *dynamic.Configuration
+	}{
+		{
+			desc:  "HTTP listeners sharing a port",
+			paths: []string{"services.yml", "httproute/with_listener_isolation.yml"},
+			entryPoints: map[string]Entrypoint{"web": {
+				Address: ":80",
+			}},
+			expected: &dynamic.Configuration{
+				UDP: &dynamic.UDPConfiguration{
+					Routers:  map[string]*dynamic.UDPRouter{},
+					Services: map[string]*dynamic.UDPService{},
+				},
+				TCP: &dynamic.TCPConfiguration{
+					Routers:           map[string]*dynamic.TCPRouter{},
+					Middlewares:       map[string]*dynamic.TCPMiddleware{},
+					Services:          map[string]*dynamic.TCPService{},
+					ServersTransports: map[string]*dynamic.TCPServersTransport{},
+				},
+				HTTP: &dynamic.HTTPConfiguration{
+					Routers: map[string]*dynamic.Router{
+						"httproute-default-attaches-to-abc-foo-example-com-gw-default-my-gateway-ep-web-0-ee0d5da78ccdb047521a": {
+							EntryPoints: []string{"web"},
+							Service:     "httproute-default-attaches-to-abc-foo-example-com-gw-default-my-gateway-ep-web-0-ee0d5da78ccdb047521a-wrr",
+							Rule:        `Host("abc.foo.example.com") && (Path("/abc-foo-example-com") || PathPrefix("/abc-foo-example-com/"))`,
+							Priority:    12020,
+							RuleSyntax:  "default",
+						},
+						"httproute-default-attaches-to-empty-hostname-gw-default-my-gateway-ep-web-0-89c9a004c313ebd95998": {
+							EntryPoints: []string{"web"},
+							Service:     "httproute-default-attaches-to-empty-hostname-gw-default-my-gateway-ep-web-0-89c9a004c313ebd95998-wrr",
+							Rule:        `!Host("**.example.com") && !Host("**.foo.example.com") && !Host("abc.foo.example.com") && (Path("/empty-hostname") || PathPrefix("/empty-hostname/"))`,
+							Priority:    11501,
+							RuleSyntax:  "default",
+						},
+						"httproute-default-attaches-to-wildcard-example-com-gw-default-my-gateway-ep-web-0-67fe3564b107481f8e8f": {
+							EntryPoints: []string{"web"},
+							Service:     "httproute-default-attaches-to-wildcard-example-com-gw-default-my-gateway-ep-web-0-67fe3564b107481f8e8f-wrr",
+							Rule:        `(Host("**.example.com") || Host("**.foo.example.com") || Host("abc.foo.example.com")) && !Host("**.foo.example.com") && !Host("abc.foo.example.com") && (Path("/wildcard-example-com") || PathPrefix("/wildcard-example-com/"))`,
+							Priority:    12120,
+							RuleSyntax:  "default",
+						},
+					},
+					Middlewares: map[string]*dynamic.Middleware{},
+					Services: map[string]*dynamic.Service{
+						"httproute-default-attaches-to-abc-foo-example-com-gw-default-my-gateway-ep-web-0-ee0d5da78ccdb047521a-wrr": {
+							Weighted: &dynamic.WeightedRoundRobin{
+								Services: []dynamic.WRRService{
+									{
+										Name:   "httproute-default-attaches-to-abc-foo-example-com-gw-default-my-gateway-ep-web-0-ee0d5da78ccdb047521a-svc-default-whoami-0",
+										Weight: new(1),
+									},
+								},
+							},
+						},
+						"httproute-default-attaches-to-abc-foo-example-com-gw-default-my-gateway-ep-web-0-ee0d5da78ccdb047521a-svc-default-whoami-0": {
+							LoadBalancer: &dynamic.ServersLoadBalancer{
+								Strategy: dynamic.BalancerStrategyWRR,
+								Servers: []dynamic.Server{
+									{
+										URL: "http://10.10.0.1:80",
+									},
+									{
+										URL: "http://10.10.0.2:80",
+									},
+								},
+								PassHostHeader: new(true),
+								ResponseForwarding: &dynamic.ResponseForwarding{
+									FlushInterval: ptypes.Duration(100 * time.Millisecond),
+								},
+							},
+						},
+						"httproute-default-attaches-to-empty-hostname-gw-default-my-gateway-ep-web-0-89c9a004c313ebd95998-wrr": {
+							Weighted: &dynamic.WeightedRoundRobin{
+								Services: []dynamic.WRRService{
+									{
+										Name:   "httproute-default-attaches-to-empty-hostname-gw-default-my-gateway-ep-web-0-89c9a004c313ebd95998-svc-default-whoami-0",
+										Weight: new(1),
+									},
+								},
+							},
+						},
+						"httproute-default-attaches-to-empty-hostname-gw-default-my-gateway-ep-web-0-89c9a004c313ebd95998-svc-default-whoami-0": {
+							LoadBalancer: &dynamic.ServersLoadBalancer{
+								Strategy: dynamic.BalancerStrategyWRR,
+								Servers: []dynamic.Server{
+									{
+										URL: "http://10.10.0.1:80",
+									},
+									{
+										URL: "http://10.10.0.2:80",
+									},
+								},
+								PassHostHeader: new(true),
+								ResponseForwarding: &dynamic.ResponseForwarding{
+									FlushInterval: ptypes.Duration(100 * time.Millisecond),
+								},
+							},
+						},
+						"httproute-default-attaches-to-wildcard-example-com-gw-default-my-gateway-ep-web-0-67fe3564b107481f8e8f-wrr": {
+							Weighted: &dynamic.WeightedRoundRobin{
+								Services: []dynamic.WRRService{
+									{
+										Name:   "httproute-default-attaches-to-wildcard-example-com-gw-default-my-gateway-ep-web-0-67fe3564b107481f8e8f-svc-default-whoami-0",
+										Weight: new(1),
+									},
+								},
+							},
+						},
+						"httproute-default-attaches-to-wildcard-example-com-gw-default-my-gateway-ep-web-0-67fe3564b107481f8e8f-svc-default-whoami-0": {
+							LoadBalancer: &dynamic.ServersLoadBalancer{
+								Strategy: dynamic.BalancerStrategyWRR,
+								Servers: []dynamic.Server{
+									{
+										URL: "http://10.10.0.1:80",
+									},
+									{
+										URL: "http://10.10.0.2:80",
+									},
+								},
+								PassHostHeader: new(true),
+								ResponseForwarding: &dynamic.ResponseForwarding{
+									FlushInterval: ptypes.Duration(100 * time.Millisecond),
+								},
+							},
+						},
+					},
+					ServersTransports: map[string]*dynamic.ServersTransport{},
+				},
+				TLS: &dynamic.TLSConfiguration{},
+			},
+		},
+		{
+			desc:  "HTTPS listeners sharing a port",
+			paths: []string{"services.yml", "httproute/with_https_listener_isolation.yml"},
+			entryPoints: map[string]Entrypoint{
+				"websecure": {
+					Address:        ":443",
+					HasHTTPTLSConf: true,
+				},
+				"other": {
+					Address:        ":8443",
+					HasHTTPTLSConf: true,
+				},
+			},
+			expected: &dynamic.Configuration{
+				UDP: &dynamic.UDPConfiguration{
+					Routers:  map[string]*dynamic.UDPRouter{},
+					Services: map[string]*dynamic.UDPService{},
+				},
+				TCP: &dynamic.TCPConfiguration{
+					Routers:           map[string]*dynamic.TCPRouter{},
+					Middlewares:       map[string]*dynamic.TCPMiddleware{},
+					Services:          map[string]*dynamic.TCPService{},
+					ServersTransports: map[string]*dynamic.TCPServersTransport{},
+				},
+				HTTP: &dynamic.HTTPConfiguration{
+					Routers: map[string]*dynamic.Router{
+						"httproute-default-attaches-to-https-gw-default-my-gateway-ep-websecure-0-6ffab4ce8cdabdd4d6f3": {
+							EntryPoints: []string{"websecure"},
+							Service:     "httproute-default-attaches-to-https-gw-default-my-gateway-ep-websecure-0-6ffab4ce8cdabdd4d6f3-wrr",
+							Rule:        `Host("example.org") && PathPrefix("/")`,
+							Priority:    13,
+							RuleSyntax:  "default",
+							TLS:         &dynamic.RouterTLSConfig{},
+						},
+						"httproute-default-attaches-to-https-with-wildcard-hostname-gw-default-my-gateway-ep-websecure-0-700bd8d46a628a25a380": {
+							EntryPoints: []string{"websecure"},
+							Service:     "httproute-default-attaches-to-https-with-wildcard-hostname-gw-default-my-gateway-ep-websecure-0-700bd8d46a628a25a380-wrr",
+							Rule:        `Host("**.wildcard.org") && !Host("fourth-example.wildcard.org") && PathPrefix("/")`,
+							Priority:    16,
+							RuleSyntax:  "default",
+							TLS:         &dynamic.RouterTLSConfig{},
+						},
+						"misdirected-default-https-gw-default-my-gateway-ep-websecure-0-3cae4c2ab232db3dfd79": {
+							EntryPoints: []string{"websecure"},
+							Service:     "misdirected-default-https-gw-default-my-gateway-ep-websecure-0-3cae4c2ab232db3dfd79-wrr",
+							Rule:        `!Host("**.wildcard.org") && !Host("fourth-example.wildcard.org") && !Host("second-example.org") && (HostSNI("**.wildcard.org") || HostSNI("fourth-example.wildcard.org") || HostSNI("second-example.org"))`,
+							Priority:    math.MaxInt32,
+							RuleSyntax:  "default",
+							TLS:         &dynamic.RouterTLSConfig{},
+						},
+						"misdirected-default-https-with-hostname-gw-default-my-gateway-ep-websecure-0-5e06f6af110cf288881e": {
+							EntryPoints: []string{"websecure"},
+							Service:     "misdirected-default-https-with-hostname-gw-default-my-gateway-ep-websecure-0-5e06f6af110cf288881e-wrr",
+							Rule:        `Host("second-example.org") && !HostSNI("second-example.org")`,
+							Priority:    math.MaxInt32,
+							RuleSyntax:  "default",
+							TLS:         &dynamic.RouterTLSConfig{},
+						},
+						"misdirected-default-https-with-hostname-matching-wildcard-gw-default-my-gateway-ep-websecure-0-e164ee1c7d9089cf3b2e": {
+							EntryPoints: []string{"websecure"},
+							Service:     "misdirected-default-https-with-hostname-matching-wildcard-gw-default-my-gateway-ep-websecure-0-e164ee1c7d9089cf3b2e-wrr",
+							Rule:        `Host("fourth-example.wildcard.org") && !HostSNI("fourth-example.wildcard.org")`,
+							Priority:    math.MaxInt32,
+							RuleSyntax:  "default",
+							TLS:         &dynamic.RouterTLSConfig{},
+						},
+						"misdirected-default-https-with-wildcard-hostname-gw-default-my-gateway-ep-websecure-0-6ec9b0a65622f8688427": {
+							EntryPoints: []string{"websecure"},
+							Service:     "misdirected-default-https-with-wildcard-hostname-gw-default-my-gateway-ep-websecure-0-6ec9b0a65622f8688427-wrr",
+							Rule:        `Host("**.wildcard.org") && !Host("fourth-example.wildcard.org") && (!HostSNI("**.wildcard.org") || HostSNI("fourth-example.wildcard.org"))`,
+							Priority:    math.MaxInt32,
+							RuleSyntax:  "default",
+							TLS:         &dynamic.RouterTLSConfig{},
+						},
+					},
+					Middlewares: map[string]*dynamic.Middleware{},
+					Services: map[string]*dynamic.Service{
+						"httproute-default-attaches-to-https-gw-default-my-gateway-ep-websecure-0-6ffab4ce8cdabdd4d6f3-wrr": {
+							Weighted: &dynamic.WeightedRoundRobin{
+								Services: []dynamic.WRRService{
+									{
+										Name:   "httproute-default-attaches-to-https-gw-default-my-gateway-ep-websecure-0-6ffab4ce8cdabdd4d6f3-svc-default-whoami-0",
+										Weight: new(1),
+									},
+								},
+							},
+						},
+						"httproute-default-attaches-to-https-gw-default-my-gateway-ep-websecure-0-6ffab4ce8cdabdd4d6f3-svc-default-whoami-0": {
+							LoadBalancer: &dynamic.ServersLoadBalancer{
+								Strategy: dynamic.BalancerStrategyWRR,
+								Servers: []dynamic.Server{
+									{
+										URL: "http://10.10.0.1:80",
+									},
+									{
+										URL: "http://10.10.0.2:80",
+									},
+								},
+								PassHostHeader: new(true),
+								ResponseForwarding: &dynamic.ResponseForwarding{
+									FlushInterval: ptypes.Duration(100 * time.Millisecond),
+								},
+							},
+						},
+						"httproute-default-attaches-to-https-with-wildcard-hostname-gw-default-my-gateway-ep-websecure-0-700bd8d46a628a25a380-wrr": {
+							Weighted: &dynamic.WeightedRoundRobin{
+								Services: []dynamic.WRRService{
+									{
+										Name:   "httproute-default-attaches-to-https-with-wildcard-hostname-gw-default-my-gateway-ep-websecure-0-700bd8d46a628a25a380-svc-default-whoami-0",
+										Weight: new(1),
+									},
+								},
+							},
+						},
+						"httproute-default-attaches-to-https-with-wildcard-hostname-gw-default-my-gateway-ep-websecure-0-700bd8d46a628a25a380-svc-default-whoami-0": {
+							LoadBalancer: &dynamic.ServersLoadBalancer{
+								Strategy: dynamic.BalancerStrategyWRR,
+								Servers: []dynamic.Server{
+									{
+										URL: "http://10.10.0.1:80",
+									},
+									{
+										URL: "http://10.10.0.2:80",
+									},
+								},
+								PassHostHeader: new(true),
+								ResponseForwarding: &dynamic.ResponseForwarding{
+									FlushInterval: ptypes.Duration(100 * time.Millisecond),
+								},
+							},
+						},
+						"misdirected-default-https-gw-default-my-gateway-ep-websecure-0-3cae4c2ab232db3dfd79-wrr": {
+							Weighted: &dynamic.WeightedRoundRobin{
+								Services: []dynamic.WRRService{
+									{
+										Name:   "misdirected-request",
+										Status: new(http.StatusMisdirectedRequest),
+										Weight: new(1),
+									},
+								},
+							},
+						},
+						"misdirected-default-https-with-hostname-gw-default-my-gateway-ep-websecure-0-5e06f6af110cf288881e-wrr": {
+							Weighted: &dynamic.WeightedRoundRobin{
+								Services: []dynamic.WRRService{
+									{
+										Name:   "misdirected-request",
+										Status: new(http.StatusMisdirectedRequest),
+										Weight: new(1),
+									},
+								},
+							},
+						},
+						"misdirected-default-https-with-hostname-matching-wildcard-gw-default-my-gateway-ep-websecure-0-e164ee1c7d9089cf3b2e-wrr": {
+							Weighted: &dynamic.WeightedRoundRobin{
+								Services: []dynamic.WRRService{
+									{
+										Name:   "misdirected-request",
+										Status: new(http.StatusMisdirectedRequest),
+										Weight: new(1),
+									},
+								},
+							},
+						},
+						"misdirected-default-https-with-wildcard-hostname-gw-default-my-gateway-ep-websecure-0-6ec9b0a65622f8688427-wrr": {
+							Weighted: &dynamic.WeightedRoundRobin{
+								Services: []dynamic.WRRService{
+									{
+										Name:   "misdirected-request",
+										Status: new(http.StatusMisdirectedRequest),
+										Weight: new(1),
+									},
+								},
+							},
+						},
+					},
+					ServersTransports: map[string]*dynamic.ServersTransport{},
+				},
+				TLS: &dynamic.TLSConfiguration{
+					Certificates: []*tls.CertAndStores{
+						{
+							Certificate: tls.Certificate{
+								CertFile: types.FileOrContent(listenerCert),
+								KeyFile:  types.FileOrContent(listenerKey),
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	for _, test := range testCases {
+		t.Run(test.desc, func(t *testing.T) {
+			t.Parallel()
+
+			k8sObjects, gwObjects := readResources(t, test.paths)
+
+			kubeClient := kubefake.NewClientset(k8sObjects...)
+			gwClient := newGatewaySimpleClientSet(t, gwObjects...)
+
+			client := newClientImpl(kubeClient, gwClient)
+
+			eventCh, err := client.WatchAll(nil, make(chan struct{}))
+			require.NoError(t, err)
+
+			// Just wait for the first event.
+			<-eventCh
+
+			p := Provider{
+				EntryPoints: test.entryPoints,
+				client:      client,
+			}
+
+			conf, _, err := p.loadConfigurationFromGateways(t.Context())
+			require.NoError(t, err)
+
+			assert.Equal(t, test.expected, conf)
+		})
+	}
+}
+
+func TestLoadGRPCRoutes_listenerIsolation(t *testing.T) {
+	testCases := []struct {
+		desc        string
+		paths       []string
+		entryPoints map[string]Entrypoint
+		expected    *dynamic.Configuration
+	}{
+		{
+			desc:  "HTTP listeners sharing a port",
+			paths: []string{"services.yml", "grpcroute/with_listener_isolation.yml"},
+			entryPoints: map[string]Entrypoint{"web": {
+				Address: ":80",
+			}},
+			expected: &dynamic.Configuration{
+				UDP: &dynamic.UDPConfiguration{
+					Routers:  map[string]*dynamic.UDPRouter{},
+					Services: map[string]*dynamic.UDPService{},
+				},
+				TCP: &dynamic.TCPConfiguration{
+					Routers:           map[string]*dynamic.TCPRouter{},
+					Middlewares:       map[string]*dynamic.TCPMiddleware{},
+					Services:          map[string]*dynamic.TCPService{},
+					ServersTransports: map[string]*dynamic.TCPServersTransport{},
+				},
+				HTTP: &dynamic.HTTPConfiguration{
+					Routers: map[string]*dynamic.Router{
+						"grpcroute-default-attaches-to-abc-example-com-gw-default-my-gateway-ep-web-0-1b8ce0551290d4d505c2": {
+							EntryPoints: []string{"web"},
+							Service:     "grpcroute-default-attaches-to-abc-example-com-gw-default-my-gateway-ep-web-0-1b8ce0551290d4d505c2-wrr",
+							Rule:        `Host("abc.example.com") && PathPrefix("/")`,
+							Priority:    30,
+							RuleSyntax:  "default",
+						},
+						"grpcroute-default-attaches-to-wildcard-example-com-gw-default-my-gateway-ep-web-0-dd62013dc9c88cf1d0a8": {
+							EntryPoints: []string{"web"},
+							Service:     "grpcroute-default-attaches-to-wildcard-example-com-gw-default-my-gateway-ep-web-0-dd62013dc9c88cf1d0a8-wrr",
+							Rule:        `Host("**.example.com") && !Host("abc.example.com") && PathPrefix("/")`,
+							Priority:    28,
+							RuleSyntax:  "default",
+						},
+					},
+					Middlewares: map[string]*dynamic.Middleware{},
+					Services: map[string]*dynamic.Service{
+						"grpcroute-default-attaches-to-abc-example-com-gw-default-my-gateway-ep-web-0-1b8ce0551290d4d505c2-wrr": {
+							Weighted: &dynamic.WeightedRoundRobin{
+								Services: []dynamic.WRRService{
+									{
+										Name:   "grpcroute-default-attaches-to-abc-example-com-gw-default-my-gateway-ep-web-0-1b8ce0551290d4d505c2-svc-default-whoami-0",
+										Weight: new(1),
+									},
+								},
+							},
+						},
+						"grpcroute-default-attaches-to-abc-example-com-gw-default-my-gateway-ep-web-0-1b8ce0551290d4d505c2-svc-default-whoami-0": {
+							LoadBalancer: &dynamic.ServersLoadBalancer{
+								Strategy: dynamic.BalancerStrategyWRR,
+								Servers: []dynamic.Server{
+									{
+										URL: "h2c://10.10.0.1:80",
+									},
+									{
+										URL: "h2c://10.10.0.2:80",
+									},
+								},
+								PassHostHeader: new(true),
+								ResponseForwarding: &dynamic.ResponseForwarding{
+									FlushInterval: ptypes.Duration(100 * time.Millisecond),
+								},
+							},
+						},
+						"grpcroute-default-attaches-to-wildcard-example-com-gw-default-my-gateway-ep-web-0-dd62013dc9c88cf1d0a8-wrr": {
+							Weighted: &dynamic.WeightedRoundRobin{
+								Services: []dynamic.WRRService{
+									{
+										Name:   "grpcroute-default-attaches-to-wildcard-example-com-gw-default-my-gateway-ep-web-0-dd62013dc9c88cf1d0a8-svc-default-whoami-0",
+										Weight: new(1),
+									},
+								},
+							},
+						},
+						"grpcroute-default-attaches-to-wildcard-example-com-gw-default-my-gateway-ep-web-0-dd62013dc9c88cf1d0a8-svc-default-whoami-0": {
+							LoadBalancer: &dynamic.ServersLoadBalancer{
+								Strategy: dynamic.BalancerStrategyWRR,
+								Servers: []dynamic.Server{
+									{
+										URL: "h2c://10.10.0.1:80",
+									},
+									{
+										URL: "h2c://10.10.0.2:80",
+									},
+								},
+								PassHostHeader: new(true),
+								ResponseForwarding: &dynamic.ResponseForwarding{
+									FlushInterval: ptypes.Duration(100 * time.Millisecond),
+								},
+							},
+						},
+					},
+					ServersTransports: map[string]*dynamic.ServersTransport{},
+				},
+				TLS: &dynamic.TLSConfiguration{},
+			},
+		},
+	}
+
+	for _, test := range testCases {
+		t.Run(test.desc, func(t *testing.T) {
+			t.Parallel()
+
+			k8sObjects, gwObjects := readResources(t, test.paths)
+
+			kubeClient := kubefake.NewClientset(k8sObjects...)
+			gwClient := newGatewaySimpleClientSet(t, gwObjects...)
+
+			client := newClientImpl(kubeClient, gwClient)
+
+			eventCh, err := client.WatchAll(nil, make(chan struct{}))
+			require.NoError(t, err)
+
+			// Just wait for the first event.
+			<-eventCh
+
+			p := Provider{
+				EntryPoints: test.entryPoints,
+				client:      client,
+			}
+
+			conf, _, err := p.loadConfigurationFromGateways(t.Context())
+			require.NoError(t, err)
+
+			assert.Equal(t, test.expected, conf)
 		})
 	}
 }

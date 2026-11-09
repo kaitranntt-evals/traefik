@@ -140,6 +140,21 @@ spec:
           from: Same
 ```
 
+### Listener Isolation
+
+The listeners of a `Gateway` sharing the same port and protocol are isolated from each other, as required by the Gateway API specification:
+a request is only served by the routes attached to the listener with the most specific `hostname` matching it.
+An exact hostname takes precedence over the wildcards covering it, a wildcard over the less specific wildcards covering it,
+and any hostname over a listener without `hostname`.
+
+For example, with a `Gateway` exposing the listeners `*.example.com` and `foo.example.com` on the same port,
+a request for `foo.example.com` is only served by the routes attached to the `foo.example.com` listener,
+even if the ones attached to the `*.example.com` listener would match it.
+
+For `HTTPS` listeners, the TLS connection carrying a request is established for the listener matching its Server Name Indication (SNI).
+A request for the host of another listener of the port, typically sent by an HTTP/2 client reusing a connection,
+is misdirected and rejected with a `421 Misdirected Request` status, as recommended by [RFC 7540, section 9.1.2](https://datatracker.ietf.org/doc/html/rfc7540#section-9.1.2).
+
 ## Exposing a Route
 
 Once a `Gateway` is deployed (see [Deploying a Gateway](#deploying-a-gateway)) `HTTPRoute`, `TCPRoute`, 

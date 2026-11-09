@@ -5,6 +5,8 @@ import (
 	"crypto/sha256"
 	"errors"
 	"fmt"
+	"math"
+	"net/http"
 	"os"
 	"slices"
 	"sort"
@@ -132,6 +134,12 @@ type gatewayListener struct {
 	Status            *gatev1.ListenerStatus
 	AllowedNamespaces []string
 	AllowedRouteKinds []string
+
+	// MoreSpecificHostnames are the hostnames of the other listeners of the same Gateway,
+	// port and protocol that take precedence over this listener for the requests they match,
+	// as listener isolation requires a request to be matched from the most specific listener
+	// hostname to the least specific one.
+	MoreSpecificHostnames []gatev1.Hostname
 
 	Attached bool
 
@@ -654,11 +662,121 @@ func (p *Provider) loadGatewayListeners(ctx context.Context, gateway *gatev1.Gat
 		gatewayListeners[i].Attached = true
 	}
 
+	isolateListeners(gateway, gatewayListeners, conf)
+
 	if len(tlsCerts) > 0 {
 		conf.TLS.Certificates = append(conf.TLS.Certificates, getTLSConfig(tlsCerts)...)
 	}
 
 	return gatewayListeners
+}
+
+// isolateListeners enforces the isolation of the HTTP and HTTPS listeners sharing a port:
+// a request must only be served by the routes attached to the listener with the most
+// specific hostname matching it. Each listener is given the hostnames of the more specific
+// listeners, for the rules of its routes to discard the requests for them.
+// As an HTTPS request can be carried by a TLS connection established (SNI) for another
+// listener of the port, each HTTPS listener sharing its port also gets a router rejecting
+// such misdirected requests with a 421 status, as recommended by the Gateway API specification.
+func isolateListeners(gateway *gatev1.Gateway, listeners []gatewayListener, conf *dynamic.Configuration) {
+	for i := range listeners {
+		listener := &listeners[i]
+		if !listener.Attached || (listener.Protocol != gatev1.HTTPProtocolType && listener.Protocol != gatev1.HTTPSProtocolType) {
+			continue
+		}
+
+		var siblings int
+		for j, sibling := range listeners {
+			if j == i || !sibling.Attached || sibling.Port != listener.Port || sibling.Protocol != listener.Protocol {
+				continue
+			}
+
+			siblings++
+
+			if isMoreSpecificHostname(sibling.Hostname, listener.Hostname) {
+				listener.MoreSpecificHostnames = append(listener.MoreSpecificHostnames, *sibling.Hostname)
+			}
+		}
+
+		// Sorting makes the rules, and thus the router names, independent of the listeners order.
+		slices.Sort(listener.MoreSpecificHostnames)
+
+		if siblings == 0 || listener.Protocol != gatev1.HTTPSProtocolType {
+			continue
+		}
+
+		rule := buildMisdirectedRequestRule(listener.Hostname, listener.MoreSpecificHostnames)
+		if rule == "" {
+			continue
+		}
+
+		routerName := makeRouterName("misdirected", rule, gateway.Namespace, listener.Name, gateway.Namespace, gateway.Name, listener.EPName, 0)
+		conf.HTTP.Routers[routerName] = &dynamic.Router{
+			// "default" stands for the default rule syntax in Traefik v3, i.e. the v3 syntax.
+			RuleSyntax: "default",
+			Rule:       rule,
+			// A misdirected request must be rejected whatever the routes of the entryPoint,
+			// so the router has to take precedence over all of them.
+			Priority:    math.MaxInt32,
+			EntryPoints: []string{listener.EPName},
+			TLS:         &dynamic.RouterTLSConfig{},
+			Service:     routerName + "-wrr",
+		}
+		conf.HTTP.Services[routerName+"-wrr"] = &dynamic.Service{
+			Weighted: &dynamic.WeightedRoundRobin{
+				Services: []dynamic.WRRService{
+					{
+						Name:   "misdirected-request",
+						Status: new(http.StatusMisdirectedRequest),
+						Weight: new(1),
+					},
+				},
+			},
+		}
+	}
+}
+
+// isMoreSpecificHostname returns whether the candidate listener hostname takes precedence
+// over the given one: an exact hostname over a wildcard covering it, a wildcard over a less
+// specific wildcard covering it, and any hostname over no hostname at all.
+func isMoreSpecificHostname(candidate, hostname *gatev1.Hostname) bool {
+	if candidate == nil {
+		return false
+	}
+
+	if hostname == nil {
+		return true
+	}
+
+	return *candidate != *hostname && findMatchingHostname(*hostname, *candidate) != ""
+}
+
+// buildMisdirectedRequestRule builds the rule matching the requests whose Host belongs to
+// the listener with the given hostname, while their TLS connection was established (SNI)
+// for another listener of the same port: either the SNI does not match the listener hostname,
+// or it matches the hostname of a more specific listener.
+func buildMisdirectedRequestRule(hostname *gatev1.Hostname, moreSpecificHostnames []gatev1.Hostname) string {
+	var hostRules, sniRules []string
+	if hostname != nil {
+		hostRules = append(hostRules, fmt.Sprintf("Host(%q)", hostExpression(*hostname)))
+		sniRules = append(sniRules, fmt.Sprintf("!HostSNI(%q)", hostExpression(*hostname)))
+	}
+
+	for _, moreSpecificHostname := range moreSpecificHostnames {
+		hostRules = append(hostRules, fmt.Sprintf("!Host(%q)", hostExpression(moreSpecificHostname)))
+		sniRules = append(sniRules, fmt.Sprintf("HostSNI(%q)", hostExpression(moreSpecificHostname)))
+	}
+
+	if len(sniRules) == 0 {
+		return ""
+	}
+
+	sniRule := strings.Join(sniRules, " || ")
+	if len(sniRules) > 1 {
+		sniRule = "(" + sniRule + ")"
+	}
+
+	return strings.Join(append(hostRules, sniRule), " && ")
 }
 
 func (p *Provider) makeGatewayStatus(gateway *gatev1.Gateway, listeners []gatewayListener, addresses []gatev1.GatewayStatusAddress) (gatev1.GatewayStatus, []metav1.Condition) {
