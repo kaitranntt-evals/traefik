@@ -45,7 +45,7 @@ func Test_buildHostRule(t *testing.T) {
 				"bar.foo",
 				"foo.foo",
 			},
-			expectedRule:     `(HostRegexp("^[a-z0-9-\\.]+\\.bar\\.foo$") || Host("bar.foo") || Host("foo.foo"))`,
+			expectedRule:     `(Host("**.bar.foo") || Host("bar.foo") || Host("foo.foo"))`,
 			expectedPriority: 9,
 		},
 		{
@@ -53,7 +53,7 @@ func Test_buildHostRule(t *testing.T) {
 			hostnames: []gatev1.Hostname{
 				"*.bar.foo",
 			},
-			expectedRule:     `HostRegexp("^[a-z0-9-\\.]+\\.bar\\.foo$")`,
+			expectedRule:     `Host("**.bar.foo")`,
 			expectedPriority: 9,
 		},
 	}
@@ -62,7 +62,7 @@ func Test_buildHostRule(t *testing.T) {
 		t.Run(test.desc, func(t *testing.T) {
 			t.Parallel()
 
-			rule, priority := buildHostRule(test.hostnames)
+			rule, priority := buildHostRule(test.hostnames, nil)
 			assert.Equal(t, test.expectedRule, rule)
 			assert.Equal(t, test.expectedPriority, priority)
 		})
@@ -197,7 +197,7 @@ func Test_buildMatchRule(t *testing.T) {
 		t.Run(test.desc, func(t *testing.T) {
 			t.Parallel()
 
-			rule, priority := buildMatchRule(test.hostnames, test.match)
+			rule, priority := buildMatchRule(test.hostnames, nil, test.match)
 			assert.Equal(t, test.expectedRule, rule)
 			assert.Equal(t, test.expectedPriority, priority)
 		})

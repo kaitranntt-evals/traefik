@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"errors"
 	"fmt"
+	"net/http"
 	"os"
 	"slices"
 	"sort"
@@ -136,6 +137,14 @@ type gatewayListener struct {
 	Attached bool
 
 	EPName string
+
+	// IsolatedHostnames are the hostnames of the other listeners of the Gateway, sharing the same entryPoint,
+	// which are more specific than the listener hostname.
+	// Requests for these hostnames must not be routed through this listener (listener isolation).
+	IsolatedHostnames []gatev1.Hostname
+	// TLSOptions is the name of the TLS options dedicated to the listener,
+	// used to detect requests whose SNI and host are not handled by the same listener (misdirected requests).
+	TLSOptions string
 }
 
 type gatewayWithListeners struct {
@@ -658,7 +667,137 @@ func (p *Provider) loadGatewayListeners(ctx context.Context, gateway *gatev1.Gat
 		conf.TLS.Certificates = append(conf.TLS.Certificates, getTLSConfig(tlsCerts)...)
 	}
 
+	isolateListeners(gateway, gatewayListeners, conf)
+
 	return gatewayListeners
+}
+
+// isolateListeners computes, for each attached HTTP and HTTPS listener, the hostnames of the more specific listeners
+// sharing the same entryPoint, which must not be routed through it.
+// For HTTPS listeners sharing their entryPoint with other HTTPS listeners, it also sets up dedicated TLS options,
+// and a fallback router, so that a request whose host is handled by another listener than the one handling its SNI
+// is rejected with a 421 Misdirected Request status code by the SNI check.
+func isolateListeners(gateway *gatev1.Gateway, listeners []gatewayListener, conf *dynamic.Configuration) {
+	for i := range listeners {
+		listener := &listeners[i]
+		if !listener.Attached || (listener.Protocol != gatev1.HTTPProtocolType && listener.Protocol != gatev1.HTTPSProtocolType) {
+			continue
+		}
+
+		var hasSiblings bool
+		for j, other := range listeners {
+			if i == j || !other.Attached || other.EPName != listener.EPName || other.Protocol != listener.Protocol {
+				continue
+			}
+
+			hasSiblings = true
+
+			if other.Hostname == nil || (listener.Hostname != nil && *listener.Hostname == *other.Hostname) {
+				continue
+			}
+
+			if listener.Hostname == nil || findMatchingHostname(*listener.Hostname, *other.Hostname) != "" {
+				listener.IsolatedHostnames = append(listener.IsolatedHostnames, *other.Hostname)
+			}
+		}
+
+		if !hasSiblings || listener.Protocol != gatev1.HTTPSProtocolType {
+			continue
+		}
+
+		// The listener without hostname relies on the default TLS options,
+		// as they are the ones negotiated for a SNI not matching any other listener.
+		if listener.Hostname != nil {
+			listener.TLSOptions = makeListenerTLSOptionsName(*listener.Hostname)
+
+			if conf.TLS.Options == nil {
+				conf.TLS.Options = make(map[string]tls.Options)
+			}
+			conf.TLS.Options[listener.TLSOptions] = tls.Options{
+				MinVersion:    tls.DefaultTLSOptions.MinVersion,
+				CipherSuites:  slices.Clone(tls.DefaultTLSOptions.CipherSuites),
+				ALPNProtocols: slices.Clone(tls.DefaultTLSOptions.ALPNProtocols),
+			}
+		}
+
+		var hostnames []gatev1.Hostname
+		if listener.Hostname != nil {
+			hostnames = []gatev1.Hostname{*listener.Hostname}
+		}
+
+		// The fallback router catches the requests not handled by any route of the listener,
+		// so that the SNI check also applies to them, and otherwise responds with a 404 status code.
+		rule, _ := buildMatchRule(hostnames, listener.IsolatedHostnames, gatev1.HTTPRouteMatch{})
+		name := provider.Normalize(fmt.Sprintf("%s-%s-%s-ep-%s-fallback", gateway.Namespace, gateway.Name, listener.Name, listener.EPName))
+
+		conf.HTTP.Routers[name] = &dynamic.Router{
+			RuleSyntax:  "default",
+			Rule:        rule,
+			Priority:    1,
+			EntryPoints: []string{listener.EPName},
+			Service:     name,
+			TLS:         &dynamic.RouterTLSConfig{Options: listener.TLSOptions},
+		}
+		conf.HTTP.Services[name] = &dynamic.Service{
+			Weighted: &dynamic.WeightedRoundRobin{
+				Services: []dynamic.WRRService{
+					{
+						Name:   "not-found",
+						Status: new(http.StatusNotFound),
+						Weight: new(1),
+					},
+				},
+			},
+		}
+	}
+}
+
+// isolateHostnames returns the given route hostnames, intersected with the listener hostname,
+// without the ones handled by a more specific listener, along with the more specific listener hostnames
+// to exclude from the matched requests.
+// It reports false when all the hostnames are handled by more specific listeners,
+// meaning that no request can be routed through the listener for this route.
+func isolateHostnames(listener gatewayListener, hostnames []gatev1.Hostname) ([]gatev1.Hostname, []gatev1.Hostname, bool) {
+	if len(listener.IsolatedHostnames) == 0 {
+		return hostnames, nil, true
+	}
+
+	if len(hostnames) == 0 {
+		return nil, listener.IsolatedHostnames, true
+	}
+
+	var kept []gatev1.Hostname
+	for _, hostname := range hostnames {
+		isolated := slices.ContainsFunc(listener.IsolatedHostnames, func(isolatedHostname gatev1.Hostname) bool {
+			return findMatchingHostname(isolatedHostname, hostname) != ""
+		})
+		if !isolated {
+			kept = append(kept, hostname)
+		}
+	}
+
+	if len(kept) == 0 {
+		return nil, nil, false
+	}
+
+	var excluded []gatev1.Hostname
+	for _, isolatedHostname := range listener.IsolatedHostnames {
+		overlapping := slices.ContainsFunc(kept, func(hostname gatev1.Hostname) bool {
+			return findMatchingHostname(hostname, isolatedHostname) != ""
+		})
+		if overlapping {
+			excluded = append(excluded, isolatedHostname)
+		}
+	}
+
+	return kept, excluded, true
+}
+
+// makeListenerTLSOptionsName returns the name of the TLS options dedicated to the listeners with the given hostname.
+// The name only depends on the hostname, so that listeners of different Gateways, sharing the same hostname,
+// do not end up with conflicting TLS options.
+func makeListenerTLSOptionsName(hostname gatev1.Hostname) string {
+	return provider.Normalize("gateway-listener-" + strings.ReplaceAll(string(hostname), "*", "wildcard"))
 }
 
 func (p *Provider) makeGatewayStatus(gateway *gatev1.Gateway, listeners []gatewayListener, addresses []gatev1.GatewayStatusAddress) (gatev1.GatewayStatus, []metav1.Condition) {

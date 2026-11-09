@@ -84,7 +84,7 @@ func Test_buildGRPCMatchRule(t *testing.T) {
 		t.Run(test.desc, func(t *testing.T) {
 			t.Parallel()
 
-			rule, priority := buildGRPCMatchRule(test.hostnames, test.match)
+			rule, priority := buildGRPCMatchRule(test.hostnames, nil, test.match)
 			assert.Equal(t, test.expectedRule, rule)
 			assert.Equal(t, test.expectedPriority, priority)
 		})

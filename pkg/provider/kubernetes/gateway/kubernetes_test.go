@@ -3,9 +3,12 @@ package gateway
 import (
 	"errors"
 	"fmt"
+	"maps"
 	"net/http"
+	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"testing"
 	"time"
@@ -14,6 +17,8 @@ import (
 	"github.com/stretchr/testify/require"
 	ptypes "github.com/traefik/paerser/types"
 	"github.com/traefik/traefik/v3/pkg/config/dynamic"
+	"github.com/traefik/traefik/v3/pkg/middlewares/requestdecorator"
+	httpmuxer "github.com/traefik/traefik/v3/pkg/muxer/http"
 	"github.com/traefik/traefik/v3/pkg/provider"
 	traefikv1alpha1 "github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd/traefikio/v1alpha1"
 	"github.com/traefik/traefik/v3/pkg/provider/kubernetes/k8s"
@@ -28,6 +33,7 @@ import (
 	kscheme "k8s.io/client-go/kubernetes/scheme"
 	gatev1 "sigs.k8s.io/gateway-api/apis/v1"
 	gatefake "sigs.k8s.io/gateway-api/pkg/client/clientset/versioned/fake"
+	"sigs.k8s.io/gateway-api/pkg/features"
 )
 
 var _ provider.Provider = (*Provider)(nil)
@@ -1022,27 +1028,27 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				},
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
-						"httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-103fc02323de64ca0fc6": {
+						"httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-5af0a8dc466bcb103301": {
 							EntryPoints: []string{"web"},
-							Service:     "httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-103fc02323de64ca0fc6-wrr",
-							Rule:        `(Host("foo.com") || HostRegexp("^[a-z0-9-\\.]+\\.bar\\.com$")) && PathPrefix("/")`,
+							Service:     "httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-5af0a8dc466bcb103301-wrr",
+							Rule:        `(Host("foo.com") || Host("**.bar.com")) && PathPrefix("/")`,
 							Priority:    11,
 							RuleSyntax:  "default",
 						},
 					},
 					Middlewares: map[string]*dynamic.Middleware{},
 					Services: map[string]*dynamic.Service{
-						"httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-103fc02323de64ca0fc6-wrr": {
+						"httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-5af0a8dc466bcb103301-wrr": {
 							Weighted: &dynamic.WeightedRoundRobin{
 								Services: []dynamic.WRRService{
 									{
-										Name:   "httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-103fc02323de64ca0fc6-svc-default-whoami-0",
+										Name:   "httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-5af0a8dc466bcb103301-svc-default-whoami-0",
 										Weight: new(1),
 									},
 								},
 							},
 						},
-						"httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-103fc02323de64ca0fc6-svc-default-whoami-0": {
+						"httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-5af0a8dc466bcb103301-svc-default-whoami-0": {
 							LoadBalancer: &dynamic.ServersLoadBalancer{
 								Strategy: dynamic.BalancerStrategyWRR,
 								Servers: []dynamic.Server{
@@ -1084,27 +1090,27 @@ func TestLoadHTTPRoutes(t *testing.T) {
 				},
 				HTTP: &dynamic.HTTPConfiguration{
 					Routers: map[string]*dynamic.Router{
-						"httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-bbb3a544c0474e2ab466": {
+						"httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-764e519b9557509caa7d": {
 							EntryPoints: []string{"web"},
-							Service:     "httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-bbb3a544c0474e2ab466-wrr",
-							Rule:        `(Host("foo.com") || HostRegexp("^[a-z0-9-\\.]+\\.foo\\.com$")) && PathPrefix("/")`,
+							Service:     "httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-764e519b9557509caa7d-wrr",
+							Rule:        `(Host("foo.com") || Host("**.foo.com")) && PathPrefix("/")`,
 							Priority:    11,
 							RuleSyntax:  "default",
 						},
 					},
 					Middlewares: map[string]*dynamic.Middleware{},
 					Services: map[string]*dynamic.Service{
-						"httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-bbb3a544c0474e2ab466-wrr": {
+						"httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-764e519b9557509caa7d-wrr": {
 							Weighted: &dynamic.WeightedRoundRobin{
 								Services: []dynamic.WRRService{
 									{
-										Name:   "httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-bbb3a544c0474e2ab466-svc-default-whoami-0",
+										Name:   "httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-764e519b9557509caa7d-svc-default-whoami-0",
 										Weight: new(1),
 									},
 								},
 							},
 						},
-						"httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-bbb3a544c0474e2ab466-svc-default-whoami-0": {
+						"httproute-default-http-app-1-gw-default-my-gateway-ep-web-0-764e519b9557509caa7d-svc-default-whoami-0": {
 							LoadBalancer: &dynamic.ServersLoadBalancer{
 								Strategy: dynamic.BalancerStrategyWRR,
 								Servers: []dynamic.Server{
@@ -10317,4 +10323,279 @@ func TestCrossProviderNamespaces_TLSRoute(t *testing.T) {
 			assert.Equal(t, test.wantError, hasError)
 		})
 	}
+}
+
+func TestLoadRoutes_listenerIsolation(t *testing.T) {
+	testCases := []struct {
+		desc        string
+		paths       []string
+		routePrefix string
+		headers     map[string]string
+	}{
+		{
+			desc:        "HTTPRoute",
+			paths:       []string{"services.yml", "httproute/with_listener_isolation.yml"},
+			routePrefix: "httproute-default-",
+		},
+		{
+			desc:        "GRPCRoute",
+			paths:       []string{"services.yml", "grpcroute/with_listener_isolation.yml"},
+			routePrefix: "grpcroute-default-",
+			headers:     map[string]string{"Content-Type": "application/grpc"},
+		},
+	}
+
+	for _, test := range testCases {
+		t.Run(test.desc, func(t *testing.T) {
+			t.Parallel()
+
+			conf := loadTestConfiguration(t, test.paths, map[string]Entrypoint{"web": {Address: ":80"}})
+
+			expected := map[string]string{
+				"bar.com":                 "empty-hostname-app",
+				"example.com":             "empty-hostname-app",
+				"bar.example.com":         "wildcard-example-com-app",
+				"foo.example.com":         "wildcard-example-com-app",
+				"bar.baz.example.com":     "wildcard-example-com-app",
+				"bar.foo.example.com":     "wildcard-foo-example-com-app",
+				"bar.abc.foo.example.com": "wildcard-foo-example-com-app",
+				"abc.foo.example.com":     "abc-foo-example-com-app",
+			}
+
+			assert.Equal(t, expected, routeRequests(t, conf, test.routePrefix, test.headers, slices.Collect(maps.Keys(expected))))
+		})
+	}
+}
+
+func TestLoadHTTPRoutes_httpsListenerDetectMisdirectedRequests(t *testing.T) {
+	t.Parallel()
+
+	conf := loadTestConfiguration(t,
+		[]string{"services.yml", "httproute/with_https_listener_isolation.yml"},
+		map[string]Entrypoint{"websecure": {Address: ":443", HasHTTPTLSConf: true}},
+	)
+
+	expectedRoutes := map[string]string{
+		"bar.com":             "empty-hostname-app",
+		"foo.example.org":     "wildcard-example-org-app",
+		"foo.bar.example.org": "wildcard-example-org-app",
+		"example.org":         "example-org-app",
+	}
+	assert.Equal(t, expectedRoutes, routeRequests(t, conf, "httproute-default-", nil, slices.Collect(maps.Keys(expectedRoutes))))
+
+	// The SNI check rejects with a 421 status code the requests whose router TLS options differ from the ones
+	// negotiated for the connection SNI, so each listener must have its own TLS options.
+	expectedTLSOptions := map[string]string{
+		"empty-hostname-app":       "",
+		"wildcard-example-org-app": "gateway-listener-wildcard-example-org",
+		"example-org-app":          "gateway-listener-example-org",
+		"default-my-gateway-empty-hostname-ep-websecure-fallback":       "",
+		"default-my-gateway-wildcard-example-org-ep-websecure-fallback": "gateway-listener-wildcard-example-org",
+		"default-my-gateway-example-org-ep-websecure-fallback":          "gateway-listener-example-org",
+	}
+
+	tlsOptions := make(map[string]string)
+	for name, router := range conf.HTTP.Routers {
+		require.NotNil(t, router.TLS)
+		tlsOptions[routeName(name, "httproute-default-")] = router.TLS.Options
+	}
+	assert.Equal(t, expectedTLSOptions, tlsOptions)
+
+	assert.Contains(t, conf.TLS.Options, "gateway-listener-wildcard-example-org")
+	assert.Contains(t, conf.TLS.Options, "gateway-listener-example-org")
+
+	// The fallback routers catch the requests matching none of the listener routes, for the SNI check to apply to them.
+	expectedFallbackRules := map[string]string{
+		"default-my-gateway-empty-hostname-ep-websecure-fallback":       `!(Host("**.example.org") || Host("example.org")) && PathPrefix("/")`,
+		"default-my-gateway-wildcard-example-org-ep-websecure-fallback": `Host("**.example.org") && PathPrefix("/")`,
+		"default-my-gateway-example-org-ep-websecure-fallback":          `Host("example.org") && PathPrefix("/")`,
+	}
+	for name, rule := range expectedFallbackRules {
+		require.Contains(t, conf.HTTP.Routers, name)
+		assert.Equal(t, rule, conf.HTTP.Routers[name].Rule)
+		assert.Equal(t, 1, conf.HTTP.Routers[name].Priority)
+	}
+}
+
+func Test_isolateHostnames(t *testing.T) {
+	testCases := []struct {
+		desc              string
+		listener          gatewayListener
+		hostnames         []gatev1.Hostname
+		expectedHostnames []gatev1.Hostname
+		expectedExcluded  []gatev1.Hostname
+		expectedRoutable  bool
+	}{
+		{
+			desc:              "No isolated hostnames",
+			listener:          gatewayListener{},
+			hostnames:         []gatev1.Hostname{"foo.com"},
+			expectedHostnames: []gatev1.Hostname{"foo.com"},
+			expectedRoutable:  true,
+		},
+		{
+			desc:             "No route hostnames",
+			listener:         gatewayListener{IsolatedHostnames: []gatev1.Hostname{"*.example.com"}},
+			expectedExcluded: []gatev1.Hostname{"*.example.com"},
+			expectedRoutable: true,
+		},
+		{
+			desc:              "Route hostname not overlapping isolated hostnames",
+			listener:          gatewayListener{IsolatedHostnames: []gatev1.Hostname{"*.example.com"}},
+			hostnames:         []gatev1.Hostname{"foo.com"},
+			expectedHostnames: []gatev1.Hostname{"foo.com"},
+			expectedRoutable:  true,
+		},
+		{
+			desc:              "Route hostname handled by a more specific listener",
+			listener:          gatewayListener{IsolatedHostnames: []gatev1.Hostname{"*.foo.example.com"}},
+			hostnames:         []gatev1.Hostname{"bar.example.com", "bar.foo.example.com"},
+			expectedHostnames: []gatev1.Hostname{"bar.example.com"},
+			expectedRoutable:  true,
+		},
+		{
+			desc:              "Route wildcard hostname encompassing isolated hostnames",
+			listener:          gatewayListener{IsolatedHostnames: []gatev1.Hostname{"*.foo.example.com", "abc.foo.example.com", "bar.com"}},
+			hostnames:         []gatev1.Hostname{"*.example.com"},
+			expectedHostnames: []gatev1.Hostname{"*.example.com"},
+			expectedExcluded:  []gatev1.Hostname{"*.foo.example.com", "abc.foo.example.com"},
+			expectedRoutable:  true,
+		},
+		{
+			desc:             "All route hostnames handled by more specific listeners",
+			listener:         gatewayListener{IsolatedHostnames: []gatev1.Hostname{"*.foo.example.com", "bar.example.com"}},
+			hostnames:        []gatev1.Hostname{"bar.example.com", "abc.foo.example.com"},
+			expectedRoutable: false,
+		},
+	}
+
+	for _, test := range testCases {
+		t.Run(test.desc, func(t *testing.T) {
+			t.Parallel()
+
+			hostnames, excluded, routable := isolateHostnames(test.listener, test.hostnames)
+			assert.Equal(t, test.expectedHostnames, hostnames)
+			assert.Equal(t, test.expectedExcluded, excluded)
+			assert.Equal(t, test.expectedRoutable, routable)
+		})
+	}
+}
+
+func Test_isolateListeners(t *testing.T) {
+	gateway := &gatev1.Gateway{ObjectMeta: metav1.ObjectMeta{Name: "my-gateway", Namespace: "default"}}
+
+	listeners := []gatewayListener{
+		{Name: "empty", Attached: true, EPName: "web", Protocol: gatev1.HTTPProtocolType},
+		{Name: "wildcard", Attached: true, EPName: "web", Protocol: gatev1.HTTPProtocolType, Hostname: new(gatev1.Hostname("*.example.com"))},
+		{Name: "nested-wildcard", Attached: true, EPName: "web", Protocol: gatev1.HTTPProtocolType, Hostname: new(gatev1.Hostname("*.foo.example.com"))},
+		{Name: "exact", Attached: true, EPName: "web", Protocol: gatev1.HTTPProtocolType, Hostname: new(gatev1.Hostname("abc.foo.example.com"))},
+		{Name: "other-entrypoint", Attached: true, EPName: "web2", Protocol: gatev1.HTTPProtocolType, Hostname: new(gatev1.Hostname("bar.example.com"))},
+		{Name: "not-attached", EPName: "web", Protocol: gatev1.HTTPProtocolType, Hostname: new(gatev1.Hostname("baz.example.com"))},
+		{Name: "tcp", Attached: true, EPName: "web", Protocol: gatev1.TCPProtocolType},
+	}
+
+	conf := &dynamic.Configuration{
+		HTTP: &dynamic.HTTPConfiguration{Routers: map[string]*dynamic.Router{}, Services: map[string]*dynamic.Service{}},
+		TLS:  &dynamic.TLSConfiguration{},
+	}
+
+	isolateListeners(gateway, listeners, conf)
+
+	expected := map[string][]gatev1.Hostname{
+		"empty":            {"*.example.com", "*.foo.example.com", "abc.foo.example.com"},
+		"wildcard":         {"*.foo.example.com", "abc.foo.example.com"},
+		"nested-wildcard":  {"abc.foo.example.com"},
+		"exact":            nil,
+		"other-entrypoint": nil,
+		"not-attached":     nil,
+		"tcp":              nil,
+	}
+
+	isolatedHostnames := make(map[string][]gatev1.Hostname)
+	for _, listener := range listeners {
+		isolatedHostnames[listener.Name] = listener.IsolatedHostnames
+		assert.Empty(t, listener.TLSOptions)
+	}
+	assert.Equal(t, expected, isolatedHostnames)
+
+	// HTTP listeners need neither dedicated TLS options nor fallback routers.
+	assert.Empty(t, conf.HTTP.Routers)
+	assert.Empty(t, conf.TLS.Options)
+}
+
+func TestSupportedFeatures_listenerIsolation(t *testing.T) {
+	assert.Contains(t, SupportedFeatures(), features.GatewayHTTPListenerIsolationFeature.Name)
+	assert.Contains(t, SupportedFeatures(), features.GatewayHTTPSListenerDetectMisdirectedRequestsFeature.Name)
+}
+
+func loadTestConfiguration(t *testing.T, paths []string, entryPoints map[string]Entrypoint) *dynamic.Configuration {
+	t.Helper()
+
+	k8sObjects, gwObjects := readResources(t, paths)
+
+	kubeClient := kubefake.NewClientset(k8sObjects...)
+	gwClient := newGatewaySimpleClientSet(t, gwObjects...)
+
+	client := newClientImpl(kubeClient, gwClient)
+
+	eventCh, err := client.WatchAll(nil, make(chan struct{}))
+	require.NoError(t, err)
+
+	// just wait for the first event
+	<-eventCh
+
+	p := Provider{
+		EntryPoints: entryPoints,
+		client:      client,
+	}
+
+	conf, _, err := p.loadConfigurationFromGateways(t.Context())
+	require.NoError(t, err)
+
+	return conf
+}
+
+// routeRequests routes a request for each of the given hosts through a muxer made of the configuration routers,
+// and returns, for each host, the name of the route handling the request.
+func routeRequests(t *testing.T, conf *dynamic.Configuration, routePrefix string, headers map[string]string, hosts []string) map[string]string {
+	t.Helper()
+
+	parser, err := httpmuxer.NewSyntaxParser()
+	require.NoError(t, err)
+
+	muxer := httpmuxer.NewMuxer(parser, nil)
+	for name, router := range conf.HTTP.Routers {
+		handler := http.HandlerFunc(func(rw http.ResponseWriter, _ *http.Request) {
+			rw.Header().Set("X-Route", routeName(name, routePrefix))
+		})
+
+		require.NoError(t, muxer.AddRoute(router.Rule, router.RuleSyntax, router.Priority, "", handler))
+	}
+
+	reqHost := requestdecorator.New(nil)
+
+	routes := make(map[string]string)
+	for _, host := range hosts {
+		req := httptest.NewRequest(http.MethodPost, "http://"+host+"/foo.Bar/Baz", http.NoBody)
+		for key, value := range headers {
+			req.Header.Set(key, value)
+		}
+
+		rw := httptest.NewRecorder()
+		reqHost.ServeHTTP(rw, req, muxer.ServeHTTP)
+
+		routes[host] = rw.Header().Get("X-Route")
+	}
+
+	return routes
+}
+
+func routeName(routerName, routePrefix string) string {
+	name, ok := strings.CutPrefix(routerName, routePrefix)
+	if !ok {
+		return routerName
+	}
+
+	name, _, _ = strings.Cut(name, "-gw-")
+	return name
 }

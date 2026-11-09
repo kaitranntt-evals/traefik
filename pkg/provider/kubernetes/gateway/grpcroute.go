@@ -72,15 +72,23 @@ func (p *Provider) loadGRPCRoutes(ctx context.Context, gateways []gatewayWithLis
 					listener.Status.AttachedRoutes++
 				}
 
+				// Hostnames claimed by a more specific listener are not routed through this listener (listener isolation).
+				isolatedHostnames, excludedHostnames, routable := isolateHostnames(listener, hostnames)
+				if routable {
+					hostnames = isolatedHostnames
+				}
+
 				// The ResolvedRefs condition must be reported for every parentRef,
 				// even when the route does not attach to the listener.
-				routeConf, condition := p.loadGRPCRoute(logger.WithContext(ctx), match.gatewayName, match.gatewayNamespace, listener, route, hostnames, statusReport)
+				routeConf, condition := p.loadGRPCRoute(logger.WithContext(ctx), match.gatewayName, match.gatewayNamespace, listener, route, hostnames, excludedHostnames, statusReport)
 				if resolvedRefCondition == nil || resolvedRefCondition.Status == metav1.ConditionTrue {
 					resolvedRefCondition = new(condition)
 				}
 
 				if accepted && listener.Attached {
-					mergeHTTPConfiguration(routeConf, conf)
+					if routable {
+						mergeHTTPConfiguration(routeConf, conf)
+					}
 
 					// Only consider the route attached if the listener is in an "attached" state.
 					acceptedCondition.Reason = string(gatev1.RouteReasonAccepted)
@@ -102,7 +110,7 @@ func (p *Provider) loadGRPCRoutes(ctx context.Context, gateways []gatewayWithLis
 	}
 }
 
-func (p *Provider) loadGRPCRoute(ctx context.Context, gatewayName, gatewayNamespace string, listener gatewayListener, route *gatev1.GRPCRoute, hostnames []gatev1.Hostname, statusReport *statusReport) (*dynamic.Configuration, metav1.Condition) {
+func (p *Provider) loadGRPCRoute(ctx context.Context, gatewayName, gatewayNamespace string, listener gatewayListener, route *gatev1.GRPCRoute, hostnames, excludedHostnames []gatev1.Hostname, statusReport *statusReport) (*dynamic.Configuration, metav1.Condition) {
 	conf := &dynamic.Configuration{
 		HTTP: &dynamic.HTTPConfiguration{
 			Routers:           make(map[string]*dynamic.Router),
@@ -127,7 +135,7 @@ func (p *Provider) loadGRPCRoute(ctx context.Context, gatewayName, gatewayNamesp
 		}
 
 		for _, match := range matches {
-			rule, priority := buildGRPCMatchRule(hostnames, match)
+			rule, priority := buildGRPCMatchRule(hostnames, excludedHostnames, match)
 
 			router := dynamic.Router{
 				// "default" stands for the default rule syntax in Traefik v3, i.e. the v3 syntax.
@@ -137,7 +145,7 @@ func (p *Provider) loadGRPCRoute(ctx context.Context, gatewayName, gatewayNamesp
 				EntryPoints: []string{listener.EPName},
 			}
 			if listener.Protocol == gatev1.HTTPSProtocolType {
-				router.TLS = &dynamic.RouterTLSConfig{}
+				router.TLS = &dynamic.RouterTLSConfig{Options: listener.TLSOptions}
 			}
 
 			var err error
@@ -475,7 +483,7 @@ func (p *Provider) loadGRPCServers(gatewayName, namespace string, route *gatev1.
 	return lb, serversTransport, nil
 }
 
-func buildGRPCMatchRule(hostnames []gatev1.Hostname, match gatev1.GRPCRouteMatch) (string, int) {
+func buildGRPCMatchRule(hostnames, excludedHostnames []gatev1.Hostname, match gatev1.GRPCRouteMatch) (string, int) {
 	var matchRules []string
 
 	methodRule := buildGRPCMethodRule(match.Method)
@@ -486,7 +494,7 @@ func buildGRPCMatchRule(hostnames []gatev1.Hostname, match gatev1.GRPCRouteMatch
 
 	matchRulesStr := strings.Join(matchRules, " && ")
 
-	hostRule, priority := buildHostRule(hostnames)
+	hostRule, priority := buildHostRule(hostnames, excludedHostnames)
 	if hostRule == "" {
 		return matchRulesStr, len(matchRulesStr)
 	}

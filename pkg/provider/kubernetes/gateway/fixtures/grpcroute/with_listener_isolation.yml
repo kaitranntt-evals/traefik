@@ -1,0 +1,136 @@
+---
+kind: GatewayClass
+apiVersion: gateway.networking.k8s.io/v1
+metadata:
+  name: my-gateway-class
+spec:
+  controllerName: traefik.io/gateway-controller
+
+---
+kind: Gateway
+apiVersion: gateway.networking.k8s.io/v1
+metadata:
+  name: my-gateway
+  namespace: default
+spec:
+  gatewayClassName: my-gateway-class
+  listeners:
+    - name: empty-hostname
+      protocol: HTTP
+      port: 80
+      allowedRoutes:
+        kinds:
+          - kind: GRPCRoute
+            group: gateway.networking.k8s.io
+        namespaces:
+          from: Same
+    - name: wildcard-example-com
+      protocol: HTTP
+      port: 80
+      hostname: "*.example.com"
+      allowedRoutes:
+        kinds:
+          - kind: GRPCRoute
+            group: gateway.networking.k8s.io
+        namespaces:
+          from: Same
+    - name: wildcard-foo-example-com
+      protocol: HTTP
+      port: 80
+      hostname: "*.foo.example.com"
+      allowedRoutes:
+        kinds:
+          - kind: GRPCRoute
+            group: gateway.networking.k8s.io
+        namespaces:
+          from: Same
+    - name: abc-foo-example-com
+      protocol: HTTP
+      port: 80
+      hostname: "abc.foo.example.com"
+      allowedRoutes:
+        kinds:
+          - kind: GRPCRoute
+            group: gateway.networking.k8s.io
+        namespaces:
+          from: Same
+
+---
+kind: GRPCRoute
+apiVersion: gateway.networking.k8s.io/v1
+metadata:
+  name: empty-hostname-app
+  namespace: default
+spec:
+  parentRefs:
+    - name: my-gateway
+      sectionName: empty-hostname
+      kind: Gateway
+      group: gateway.networking.k8s.io
+  rules:
+    - backendRefs:
+        - name: whoami
+          port: 80
+          weight: 1
+          kind: Service
+          group: ""
+
+---
+kind: GRPCRoute
+apiVersion: gateway.networking.k8s.io/v1
+metadata:
+  name: wildcard-example-com-app
+  namespace: default
+spec:
+  parentRefs:
+    - name: my-gateway
+      sectionName: wildcard-example-com
+      kind: Gateway
+      group: gateway.networking.k8s.io
+  rules:
+    - backendRefs:
+        - name: whoami
+          port: 80
+          weight: 1
+          kind: Service
+          group: ""
+
+---
+kind: GRPCRoute
+apiVersion: gateway.networking.k8s.io/v1
+metadata:
+  name: wildcard-foo-example-com-app
+  namespace: default
+spec:
+  parentRefs:
+    - name: my-gateway
+      sectionName: wildcard-foo-example-com
+      kind: Gateway
+      group: gateway.networking.k8s.io
+  rules:
+    - backendRefs:
+        - name: whoami
+          port: 80
+          weight: 1
+          kind: Service
+          group: ""
+
+---
+kind: GRPCRoute
+apiVersion: gateway.networking.k8s.io/v1
+metadata:
+  name: abc-foo-example-com-app
+  namespace: default
+spec:
+  parentRefs:
+    - name: my-gateway
+      sectionName: abc-foo-example-com
+      kind: Gateway
+      group: gateway.networking.k8s.io
+  rules:
+    - backendRefs:
+        - name: whoami
+          port: 80
+          weight: 1
+          kind: Service
+          group: ""

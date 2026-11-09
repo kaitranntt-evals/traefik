@@ -76,15 +76,23 @@ func (p *Provider) loadHTTPRoutes(ctx context.Context, gateways []gatewayWithLis
 					listener.Status.AttachedRoutes++
 				}
 
+				// Hostnames claimed by a more specific listener are not routed through this listener (listener isolation).
+				isolatedHostnames, excludedHostnames, routable := isolateHostnames(listener, hostnames)
+				if routable {
+					hostnames = isolatedHostnames
+				}
+
 				// The ResolvedRefs condition must be reported for every parentRef,
 				// even when the route does not attach to the listener.
-				routeConf, condition := p.loadHTTPRoute(logger.WithContext(ctx), match.gatewayName, match.gatewayNamespace, listener, route, hostnames, statusReport)
+				routeConf, condition := p.loadHTTPRoute(logger.WithContext(ctx), match.gatewayName, match.gatewayNamespace, listener, route, hostnames, excludedHostnames, statusReport)
 				if resolvedRefCondition == nil || resolvedRefCondition.Status == metav1.ConditionTrue {
 					resolvedRefCondition = new(condition)
 				}
 
 				if accepted && listener.Attached {
-					mergeHTTPConfiguration(routeConf, conf)
+					if routable {
+						mergeHTTPConfiguration(routeConf, conf)
+					}
 
 					// Only consider the route attached if the listener is in an "attached" state.
 					acceptedCondition.Reason = string(gatev1.RouteReasonAccepted)
@@ -106,7 +114,7 @@ func (p *Provider) loadHTTPRoutes(ctx context.Context, gateways []gatewayWithLis
 	}
 }
 
-func (p *Provider) loadHTTPRoute(ctx context.Context, gatewayName, gatewayNamespace string, listener gatewayListener, route *gatev1.HTTPRoute, hostnames []gatev1.Hostname, statusReport *statusReport) (*dynamic.Configuration, metav1.Condition) {
+func (p *Provider) loadHTTPRoute(ctx context.Context, gatewayName, gatewayNamespace string, listener gatewayListener, route *gatev1.HTTPRoute, hostnames, excludedHostnames []gatev1.Hostname, statusReport *statusReport) (*dynamic.Configuration, metav1.Condition) {
 	conf := &dynamic.Configuration{
 		HTTP: &dynamic.HTTPConfiguration{
 			Routers:           make(map[string]*dynamic.Router),
@@ -126,7 +134,7 @@ func (p *Provider) loadHTTPRoute(ctx context.Context, gatewayName, gatewayNamesp
 
 	for ri, routeRule := range route.Spec.Rules {
 		for _, match := range routeRule.Matches {
-			rule, priority := buildMatchRule(hostnames, match)
+			rule, priority := buildMatchRule(hostnames, excludedHostnames, match)
 			router := dynamic.Router{
 				// "default" stands for the default rule syntax in Traefik v3, i.e. the v3 syntax.
 				RuleSyntax:  "default",
@@ -135,7 +143,7 @@ func (p *Provider) loadHTTPRoute(ctx context.Context, gatewayName, gatewayNamesp
 				EntryPoints: []string{listener.EPName},
 			}
 			if listener.Protocol == gatev1.HTTPSProtocolType {
-				router.TLS = &dynamic.RouterTLSConfig{}
+				router.TLS = &dynamic.RouterTLSConfig{Options: listener.TLSOptions}
 			}
 
 			var err error
@@ -724,34 +732,47 @@ func (p *Provider) loadServersTransport(namespace string, policy *gatev1.Backend
 	}
 }
 
-func buildHostRule(hostnames []gatev1.Hostname) (string, int) {
-	var rules []string
+// buildHostRule builds the rule matching the given hostnames, but none of the excluded ones,
+// and computes its priority from the matched hostnames.
+func buildHostRule(hostnames, excludedHostnames []gatev1.Hostname) (string, int) {
 	var priority int
+	for _, hostname := range hostnames {
+		priority = max(priority, len(hostname))
+	}
 
+	hostRule := buildHostMatchers(hostnames)
+	excludedHostRule := buildHostMatchers(excludedHostnames)
+
+	switch {
+	case excludedHostRule == "":
+		return hostRule, priority
+	case hostRule == "":
+		return "!" + excludedHostRule, priority
+	default:
+		return hostRule + " && !" + excludedHostRule, priority
+	}
+}
+
+// buildHostMatchers builds the rule matching any of the given hostnames.
+// A Gateway API wildcard hostname matches any number of labels, hence the double wildcard Host matcher.
+func buildHostMatchers(hostnames []gatev1.Hostname) string {
+	var rules []string
 	for _, hostname := range hostnames {
 		host := string(hostname)
-
-		if priority < len(host) {
-			priority = len(host)
+		if strings.HasPrefix(host, "*.") {
+			host = "*" + host
 		}
 
-		wildcard := strings.Count(host, "*")
-		if wildcard == 0 {
-			rules = append(rules, fmt.Sprintf("Host(%q)", host))
-			continue
-		}
-
-		host = strings.Replace(regexp.QuoteMeta(host), `\*\.`, `[a-z0-9-\.]+\.`, 1)
-		rules = append(rules, fmt.Sprintf("HostRegexp(%q)", fmt.Sprintf("^%s$", host)))
+		rules = append(rules, fmt.Sprintf("Host(%q)", host))
 	}
 
 	switch len(rules) {
 	case 0:
-		return "", 0
+		return ""
 	case 1:
-		return rules[0], priority
+		return rules[0]
 	default:
-		return fmt.Sprintf("(%s)", strings.Join(rules, " || ")), priority
+		return fmt.Sprintf("(%s)", strings.Join(rules, " || "))
 	}
 }
 
@@ -766,7 +787,7 @@ func buildHostRule(hostnames []gatev1.Hostname) (string, int) {
 // * Largest number of query param matches (+10 each).
 //
 // In case of multiple matches for a route, the maximum priority among all matches is retain.
-func buildMatchRule(hostnames []gatev1.Hostname, match gatev1.HTTPRouteMatch) (string, int) {
+func buildMatchRule(hostnames, excludedHostnames []gatev1.Hostname, match gatev1.HTTPRouteMatch) (string, int) {
 	path := ptr.Deref(match.Path, gatev1.HTTPPathMatch{
 		Type:  new(gatev1.PathMatchPathPrefix),
 		Value: new("/"),
@@ -794,7 +815,7 @@ func buildMatchRule(hostnames []gatev1.Hostname, match gatev1.HTTPRouteMatch) (s
 
 	matchRulesStr := strings.Join(matchRules, " && ")
 
-	hostRule, hostPriority := buildHostRule(hostnames)
+	hostRule, hostPriority := buildHostRule(hostnames, excludedHostnames)
 
 	if hostRule == "" {
 		return matchRulesStr, priority
