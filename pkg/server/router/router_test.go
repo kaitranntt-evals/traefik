@@ -2167,6 +2167,35 @@ func (t *staticTransport) RoundTrip(_ *http.Request) (*http.Response, error) {
 	return t.res, nil
 }
 
+func TestGatewayListenerSNICheck(t *testing.T) {
+	parser, err := httpmuxer.NewSyntaxParser()
+	require.NoError(t, err)
+	manager := NewManager(&runtime.Configuration{}, &mockServiceManager{}, &mockMiddlewareBuilder{}, nil, nil, parser, nil)
+	router := &runtime.RouterInfo{Router: &dynamic.Router{
+		Service: "backend",
+		TLS:     &dynamic.RouterTLSConfig{SNIHostRule: `Host("*.example.com") && !Host("api.example.com")`},
+	}}
+	handler, err := manager.buildHTTPHandler(t.Context(), router, "websecure", "gateway-route")
+	require.NoError(t, err)
+
+	for _, test := range []struct {
+		sni    string
+		status int
+	}{
+		{sni: "other.example.com", status: http.StatusOK},
+		{sni: "api.example.com", status: http.StatusMisdirectedRequest},
+		{sni: "example.org", status: http.StatusMisdirectedRequest},
+	} {
+		t.Run(test.sni, func(t *testing.T) {
+			req := httptest.NewRequest(http.MethodGet, "https://other.example.com/", http.NoBody)
+			req.TLS = &tls.ConnectionState{ServerName: test.sni}
+			response := httptest.NewRecorder()
+			handler.ServeHTTP(response, req)
+			assert.Equal(t, test.status, response.Code)
+		})
+	}
+}
+
 type mockServiceManager struct{}
 
 func (m *mockServiceManager) BuildHTTP(_ context.Context, _ string) (http.Handler, error) {

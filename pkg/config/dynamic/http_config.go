@@ -148,6 +148,8 @@ func (r *RouterDeniedEncodedPathCharacters) Map() map[string]struct{} {
 
 // RouterTLSConfig holds the TLS configuration for a router.
 type RouterTLSConfig struct {
+	// SNIHostRule restricts requests to the Gateway listener selected by the TLS server name.
+	SNIHostRule     string `json:"-" toml:"-" yaml:"-" label:"-" file:"-" kv:"-" export:"false"`
 	Options         string `json:"options,omitempty" toml:"options,omitempty" yaml:"options,omitempty" export:"true"`
 	ResolvedOptions string `json:"-" toml:"-" yaml:"-" label:"-" file:"-" kv:"-" export:"false"`
 	// ConflictingOptions is set when the router conflicts with another router configured with different TLS options for the same host.

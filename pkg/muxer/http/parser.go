@@ -66,6 +66,15 @@ func (s SyntaxParser) parse(syntax string, rule string) (matchersTree, error) {
 	return parser.parse(rule)
 }
 
+// ParseMatcher allows internal routing checks to share the router's matching semantics.
+func (s SyntaxParser) ParseMatcher(syntax, rule string) (MatcherFunc, error) {
+	matchers, err := s.parse(syntax, rule)
+	if err != nil {
+		return nil, err
+	}
+	return matchers.match, nil
+}
+
 func newParser(funcs matcherBuilderFuncs) (*parser, error) {
 	p, err := rules.NewParser(slices.Collect(maps.Keys(funcs)))
 	if err != nil {

@@ -136,6 +136,9 @@ type gatewayListener struct {
 	Attached bool
 
 	EPName string
+
+	ExcludedHostnames []gatev1.Hostname
+	SNIHostRule       string
 }
 
 type gatewayWithListeners struct {
@@ -653,6 +656,8 @@ func (p *Provider) loadGatewayListeners(ctx context.Context, gateway *gatev1.Gat
 
 		gatewayListeners[i].Attached = true
 	}
+
+	configureListenerIsolation(gateway, gatewayListeners, conf)
 
 	if len(tlsCerts) > 0 {
 		conf.TLS.Certificates = append(conf.TLS.Certificates, getTLSConfig(tlsCerts)...)

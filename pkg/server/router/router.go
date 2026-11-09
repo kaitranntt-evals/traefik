@@ -382,7 +382,7 @@ func (m *Manager) buildHTTPHandler(ctx context.Context, router *runtime.RouterIn
 
 	if router.TLS != nil {
 		chain = chain.Append(func(next http.Handler) (http.Handler, error) {
-			return snicheck.New(routerName, router.TLS.ResolvedOptions, next), nil
+			return snicheck.New(routerName, router.TLS.ResolvedOptions, router.TLS.SNIHostRule, next)
 		})
 	}
 

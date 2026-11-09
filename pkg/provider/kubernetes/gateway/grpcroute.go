@@ -128,6 +128,9 @@ func (p *Provider) loadGRPCRoute(ctx context.Context, gatewayName, gatewayNamesp
 
 		for _, match := range matches {
 			rule, priority := buildGRPCMatchRule(hostnames, match)
+			if excludedRule := buildListenerHostRule(listener.ExcludedHostnames); excludedRule != "" {
+				rule += " && !" + excludedRule
+			}
 
 			router := dynamic.Router{
 				// "default" stands for the default rule syntax in Traefik v3, i.e. the v3 syntax.
@@ -137,7 +140,7 @@ func (p *Provider) loadGRPCRoute(ctx context.Context, gatewayName, gatewayNamesp
 				EntryPoints: []string{listener.EPName},
 			}
 			if listener.Protocol == gatev1.HTTPSProtocolType {
-				router.TLS = &dynamic.RouterTLSConfig{}
+				router.TLS = &dynamic.RouterTLSConfig{SNIHostRule: listener.SNIHostRule}
 			}
 
 			var err error
