@@ -1,0 +1,29 @@
+From https://git-manager.itsdev.in/proxy/github.com/kaitranntt-evals/traefik-gateway-listener-isolation
+ * branch                evalon/traefik-ga-730e07a9 -> FETCH_HEAD
+Preparing worktree (detached HEAD 418e22c75)
+HEAD is now at 418e22c75 chore: apply eval changes
+### 1. original output (four-listener subtests, test file untouched)
+      1     --- PASS: TestListenerIsolation/GRPCRoute/HTTP/fallback_excludes_all_more_specific_listeners (0.05s)
+      1     --- PASS: TestListenerIsolation/GRPCRoute/HTTPS/fallback_excludes_all_more_specific_listeners (0.05s)
+      1     --- PASS: TestListenerIsolation/HTTPRoute/HTTP/fallback_excludes_all_more_specific_listeners (0.05s)
+      1     --- PASS: TestListenerIsolation/HTTPRoute/HTTPS/fallback_excludes_all_more_specific_listeners (0.05s)
+      1 --- PASS: TestListenerIsolation (0.00s)
+      1 PASS
+      4 VERIFY-C1 gateway=default/gateway specListeners=4 statusListeners=[0]current:attachedRoutes=1 [1]other:attachedRoutes=0 [2]additional-0:attachedRoutes=0 [3]additional-1:attachedRoutes=0
+      1 ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/gateway	0.071s
+### 2. `other` listener record removed from the actual Gateway status (expectations untouched)
+      1     --- PASS: TestListenerIsolation/GRPCRoute/HTTP/fallback_excludes_all_more_specific_listeners (0.05s)
+      1     --- PASS: TestListenerIsolation/GRPCRoute/HTTPS/fallback_excludes_all_more_specific_listeners (0.05s)
+      1     --- PASS: TestListenerIsolation/HTTPRoute/HTTP/fallback_excludes_all_more_specific_listeners (0.05s)
+      1     --- PASS: TestListenerIsolation/HTTPRoute/HTTPS/fallback_excludes_all_more_specific_listeners (0.05s)
+      1 --- PASS: TestListenerIsolation (0.00s)
+      1 PASS
+      4 VERIFY-C1 gateway=default/gateway specListeners=4 statusListeners=[0]current:attachedRoutes=1 [1]additional-0:attachedRoutes=0 [2]additional-1:attachedRoutes=0
+      1 ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/gateway	0.072s
+### 3. same removal limited to four-listener Gateways, whole package
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/gateway	0.261s
+### 4. control: removal for every Gateway, whole TestListenerIsolation (two-listener cases index Listeners[1])
+--- FAIL: TestListenerIsolation (0.06s)
+panic: runtime error: index out of range [1] with length 1 [recovered, repanicked]
+FAIL	github.com/traefik/traefik/v3/pkg/provider/kubernetes/gateway	0.075s
+FAIL
