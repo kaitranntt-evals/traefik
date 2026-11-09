@@ -1,11 +1,14 @@
 package gateway
 
 import (
+	cryptotls "crypto/tls"
 	"errors"
 	"fmt"
 	"net/http"
+	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"testing"
 	"time"
@@ -14,6 +17,8 @@ import (
 	"github.com/stretchr/testify/require"
 	ptypes "github.com/traefik/paerser/types"
 	"github.com/traefik/traefik/v3/pkg/config/dynamic"
+	"github.com/traefik/traefik/v3/pkg/middlewares/requestdecorator"
+	httpmuxer "github.com/traefik/traefik/v3/pkg/muxer/http"
 	"github.com/traefik/traefik/v3/pkg/provider"
 	traefikv1alpha1 "github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd/traefikio/v1alpha1"
 	"github.com/traefik/traefik/v3/pkg/provider/kubernetes/k8s"
@@ -28,6 +33,7 @@ import (
 	kscheme "k8s.io/client-go/kubernetes/scheme"
 	gatev1 "sigs.k8s.io/gateway-api/apis/v1"
 	gatefake "sigs.k8s.io/gateway-api/pkg/client/clientset/versioned/fake"
+	"sigs.k8s.io/gateway-api/pkg/features"
 )
 
 var _ provider.Provider = (*Provider)(nil)
@@ -10317,4 +10323,297 @@ func TestCrossProviderNamespaces_TLSRoute(t *testing.T) {
 			assert.Equal(t, test.wantError, hasError)
 		})
 	}
+}
+
+func TestLoadRoutes_listenerIsolation(t *testing.T) {
+	type request struct {
+		sni  string
+		host string
+	}
+
+	testCases := []struct {
+		desc       string
+		paths      []string
+		entryPoint string
+		grpc       bool
+		expected   map[request]string
+	}{
+		{
+			desc:       "HTTPRoutes on HTTP listeners",
+			paths:      []string{"services.yml", "httproute/with_listener_isolation.yml"},
+			entryPoint: "web",
+			expected: map[request]string{
+				{host: "foo.example.com"}:     "route-foo",
+				{host: "bar.example.com"}:     "route-wildcard",
+				{host: "foo.bar.example.com"}: "route-wildcard",
+				{host: "example.org"}:         "route-empty",
+				{host: "example.com"}:         "route-empty",
+			},
+		},
+		{
+			desc:       "HTTPRoutes on HTTPS listeners",
+			paths:      []string{"services.yml", "httproute/with_listener_isolation.yml"},
+			entryPoint: "websecure",
+			expected: map[request]string{
+				{sni: "foo.example.com", host: "foo.example.com"}:         "route-foo",
+				{sni: "bar.example.com", host: "bar.example.com"}:         "route-wildcard",
+				{sni: "bar.example.com", host: "baz.example.com"}:         "route-wildcard",
+				{sni: "foo.bar.example.com", host: "foo.bar.example.com"}: "route-wildcard",
+				{sni: "example.org", host: "example.org"}:                 "route-empty",
+				{sni: "example.org", host: "example.net"}:                 "route-empty",
+				{sni: "foo.example.com", host: "bar.example.com"}:         "misdirected",
+				{sni: "bar.example.com", host: "foo.example.com"}:         "misdirected",
+				{sni: "example.org", host: "foo.example.com"}:             "misdirected",
+				{sni: "example.org", host: "bar.example.com"}:             "misdirected",
+				{sni: "foo.example.com", host: "example.org"}:             "misdirected",
+				{sni: "bar.example.com", host: "example.org"}:             "misdirected",
+			},
+		},
+		{
+			desc:       "GRPCRoutes on HTTP listeners",
+			paths:      []string{"services.yml", "grpcroute/with_listener_isolation.yml"},
+			entryPoint: "web",
+			grpc:       true,
+			expected: map[request]string{
+				{host: "foo.example.com"}:     "route-foo",
+				{host: "bar.example.com"}:     "route-wildcard",
+				{host: "foo.bar.example.com"}: "route-wildcard",
+				{host: "example.org"}:         "route-empty",
+			},
+		},
+	}
+
+	for _, test := range testCases {
+		t.Run(test.desc, func(t *testing.T) {
+			t.Parallel()
+
+			k8sObjects, gwObjects := readResources(t, test.paths)
+
+			kubeClient := kubefake.NewClientset(k8sObjects...)
+			gwClient := newGatewaySimpleClientSet(t, gwObjects...)
+
+			client := newClientImpl(kubeClient, gwClient)
+
+			eventCh, err := client.WatchAll(nil, make(chan struct{}))
+			require.NoError(t, err)
+
+			// just wait for the first event
+			<-eventCh
+
+			p := Provider{
+				EntryPoints: map[string]Entrypoint{
+					"web":       {Address: ":80"},
+					"websecure": {Address: ":443"},
+				},
+				client: client,
+			}
+
+			conf, _, err := p.loadConfigurationFromGateways(t.Context())
+			require.NoError(t, err)
+
+			parser, err := httpmuxer.NewSyntaxParser()
+			require.NoError(t, err)
+
+			mux := httpmuxer.NewMuxer(parser, nil)
+			for routerName, router := range conf.HTTP.Routers {
+				if !slices.Contains(router.EntryPoints, test.entryPoint) {
+					continue
+				}
+
+				priority := router.Priority
+				if priority == 0 {
+					priority = httpmuxer.GetRulePriority(router.Rule)
+				}
+
+				handler := http.HandlerFunc(func(rw http.ResponseWriter, _ *http.Request) {
+					_, _ = rw.Write([]byte(routerName))
+				})
+				require.NoError(t, mux.AddRoute(router.Rule, router.RuleSyntax, priority, "", handler))
+			}
+
+			reqDecorator := requestdecorator.New(nil)
+
+			for req, expected := range test.expected {
+				r := httptest.NewRequest(http.MethodPost, "/foo.Service/Get", http.NoBody)
+				r.Host = req.host
+				if test.grpc {
+					r.Header.Set("Content-Type", "application/grpc")
+				}
+				if req.sni != "" {
+					r.TLS = &cryptotls.ConnectionState{ServerName: req.sni}
+				}
+
+				rw := httptest.NewRecorder()
+				reqDecorator.ServeHTTP(rw, r, mux.ServeHTTP)
+
+				require.Equal(t, http.StatusOK, rw.Code, "SNI %q, Host %q", req.sni, req.host)
+
+				routerName := rw.Body.String()
+				if expected == "misdirected" {
+					assert.True(t, strings.HasPrefix(routerName, "misdirected-"), "SNI %q, Host %q: %s", req.sni, req.host, routerName)
+
+					service := conf.HTTP.Services[conf.HTTP.Routers[routerName].Service]
+					require.NotNil(t, service)
+					require.NotNil(t, service.Weighted)
+					require.Len(t, service.Weighted.Services, 1)
+					assert.Equal(t, http.StatusMisdirectedRequest, *service.Weighted.Services[0].Status)
+					continue
+				}
+
+				assert.Contains(t, routerName, "-"+expected+"-", "SNI %q, Host %q", req.sni, req.host)
+			}
+		})
+	}
+}
+
+func Test_moreSpecificListenerHostnames(t *testing.T) {
+	listeners := []gatewayListener{
+		{Name: "empty", EPName: "web", Protocol: gatev1.HTTPProtocolType, Attached: true},
+		{Name: "wildcard", EPName: "web", Protocol: gatev1.HTTPProtocolType, Attached: true, Hostname: new(gatev1.Hostname("*.example.com"))},
+		{Name: "foo", EPName: "web", Protocol: gatev1.HTTPProtocolType, Attached: true, Hostname: new(gatev1.Hostname("foo.example.com"))},
+		{Name: "bar", EPName: "web", Protocol: gatev1.HTTPProtocolType, Attached: true, Hostname: new(gatev1.Hostname("bar.example.org"))},
+		{Name: "detached", EPName: "web", Protocol: gatev1.HTTPProtocolType, Hostname: new(gatev1.Hostname("baz.example.com"))},
+		{Name: "other-ep", EPName: "web2", Protocol: gatev1.HTTPProtocolType, Attached: true, Hostname: new(gatev1.Hostname("qux.example.com"))},
+		{Name: "other-protocol", EPName: "web", Protocol: gatev1.HTTPSProtocolType, Attached: true, Hostname: new(gatev1.Hostname("quux.example.com"))},
+	}
+
+	testCases := []struct {
+		desc     string
+		listener string
+		expected []gatev1.Hostname
+	}{
+		{
+			desc:     "listener without hostname",
+			listener: "empty",
+			expected: []gatev1.Hostname{"*.example.com", "foo.example.com", "bar.example.org"},
+		},
+		{
+			desc:     "listener with wildcard hostname",
+			listener: "wildcard",
+			expected: []gatev1.Hostname{"foo.example.com"},
+		},
+		{
+			desc:     "listener with exact hostname",
+			listener: "foo",
+		},
+	}
+
+	for _, test := range testCases {
+		t.Run(test.desc, func(t *testing.T) {
+			t.Parallel()
+
+			idx := slices.IndexFunc(listeners, func(l gatewayListener) bool { return l.Name == test.listener })
+			require.GreaterOrEqual(t, idx, 0)
+
+			assert.Equal(t, test.expected, moreSpecificListenerHostnames(listeners[idx], listeners))
+		})
+	}
+}
+
+func Test_listenerIsolationHostnames(t *testing.T) {
+	listenerHostnames := []gatev1.Hostname{"*.example.com", "foo.example.com", "bar.example.org"}
+
+	testCases := []struct {
+		desc           string
+		routeHostnames []gatev1.Hostname
+		expected       []gatev1.Hostname
+	}{
+		{
+			desc:     "no route hostnames",
+			expected: listenerHostnames,
+		},
+		{
+			desc:           "route hostname not intersecting",
+			routeHostnames: []gatev1.Hostname{"example.net"},
+		},
+		{
+			desc:           "exact route hostname",
+			routeHostnames: []gatev1.Hostname{"foo.example.com"},
+			expected:       []gatev1.Hostname{"*.example.com", "foo.example.com"},
+		},
+		{
+			desc:           "wildcard route hostname",
+			routeHostnames: []gatev1.Hostname{"*.example.org"},
+			expected:       []gatev1.Hostname{"bar.example.org"},
+		},
+	}
+
+	for _, test := range testCases {
+		t.Run(test.desc, func(t *testing.T) {
+			t.Parallel()
+
+			assert.Equal(t, test.expected, listenerIsolationHostnames(test.routeHostnames, listenerHostnames))
+		})
+	}
+}
+
+func Test_withListenerIsolation(t *testing.T) {
+	testCases := []struct {
+		desc              string
+		isolatedHostnames []gatev1.Hostname
+		expected          string
+	}{
+		{
+			desc:     "no isolated hostnames",
+			expected: `PathPrefix("/")`,
+		},
+		{
+			desc:              "one isolated hostname",
+			isolatedHostnames: []gatev1.Hostname{"foo.example.com"},
+			expected:          `PathPrefix("/") && !Host("foo.example.com")`,
+		},
+		{
+			desc:              "multiple isolated hostnames",
+			isolatedHostnames: []gatev1.Hostname{"*.example.com", "foo.example.com"},
+			expected:          `PathPrefix("/") && !(HostRegexp("^[a-z0-9-\\.]+\\.example\\.com$") || Host("foo.example.com"))`,
+		},
+	}
+
+	for _, test := range testCases {
+		t.Run(test.desc, func(t *testing.T) {
+			t.Parallel()
+
+			assert.Equal(t, test.expected, withListenerIsolation(`PathPrefix("/")`, test.isolatedHostnames))
+		})
+	}
+}
+
+func Test_buildMisdirectedRequestRule(t *testing.T) {
+	testCases := []struct {
+		desc                  string
+		hostname              *gatev1.Hostname
+		moreSpecificHostnames []gatev1.Hostname
+		expected              string
+	}{
+		{
+			desc:                  "listener without hostname",
+			moreSpecificHostnames: []gatev1.Hostname{"*.example.com", "foo.example.com"},
+			expected:              `!(HostRegexp("^[a-z0-9-\\.]+\\.example\\.com$") || Host("foo.example.com")) && (HostSNI("**.example.com") || HostSNI("foo.example.com"))`,
+		},
+		{
+			desc:                  "listener with wildcard hostname",
+			hostname:              new(gatev1.Hostname("*.example.com")),
+			moreSpecificHostnames: []gatev1.Hostname{"foo.example.com"},
+			expected:              `HostRegexp("^[a-z0-9-\\.]+\\.example\\.com$") && !Host("foo.example.com") && (!HostSNI("**.example.com") || HostSNI("foo.example.com"))`,
+		},
+		{
+			desc:     "listener with exact hostname",
+			hostname: new(gatev1.Hostname("foo.example.com")),
+			expected: `Host("foo.example.com") && !HostSNI("foo.example.com")`,
+		},
+	}
+
+	for _, test := range testCases {
+		t.Run(test.desc, func(t *testing.T) {
+			t.Parallel()
+
+			listener := gatewayListener{Hostname: test.hostname}
+			assert.Equal(t, test.expected, buildMisdirectedRequestRule(listener, test.moreSpecificHostnames))
+		})
+	}
+}
+
+func TestSupportedFeatures_listenerIsolation(t *testing.T) {
+	assert.Contains(t, SupportedFeatures(), features.GatewayHTTPListenerIsolationFeature.Name)
+	assert.Contains(t, SupportedFeatures(), features.GatewayHTTPSListenerDetectMisdirectedRequestsFeature.Name)
 }

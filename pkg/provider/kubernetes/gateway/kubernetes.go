@@ -5,6 +5,8 @@ import (
 	"crypto/sha256"
 	"errors"
 	"fmt"
+	"math"
+	"net/http"
 	"os"
 	"slices"
 	"sort"
@@ -394,6 +396,8 @@ func (p *Provider) loadConfigurationFromGateways(ctx context.Context) (*dynamic.
 	p.loadHTTPRoutes(ctx, selectedGateways, conf, statusReport)
 
 	p.loadGRPCRoutes(ctx, selectedGateways, conf, statusReport)
+
+	loadMisdirectedRequestRouters(selectedGateways, conf)
 
 	p.loadTLSRoutes(ctx, selectedGateways, conf, statusReport)
 
@@ -1117,6 +1121,139 @@ func findMatchingHostname(h1, h2 gatev1.Hostname) gatev1.Hostname {
 	// h1 is a wildcard that encompasses h2, so h2 is always
 	// the more specific hostname (the correct intersection).
 	return h2
+}
+
+// moreSpecificListenerHostnames returns the hostnames of the listeners sharing the entryPoint and protocol of the given listener
+// which are more specific than its own hostname.
+// Per the listener isolation requirement, requests matching these hostnames must only be routed by the routes of these listeners.
+func moreSpecificListenerHostnames(listener gatewayListener, listeners []gatewayListener) []gatev1.Hostname {
+	var hostnames []gatev1.Hostname
+	for _, l := range listeners {
+		if l.Name == listener.Name || !l.Attached || l.Hostname == nil || l.EPName != listener.EPName || l.Protocol != listener.Protocol {
+			continue
+		}
+
+		if listener.Hostname == nil || (*l.Hostname != *listener.Hostname && findMatchingHostname(*listener.Hostname, *l.Hostname) != "") {
+			hostnames = append(hostnames, *l.Hostname)
+		}
+	}
+
+	return hostnames
+}
+
+// listenerIsolationHostnames returns, among the given listener hostnames, the ones intersecting with the route hostnames.
+// An empty list of route hostnames intersects with every listener hostname.
+func listenerIsolationHostnames(routeHostnames, listenerHostnames []gatev1.Hostname) []gatev1.Hostname {
+	if len(routeHostnames) == 0 {
+		return listenerHostnames
+	}
+
+	var hostnames []gatev1.Hostname
+	for _, listenerHostname := range listenerHostnames {
+		for _, routeHostname := range routeHostnames {
+			if findMatchingHostname(listenerHostname, routeHostname) != "" || findMatchingHostname(routeHostname, listenerHostname) != "" {
+				hostnames = append(hostnames, listenerHostname)
+				break
+			}
+		}
+	}
+
+	return hostnames
+}
+
+// withListenerIsolation excludes from the given rule the requests for the given hostnames.
+func withListenerIsolation(rule string, isolatedHostnames []gatev1.Hostname) string {
+	hostRule, _ := buildHostRule(isolatedHostnames)
+	if hostRule == "" {
+		return rule
+	}
+
+	return rule + " && !" + hostRule
+}
+
+// loadMisdirectedRequestRouters adds, for each HTTPS listener sharing its entryPoint with other HTTPS listeners of the same Gateway,
+// a router answering with a 421 (Misdirected Request) status code the requests whose host selects the listener,
+// while the server name (SNI) of their TLS connection selects another one.
+// This prevents a connection established for a listener to be reused, e.g. through HTTP/2 connection coalescing,
+// to reach the routes of another listener.
+func loadMisdirectedRequestRouters(gateways []gatewayWithListeners, conf *dynamic.Configuration) {
+	for _, gateway := range gateways {
+		for _, listener := range gateway.listeners {
+			if listener.Protocol != gatev1.HTTPSProtocolType || !listener.Attached {
+				continue
+			}
+
+			hasSibling := slices.ContainsFunc(gateway.listeners, func(l gatewayListener) bool {
+				return l.Name != listener.Name && l.Attached && l.EPName == listener.EPName && l.Protocol == listener.Protocol
+			})
+			if !hasSibling {
+				continue
+			}
+
+			routerName := provider.Normalize(fmt.Sprintf("misdirected-gw-%s-%s-ep-%s-%s", gateway.Namespace, gateway.Name, listener.EPName, listener.Name))
+			serviceName := routerName + "-wrr"
+
+			conf.HTTP.Routers[routerName] = &dynamic.Router{
+				// "default" stands for the default rule syntax in Traefik v3, i.e. the v3 syntax.
+				RuleSyntax:  "default",
+				Rule:        buildMisdirectedRequestRule(listener, moreSpecificListenerHostnames(listener, gateway.listeners)),
+				Priority:    math.MaxInt32,
+				EntryPoints: []string{listener.EPName},
+				Service:     serviceName,
+				TLS:         &dynamic.RouterTLSConfig{},
+			}
+
+			conf.HTTP.Services[serviceName] = &dynamic.Service{
+				Weighted: &dynamic.WeightedRoundRobin{
+					Services: []dynamic.WRRService{
+						{
+							Name:   "misdirected-request",
+							Status: new(http.StatusMisdirectedRequest),
+							Weight: new(1),
+						},
+					},
+				},
+			}
+		}
+	}
+}
+
+// buildMisdirectedRequestRule builds a rule matching the requests whose host selects the given listener,
+// and whose server name (SNI) does not.
+func buildMisdirectedRequestRule(listener gatewayListener, moreSpecificHostnames []gatev1.Hostname) string {
+	var hostRules, sniRules []string
+
+	if listener.Hostname != nil {
+		hostRule, _ := buildHostRule([]gatev1.Hostname{*listener.Hostname})
+		hostRules = append(hostRules, hostRule)
+		sniRules = append(sniRules, "!"+buildHostSNIRule(*listener.Hostname))
+	}
+
+	if hostRule, _ := buildHostRule(moreSpecificHostnames); hostRule != "" {
+		hostRules = append(hostRules, "!"+hostRule)
+	}
+
+	for _, hostname := range moreSpecificHostnames {
+		sniRules = append(sniRules, buildHostSNIRule(hostname))
+	}
+
+	sniRule := strings.Join(sniRules, " || ")
+	if len(sniRules) > 1 {
+		sniRule = "(" + sniRule + ")"
+	}
+
+	return strings.Join(append(hostRules, sniRule), " && ")
+}
+
+// buildHostSNIRule builds a rule matching the requests whose server name (SNI) matches the given hostname.
+// A Gateway API wildcard hostname matches any number of labels, hence its translation to a double wildcard.
+func buildHostSNIRule(hostname gatev1.Hostname) string {
+	host := string(hostname)
+	if strings.HasPrefix(host, "*.") {
+		host = "*" + host
+	}
+
+	return fmt.Sprintf("HostSNI(%q)", host)
 }
 
 func allowRoute(listener gatewayListener, routeNamespace, routeKind string) bool {

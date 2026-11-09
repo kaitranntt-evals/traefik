@@ -1,6 +1,7 @@
 package http
 
 import (
+	"crypto/tls"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -330,6 +331,122 @@ func TestHostMatcher(t *testing.T) {
 
 				reqHost.ServeHTTP(w, req, muxer.ServeHTTP)
 				results[calledURL] = w.Code
+			}
+			assert.Equal(t, test.expected, results)
+		})
+	}
+}
+
+func TestHostSNIMatcher(t *testing.T) {
+	testCases := []struct {
+		desc          string
+		rule          string
+		expected      map[string]int
+		expectedError bool
+	}{
+		{
+			desc:          "invalid HostSNI matcher (no parameter)",
+			rule:          "HostSNI()",
+			expectedError: true,
+		},
+		{
+			desc:          "invalid HostSNI matcher (non-ASCII)",
+			rule:          "HostSNI(`🦭.com`)",
+			expectedError: true,
+		},
+		{
+			desc:          "invalid HostSNI matcher (too many parameters)",
+			rule:          "HostSNI(`example.com`, `example.org`)",
+			expectedError: true,
+		},
+		{
+			desc:          "invalid HostSNI matcher (wildcard in the middle)",
+			rule:          "HostSNI(`foo.*.example.com`)",
+			expectedError: true,
+		},
+		{
+			desc: "valid HostSNI matcher",
+			rule: "HostSNI(`example.com`)",
+			expected: map[string]int{
+				"":                http.StatusNotFound,
+				"example.com":     http.StatusOK,
+				"EXAMPLE.com":     http.StatusOK,
+				"example.com.":    http.StatusOK,
+				"foo.example.com": http.StatusNotFound,
+				"example.org":     http.StatusNotFound,
+			},
+		},
+		{
+			desc: "valid HostSNI matcher with a single wildcard",
+			rule: "HostSNI(`*.example.com`)",
+			expected: map[string]int{
+				"":                    http.StatusNotFound,
+				"example.com":         http.StatusNotFound,
+				"foo.example.com":     http.StatusOK,
+				"foo.bar.example.com": http.StatusNotFound,
+			},
+		},
+		{
+			desc: "valid HostSNI matcher with a double wildcard",
+			rule: "HostSNI(`**.example.com`)",
+			expected: map[string]int{
+				"":                    http.StatusNotFound,
+				"example.com":         http.StatusNotFound,
+				"foo.example.com":     http.StatusOK,
+				"foo.bar.example.com": http.StatusOK,
+			},
+		},
+		{
+			desc: "valid HostSNI matcher with a catch-all",
+			rule: "HostSNI(`*`)",
+			expected: map[string]int{
+				"":            http.StatusOK,
+				"example.com": http.StatusOK,
+			},
+		},
+		{
+			desc: "valid negated HostSNI matcher",
+			rule: "Host(`example.com`) && !HostSNI(`example.com`)",
+			expected: map[string]int{
+				"":            http.StatusOK,
+				"example.com": http.StatusNotFound,
+				"example.org": http.StatusOK,
+			},
+		},
+	}
+
+	for _, test := range testCases {
+		t.Run(test.desc, func(t *testing.T) {
+			t.Parallel()
+
+			handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {})
+			parser, err := NewSyntaxParser()
+			require.NoError(t, err)
+
+			muxer := NewMuxer(parser, nil)
+
+			err = muxer.AddRoute(test.rule, "", 0, "", handler)
+			if test.expectedError {
+				require.Error(t, err)
+				return
+			}
+
+			require.NoError(t, err)
+
+			// RequestDecorator is necessary for the Host matcher.
+			reqHost := requestdecorator.New(nil)
+
+			results := make(map[string]int)
+			for serverName := range test.expected {
+				w := httptest.NewRecorder()
+
+				req := httptest.NewRequest(http.MethodGet, "http://example.com/", http.NoBody)
+				if serverName != "" {
+					req.TLS = &tls.ConnectionState{ServerName: serverName}
+				}
+
+				reqHost.ServeHTTP(w, req, muxer.ServeHTTP)
+				results[serverName] = w.Code
 			}
 			assert.Equal(t, test.expected, results)
 		})

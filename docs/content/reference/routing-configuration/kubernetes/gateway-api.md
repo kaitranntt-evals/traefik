@@ -14,6 +14,15 @@ It fully supports all `HTTPRoute` core and some extended features, like `Backend
 
 For more details, check out the conformance [report](https://github.com/kubernetes-sigs/gateway-api/tree/main/conformance/reports/v1.6.1/traefik-traefik).
 
+!!! info "Listener isolation"
+
+    Requests are routed by the routes attached to the listener whose hostname matches the request host most specifically,
+    as required by the `GatewayHTTPListenerIsolation` feature.
+    For instance, with a listener without hostname, a listener with the `*.example.com` hostname and a listener with the `foo.example.com` hostname,
+    a request for `foo.example.com` is only routed by the routes attached to the `foo.example.com` listener.
+
+    On HTTPS listeners, a request sent over a TLS connection whose server name (SNI) selects another listener of the same Gateway
+    is answered with a `421 Misdirected Request` status code, as required by the `GatewayHTTPSListenerDetectMisdirectedRequests` feature.
 
 ## Deploying a Gateway
 
