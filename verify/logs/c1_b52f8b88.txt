@@ -1,0 +1,246 @@
+##### branch HEAD a1248f57c7f42900adf4600f4703e0df8dfd3028
+##### 1. authored tests, untouched
+=== RUN   TestLoadRoutes_listenerIsolation
+=== RUN   TestLoadRoutes_listenerIsolation/HTTPRoutes_attached_to_listeners_with_hostnames_of_increasing_specificity
+=== RUN   TestLoadRoutes_listenerIsolation/HTTPRoutes_with_hostnames_intersecting_the_listener_hostnames
+=== RUN   TestLoadRoutes_listenerIsolation/HTTPRoute_attached_to_every_listener_is_only_served_by_the_most_specific_one
+=== RUN   TestLoadRoutes_listenerIsolation/GRPCRoutes_attached_to_listeners_with_and_without_hostname
+=== RUN   TestLoadRoutes_listenerIsolation/HTTPRoutes_attached_to_HTTPS_listeners_sharing_the_port_detect_the_misdirected_requests
+--- PASS: TestLoadRoutes_listenerIsolation (0.00s)
+    --- PASS: TestLoadRoutes_listenerIsolation/GRPCRoutes_attached_to_listeners_with_and_without_hostname (0.11s)
+    --- PASS: TestLoadRoutes_listenerIsolation/HTTPRoute_attached_to_every_listener_is_only_served_by_the_most_specific_one (0.10s)
+    --- PASS: TestLoadRoutes_listenerIsolation/HTTPRoutes_with_hostnames_intersecting_the_listener_hostnames (0.11s)
+    --- PASS: TestLoadRoutes_listenerIsolation/HTTPRoutes_attached_to_HTTPS_listeners_sharing_the_port_detect_the_misdirected_requests (0.11s)
+    --- PASS: TestLoadRoutes_listenerIsolation/HTTPRoutes_attached_to_listeners_with_hostnames_of_increasing_specificity (0.11s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/gateway	0.139s
+##### 2. dispatch probe on the configurations the authored tests load
+CONFIG   fixture=httproute/with_listener_isolation.yml rule-exchange-in-loaded-config=false
+ROUTER   key=httproute-default-attaches-to-abc-foo-example-com-gw-default-my-gateway-ep-web-0-ee0d5da78ccdb047521a service=httproute-default-attaches-to-abc-foo-example-com-gw-default-my-gateway-ep-web-0-ee0d5da78ccdb047521a-wrr priority=12020 rule=Host("abc.foo.example.com") && (Path("/abc-foo-example-com") || PathPrefix("/abc-foo-example-com/"))
+ROUTER   key=httproute-default-attaches-to-empty-hostname-gw-default-my-gateway-ep-web-0-96396bbe1d7c16e4e2d5 service=httproute-default-attaches-to-empty-hostname-gw-default-my-gateway-ep-web-0-96396bbe1d7c16e4e2d5-wrr priority=11501 rule=!Host("**.example.com") && (Path("/empty-hostname") || PathPrefix("/empty-hostname/"))
+ROUTER   key=httproute-default-attaches-to-wildcard-example-com-gw-default-my-gateway-ep-web-0-bc604ab64f7a12e9e3e2 service=httproute-default-attaches-to-wildcard-example-com-gw-default-my-gateway-ep-web-0-bc604ab64f7a12e9e3e2-wrr priority=12114 rule=Host("**.example.com") && !Host("**.foo.example.com") && (Path("/wildcard-example-com") || PathPrefix("/wildcard-example-com/"))
+ROUTER   key=httproute-default-attaches-to-wildcard-foo-example-com-gw-default-my-gateway-ep-web-0-80dd90d01ba0ff83c96f service=httproute-default-attaches-to-wildcard-foo-example-com-gw-default-my-gateway-ep-web-0-80dd90d01ba0ff83c96f-wrr priority=12518 rule=Host("**.foo.example.com") && !Host("abc.foo.example.com") && (Path("/wildcard-foo-example-com") || PathPrefix("/wildcard-foo-example-com/"))
+DISPATCH GET http://unrelated.test/empty-hostname -> 200 servedBy=BROADER-BACKEND-ROUTER(empty-hostname) rule=!Host("**.example.com") && (Path("/empty-hostname") || PathPrefix("/empty-hostname/"))
+DISPATCH GET http://abc.foo.example.com/empty-hostname -> 404 servedBy=<no router> rule=
+DISPATCH GET http://abc.foo.example.com/abc-foo-example-com -> 200 servedBy=SPECIFIC-BACKEND-ROUTER(abc-foo-example-com) rule=Host("abc.foo.example.com") && (Path("/abc-foo-example-com") || PathPrefix("/abc-foo-example-com/"))
+DISPATCH GET http://unrelated.test/abc-foo-example-com -> 404 servedBy=<no router> rule=
+CONFIG   fixture=httproute/with_listener_isolation.yml rule-exchange-in-loaded-config=true
+ROUTER   key=httproute-default-attaches-to-abc-foo-example-com-gw-default-my-gateway-ep-web-0-ee0d5da78ccdb047521a service=httproute-default-attaches-to-abc-foo-example-com-gw-default-my-gateway-ep-web-0-ee0d5da78ccdb047521a-wrr priority=11501 rule=!Host("**.example.com") && (Path("/empty-hostname") || PathPrefix("/empty-hostname/"))
+ROUTER   key=httproute-default-attaches-to-empty-hostname-gw-default-my-gateway-ep-web-0-96396bbe1d7c16e4e2d5 service=httproute-default-attaches-to-empty-hostname-gw-default-my-gateway-ep-web-0-96396bbe1d7c16e4e2d5-wrr priority=12020 rule=Host("abc.foo.example.com") && (Path("/abc-foo-example-com") || PathPrefix("/abc-foo-example-com/"))
+ROUTER   key=httproute-default-attaches-to-wildcard-example-com-gw-default-my-gateway-ep-web-0-bc604ab64f7a12e9e3e2 service=httproute-default-attaches-to-wildcard-example-com-gw-default-my-gateway-ep-web-0-bc604ab64f7a12e9e3e2-wrr priority=12114 rule=Host("**.example.com") && !Host("**.foo.example.com") && (Path("/wildcard-example-com") || PathPrefix("/wildcard-example-com/"))
+ROUTER   key=httproute-default-attaches-to-wildcard-foo-example-com-gw-default-my-gateway-ep-web-0-80dd90d01ba0ff83c96f service=httproute-default-attaches-to-wildcard-foo-example-com-gw-default-my-gateway-ep-web-0-80dd90d01ba0ff83c96f-wrr priority=12518 rule=Host("**.foo.example.com") && !Host("abc.foo.example.com") && (Path("/wildcard-foo-example-com") || PathPrefix("/wildcard-foo-example-com/"))
+DISPATCH GET http://unrelated.test/empty-hostname -> 200 servedBy=SPECIFIC-BACKEND-ROUTER(abc-foo-example-com) rule=!Host("**.example.com") && (Path("/empty-hostname") || PathPrefix("/empty-hostname/"))
+DISPATCH GET http://abc.foo.example.com/empty-hostname -> 404 servedBy=<no router> rule=
+DISPATCH GET http://abc.foo.example.com/abc-foo-example-com -> 200 servedBy=BROADER-BACKEND-ROUTER(empty-hostname) rule=Host("abc.foo.example.com") && (Path("/abc-foo-example-com") || PathPrefix("/abc-foo-example-com/"))
+DISPATCH GET http://unrelated.test/abc-foo-example-com -> 404 servedBy=<no router> rule=
+--- PASS: TestVerifyC1_HTTPRouteDispatchIdentity (0.09s)
+CONFIG   fixture=grpcroute/with_listener_isolation.yml rule-exchange-in-loaded-config=false
+ROUTER   key=grpcroute-default-attaches-to-empty-hostname-gw-default-my-gateway-ep-web-0-3e6e9246b26d0b54479a service=grpcroute-default-attaches-to-empty-hostname-gw-default-my-gateway-ep-web-0-3e6e9246b26d0b54479a-wrr priority=22 rule=!Host("**.example.com") && PathRegexp("/foo/bar")
+ROUTER   key=grpcroute-default-attaches-to-wildcard-example-com-gw-default-my-gateway-ep-web-0-baaf7ce681a7d532095d service=grpcroute-default-attaches-to-wildcard-example-com-gw-default-my-gateway-ep-web-0-baaf7ce681a7d532095d-wrr priority=35 rule=Host("**.example.com") && PathRegexp("/foo/bar")
+DISPATCH POST http://unrelated.test/foo/bar -> 200 servedBy=BROADER-BACKEND-ROUTER(empty-hostname) rule=!Host("**.example.com") && PathRegexp("/foo/bar")
+DISPATCH POST http://x.example.com/foo/bar -> 200 servedBy=SPECIFIC-BACKEND-ROUTER(wildcard-example-com) rule=Host("**.example.com") && PathRegexp("/foo/bar")
+DISPATCH POST http://x.example.com/foo/bar -> 200 servedBy=SPECIFIC-BACKEND-ROUTER(wildcard-example-com) rule=Host("**.example.com") && PathRegexp("/foo/bar")
+DISPATCH POST http://unrelated.test/foo/bar -> 200 servedBy=BROADER-BACKEND-ROUTER(empty-hostname) rule=!Host("**.example.com") && PathRegexp("/foo/bar")
+CONFIG   fixture=grpcroute/with_listener_isolation.yml rule-exchange-in-loaded-config=true
+ROUTER   key=grpcroute-default-attaches-to-empty-hostname-gw-default-my-gateway-ep-web-0-3e6e9246b26d0b54479a service=grpcroute-default-attaches-to-empty-hostname-gw-default-my-gateway-ep-web-0-3e6e9246b26d0b54479a-wrr priority=35 rule=Host("**.example.com") && PathRegexp("/foo/bar")
+ROUTER   key=grpcroute-default-attaches-to-wildcard-example-com-gw-default-my-gateway-ep-web-0-baaf7ce681a7d532095d service=grpcroute-default-attaches-to-wildcard-example-com-gw-default-my-gateway-ep-web-0-baaf7ce681a7d532095d-wrr priority=22 rule=!Host("**.example.com") && PathRegexp("/foo/bar")
+DISPATCH POST http://unrelated.test/foo/bar -> 200 servedBy=SPECIFIC-BACKEND-ROUTER(wildcard-example-com) rule=!Host("**.example.com") && PathRegexp("/foo/bar")
+DISPATCH POST http://x.example.com/foo/bar -> 200 servedBy=BROADER-BACKEND-ROUTER(empty-hostname) rule=Host("**.example.com") && PathRegexp("/foo/bar")
+DISPATCH POST http://x.example.com/foo/bar -> 200 servedBy=BROADER-BACKEND-ROUTER(empty-hostname) rule=Host("**.example.com") && PathRegexp("/foo/bar")
+DISPATCH POST http://unrelated.test/foo/bar -> 200 servedBy=SPECIFIC-BACKEND-ROUTER(wildcard-example-com) rule=!Host("**.example.com") && PathRegexp("/foo/bar")
+--- PASS: TestVerifyC1_GRPCRouteDispatchIdentity (0.01s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/gateway	0.123s
+##### 3. authored tests after exchanging rule/priority/TLS between the two router objects in the loaded configuration (hook injected after loadConfigurationFromGateways)
+HOOK-INJECTED into 1 authored test bodies
+=== RUN   TestLoadRoutes_listenerIsolation
+=== RUN   TestLoadRoutes_listenerIsolation/HTTPRoutes_attached_to_listeners_with_hostnames_of_increasing_specificity
+=== RUN   TestLoadRoutes_listenerIsolation/HTTPRoutes_with_hostnames_intersecting_the_listener_hostnames
+=== RUN   TestLoadRoutes_listenerIsolation/HTTPRoute_attached_to_every_listener_is_only_served_by_the_most_specific_one
+=== RUN   TestLoadRoutes_listenerIsolation/GRPCRoutes_attached_to_listeners_with_and_without_hostname
+=== RUN   TestLoadRoutes_listenerIsolation/HTTPRoutes_attached_to_HTTPS_listeners_sharing_the_port_detect_the_misdirected_requests
+    kubernetes_test.go:9794: VERIFY hook: exchanged rule/priority/TLS between the backend routers of listeners "empty-hostname" and "wildcard-example-com"
+    kubernetes_test.go:9794: VERIFY hook: exchanged rule/priority/TLS between the backend routers of listeners "empty-hostname" and "abc-foo-example-com"
+    kubernetes_test.go:9794: VERIFY hook: exchanged rule/priority/TLS between the backend routers of listeners "empty-hostname" and "abc-foo-example-com"
+--- PASS: TestLoadRoutes_listenerIsolation (0.00s)
+    --- PASS: TestLoadRoutes_listenerIsolation/HTTPRoute_attached_to_every_listener_is_only_served_by_the_most_specific_one (0.11s)
+    --- PASS: TestLoadRoutes_listenerIsolation/HTTPRoutes_with_hostnames_intersecting_the_listener_hostnames (0.11s)
+    --- PASS: TestLoadRoutes_listenerIsolation/GRPCRoutes_attached_to_listeners_with_and_without_hostname (0.11s)
+    --- PASS: TestLoadRoutes_listenerIsolation/HTTPRoutes_attached_to_listeners_with_hostnames_of_increasing_specificity (0.11s)
+    --- PASS: TestLoadRoutes_listenerIsolation/HTTPRoutes_attached_to_HTTPS_listeners_sharing_the_port_detect_the_misdirected_requests (0.11s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/gateway	0.132s
+##### 4. authored tests, untouched test code, after a fixture exchange
+FIXTURE-EXCHANGE pkg/provider/kubernetes/gateway/fixtures/httproute/with_listener_isolation.yml: parents between route attaches-to-empty-hostname (listener empty-hostname) and route attaches-to-abc-foo-example-com (listener abc-foo-example-com)
+=== RUN   TestLoadRoutes_listenerIsolation
+=== RUN   TestLoadRoutes_listenerIsolation/HTTPRoutes_attached_to_listeners_with_hostnames_of_increasing_specificity
+=== RUN   TestLoadRoutes_listenerIsolation/HTTPRoutes_with_hostnames_intersecting_the_listener_hostnames
+=== RUN   TestLoadRoutes_listenerIsolation/HTTPRoute_attached_to_every_listener_is_only_served_by_the_most_specific_one
+=== RUN   TestLoadRoutes_listenerIsolation/GRPCRoutes_attached_to_listeners_with_and_without_hostname
+=== RUN   TestLoadRoutes_listenerIsolation/HTTPRoutes_attached_to_HTTPS_listeners_sharing_the_port_detect_the_misdirected_requests
+        	Error Trace:	/home/ubuntu/wt/b52f8b88/pkg/provider/kubernetes/gateway/kubernetes_test.go:9799
+        	Error:      	elements differ
+        	            	extra elements in list A:
+        	            	 (gateway.routerSummary) {
+        	            	  Rule: (string) (len=86) "!Host(\"**.example.com\") && (Path(\"/empty-hostname\") || PathPrefix(\"/empty-hostname/\"))",
+        	            	 (gateway.routerSummary) {
+        	            	  Rule: (string) (len=100) "Host(\"abc.foo.example.com\") && (Path(\"/abc-foo-example-com\") || PathPrefix(\"/abc-foo-example-com/\"))",
+        	            	extra elements in list B:
+        	            	 (gateway.routerSummary) {
+        	            	  Rule: (string) (len=96) "!Host(\"**.example.com\") && (Path(\"/abc-foo-example-com\") || PathPrefix(\"/abc-foo-example-com/\"))",
+        	            	 (gateway.routerSummary) {
+        	            	  Rule: (string) (len=90) "Host(\"abc.foo.example.com\") && (Path(\"/empty-hostname\") || PathPrefix(\"/empty-hostname/\"))",
+        	            	listA:
+        	            	 (gateway.routerSummary) {
+        	            	  Rule: (string) (len=86) "!Host(\"**.example.com\") && (Path(\"/empty-hostname\") || PathPrefix(\"/empty-hostname/\"))",
+        	            	 (gateway.routerSummary) {
+        	            	  Rule: (string) (len=128) "Host(\"**.example.com\") && !Host(\"**.foo.example.com\") && (Path(\"/wildcard-example-com\") || PathPrefix(\"/wildcard-example-com/\"))",
+        	            	 (gateway.routerSummary) {
+        	            	  Rule: (string) (len=141) "Host(\"**.foo.example.com\") && !Host(\"abc.foo.example.com\") && (Path(\"/wildcard-foo-example-com\") || PathPrefix(\"/wildcard-foo-example-com/\"))",
+        	            	 (gateway.routerSummary) {
+        	            	  Rule: (string) (len=100) "Host(\"abc.foo.example.com\") && (Path(\"/abc-foo-example-com\") || PathPrefix(\"/abc-foo-example-com/\"))",
+        	            	listB:
+        	            	 (gateway.routerSummary) {
+        	            	  Rule: (string) (len=96) "!Host(\"**.example.com\") && (Path(\"/abc-foo-example-com\") || PathPrefix(\"/abc-foo-example-com/\"))",
+        	            	 (gateway.routerSummary) {
+        	            	  Rule: (string) (len=90) "Host(\"abc.foo.example.com\") && (Path(\"/empty-hostname\") || PathPrefix(\"/empty-hostname/\"))",
+        	            	 (gateway.routerSummary) {
+        	            	  Rule: (string) (len=128) "Host(\"**.example.com\") && !Host(\"**.foo.example.com\") && (Path(\"/wildcard-example-com\") || PathPrefix(\"/wildcard-example-com/\"))",
+        	            	 (gateway.routerSummary) {
+        	            	  Rule: (string) (len=141) "Host(\"**.foo.example.com\") && !Host(\"abc.foo.example.com\") && (Path(\"/wildcard-foo-example-com\") || PathPrefix(\"/wildcard-foo-example-com/\"))",
+--- FAIL: TestLoadRoutes_listenerIsolation (0.00s)
+    --- PASS: TestLoadRoutes_listenerIsolation/GRPCRoutes_attached_to_listeners_with_and_without_hostname (0.24s)
+    --- PASS: TestLoadRoutes_listenerIsolation/HTTPRoutes_with_hostnames_intersecting_the_listener_hostnames (0.21s)
+    --- FAIL: TestLoadRoutes_listenerIsolation/HTTPRoutes_attached_to_listeners_with_hostnames_of_increasing_specificity (0.24s)
+    --- PASS: TestLoadRoutes_listenerIsolation/HTTPRoutes_attached_to_HTTPS_listeners_sharing_the_port_detect_the_misdirected_requests (0.24s)
+    --- PASS: TestLoadRoutes_listenerIsolation/HTTPRoute_attached_to_every_listener_is_only_served_by_the_most_specific_one (0.25s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/provider/kubernetes/gateway	0.294s
+FAIL
+##### 5. authored tests, untouched test code, after a fixture exchange
+FIXTURE-EXCHANGE pkg/provider/kubernetes/gateway/fixtures/httproute/with_listener_isolation.yml: rules between route attaches-to-empty-hostname (listener empty-hostname) and route attaches-to-abc-foo-example-com (listener abc-foo-example-com)
+=== RUN   TestLoadRoutes_listenerIsolation
+=== RUN   TestLoadRoutes_listenerIsolation/HTTPRoutes_attached_to_listeners_with_hostnames_of_increasing_specificity
+=== RUN   TestLoadRoutes_listenerIsolation/HTTPRoutes_with_hostnames_intersecting_the_listener_hostnames
+=== RUN   TestLoadRoutes_listenerIsolation/HTTPRoute_attached_to_every_listener_is_only_served_by_the_most_specific_one
+=== RUN   TestLoadRoutes_listenerIsolation/GRPCRoutes_attached_to_listeners_with_and_without_hostname
+=== RUN   TestLoadRoutes_listenerIsolation/HTTPRoutes_attached_to_HTTPS_listeners_sharing_the_port_detect_the_misdirected_requests
+        	Error Trace:	/home/ubuntu/wt/b52f8b88/pkg/provider/kubernetes/gateway/kubernetes_test.go:9799
+        	Error:      	elements differ
+        	            	extra elements in list A:
+        	            	 (gateway.routerSummary) {
+        	            	  Rule: (string) (len=86) "!Host(\"**.example.com\") && (Path(\"/empty-hostname\") || PathPrefix(\"/empty-hostname/\"))",
+        	            	 (gateway.routerSummary) {
+        	            	  Rule: (string) (len=100) "Host(\"abc.foo.example.com\") && (Path(\"/abc-foo-example-com\") || PathPrefix(\"/abc-foo-example-com/\"))",
+        	            	extra elements in list B:
+        	            	 (gateway.routerSummary) {
+        	            	  Rule: (string) (len=90) "Host(\"abc.foo.example.com\") && (Path(\"/empty-hostname\") || PathPrefix(\"/empty-hostname/\"))",
+        	            	 (gateway.routerSummary) {
+        	            	  Rule: (string) (len=96) "!Host(\"**.example.com\") && (Path(\"/abc-foo-example-com\") || PathPrefix(\"/abc-foo-example-com/\"))",
+        	            	listA:
+        	            	 (gateway.routerSummary) {
+        	            	  Rule: (string) (len=86) "!Host(\"**.example.com\") && (Path(\"/empty-hostname\") || PathPrefix(\"/empty-hostname/\"))",
+        	            	 (gateway.routerSummary) {
+        	            	  Rule: (string) (len=128) "Host(\"**.example.com\") && !Host(\"**.foo.example.com\") && (Path(\"/wildcard-example-com\") || PathPrefix(\"/wildcard-example-com/\"))",
+        	            	 (gateway.routerSummary) {
+        	            	  Rule: (string) (len=141) "Host(\"**.foo.example.com\") && !Host(\"abc.foo.example.com\") && (Path(\"/wildcard-foo-example-com\") || PathPrefix(\"/wildcard-foo-example-com/\"))",
+        	            	 (gateway.routerSummary) {
+        	            	  Rule: (string) (len=100) "Host(\"abc.foo.example.com\") && (Path(\"/abc-foo-example-com\") || PathPrefix(\"/abc-foo-example-com/\"))",
+        	            	listB:
+        	            	 (gateway.routerSummary) {
+        	            	  Rule: (string) (len=90) "Host(\"abc.foo.example.com\") && (Path(\"/empty-hostname\") || PathPrefix(\"/empty-hostname/\"))",
+        	            	 (gateway.routerSummary) {
+        	            	  Rule: (string) (len=96) "!Host(\"**.example.com\") && (Path(\"/abc-foo-example-com\") || PathPrefix(\"/abc-foo-example-com/\"))",
+        	            	 (gateway.routerSummary) {
+        	            	  Rule: (string) (len=128) "Host(\"**.example.com\") && !Host(\"**.foo.example.com\") && (Path(\"/wildcard-example-com\") || PathPrefix(\"/wildcard-example-com/\"))",
+        	            	 (gateway.routerSummary) {
+        	            	  Rule: (string) (len=141) "Host(\"**.foo.example.com\") && !Host(\"abc.foo.example.com\") && (Path(\"/wildcard-foo-example-com\") || PathPrefix(\"/wildcard-foo-example-com/\"))",
+--- FAIL: TestLoadRoutes_listenerIsolation (0.00s)
+    --- FAIL: TestLoadRoutes_listenerIsolation/HTTPRoutes_attached_to_listeners_with_hostnames_of_increasing_specificity (0.24s)
+    --- PASS: TestLoadRoutes_listenerIsolation/HTTPRoute_attached_to_every_listener_is_only_served_by_the_most_specific_one (0.24s)
+    --- PASS: TestLoadRoutes_listenerIsolation/HTTPRoutes_with_hostnames_intersecting_the_listener_hostnames (0.23s)
+    --- PASS: TestLoadRoutes_listenerIsolation/GRPCRoutes_attached_to_listeners_with_and_without_hostname (0.24s)
+    --- PASS: TestLoadRoutes_listenerIsolation/HTTPRoutes_attached_to_HTTPS_listeners_sharing_the_port_detect_the_misdirected_requests (0.24s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/provider/kubernetes/gateway	0.294s
+FAIL
+##### 6. authored tests, untouched test code, after a fixture exchange
+FIXTURE-EXCHANGE pkg/provider/kubernetes/gateway/fixtures/httproute/with_listener_isolation.yml: parents between route attaches-to-empty-hostname (listener empty-hostname) and route attaches-to-wildcard-example-com (listener wildcard-example-com)
+=== RUN   TestLoadRoutes_listenerIsolation
+=== RUN   TestLoadRoutes_listenerIsolation/HTTPRoutes_attached_to_listeners_with_hostnames_of_increasing_specificity
+=== RUN   TestLoadRoutes_listenerIsolation/HTTPRoutes_with_hostnames_intersecting_the_listener_hostnames
+=== RUN   TestLoadRoutes_listenerIsolation/HTTPRoute_attached_to_every_listener_is_only_served_by_the_most_specific_one
+=== RUN   TestLoadRoutes_listenerIsolation/GRPCRoutes_attached_to_listeners_with_and_without_hostname
+=== RUN   TestLoadRoutes_listenerIsolation/HTTPRoutes_attached_to_HTTPS_listeners_sharing_the_port_detect_the_misdirected_requests
+        	Error Trace:	/home/ubuntu/wt/b52f8b88/pkg/provider/kubernetes/gateway/kubernetes_test.go:9799
+        	Error:      	elements differ
+        	            	extra elements in list A:
+        	            	 (gateway.routerSummary) {
+        	            	  Rule: (string) (len=86) "!Host(\"**.example.com\") && (Path(\"/empty-hostname\") || PathPrefix(\"/empty-hostname/\"))",
+        	            	 (gateway.routerSummary) {
+        	            	  Rule: (string) (len=128) "Host(\"**.example.com\") && !Host(\"**.foo.example.com\") && (Path(\"/wildcard-example-com\") || PathPrefix(\"/wildcard-example-com/\"))",
+        	            	extra elements in list B:
+        	            	 (gateway.routerSummary) {
+        	            	  Rule: (string) (len=116) "Host(\"**.example.com\") && !Host(\"**.foo.example.com\") && (Path(\"/empty-hostname\") || PathPrefix(\"/empty-hostname/\"))",
+        	            	 (gateway.routerSummary) {
+        	            	  Rule: (string) (len=98) "!Host(\"**.example.com\") && (Path(\"/wildcard-example-com\") || PathPrefix(\"/wildcard-example-com/\"))",
+        	            	listA:
+        	            	 (gateway.routerSummary) {
+        	            	  Rule: (string) (len=86) "!Host(\"**.example.com\") && (Path(\"/empty-hostname\") || PathPrefix(\"/empty-hostname/\"))",
+        	            	 (gateway.routerSummary) {
+        	            	  Rule: (string) (len=128) "Host(\"**.example.com\") && !Host(\"**.foo.example.com\") && (Path(\"/wildcard-example-com\") || PathPrefix(\"/wildcard-example-com/\"))",
+        	            	 (gateway.routerSummary) {
+        	            	  Rule: (string) (len=141) "Host(\"**.foo.example.com\") && !Host(\"abc.foo.example.com\") && (Path(\"/wildcard-foo-example-com\") || PathPrefix(\"/wildcard-foo-example-com/\"))",
+        	            	 (gateway.routerSummary) {
+        	            	  Rule: (string) (len=100) "Host(\"abc.foo.example.com\") && (Path(\"/abc-foo-example-com\") || PathPrefix(\"/abc-foo-example-com/\"))",
+        	            	listB:
+        	            	 (gateway.routerSummary) {
+        	            	  Rule: (string) (len=141) "Host(\"**.foo.example.com\") && !Host(\"abc.foo.example.com\") && (Path(\"/wildcard-foo-example-com\") || PathPrefix(\"/wildcard-foo-example-com/\"))",
+        	            	 (gateway.routerSummary) {
+        	            	  Rule: (string) (len=100) "Host(\"abc.foo.example.com\") && (Path(\"/abc-foo-example-com\") || PathPrefix(\"/abc-foo-example-com/\"))",
+        	            	 (gateway.routerSummary) {
+        	            	  Rule: (string) (len=116) "Host(\"**.example.com\") && !Host(\"**.foo.example.com\") && (Path(\"/empty-hostname\") || PathPrefix(\"/empty-hostname/\"))",
+        	            	 (gateway.routerSummary) {
+        	            	  Rule: (string) (len=98) "!Host(\"**.example.com\") && (Path(\"/wildcard-example-com\") || PathPrefix(\"/wildcard-example-com/\"))",
+--- FAIL: TestLoadRoutes_listenerIsolation (0.00s)
+    --- PASS: TestLoadRoutes_listenerIsolation/HTTPRoute_attached_to_every_listener_is_only_served_by_the_most_specific_one (0.22s)
+    --- PASS: TestLoadRoutes_listenerIsolation/HTTPRoutes_attached_to_HTTPS_listeners_sharing_the_port_detect_the_misdirected_requests (0.22s)
+    --- FAIL: TestLoadRoutes_listenerIsolation/HTTPRoutes_attached_to_listeners_with_hostnames_of_increasing_specificity (0.23s)
+    --- PASS: TestLoadRoutes_listenerIsolation/HTTPRoutes_with_hostnames_intersecting_the_listener_hostnames (0.22s)
+    --- PASS: TestLoadRoutes_listenerIsolation/GRPCRoutes_attached_to_listeners_with_and_without_hostname (0.23s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/provider/kubernetes/gateway	0.300s
+FAIL
+##### 7. authored tests, untouched test code, after a fixture exchange
+FIXTURE-EXCHANGE pkg/provider/kubernetes/gateway/fixtures/grpcroute/with_listener_isolation.yml: parents between route attaches-to-empty-hostname (listener empty-hostname) and route attaches-to-wildcard-example-com (listener wildcard-example-com)
+=== RUN   TestLoadRoutes_listenerIsolation
+=== RUN   TestLoadRoutes_listenerIsolation/HTTPRoutes_attached_to_listeners_with_hostnames_of_increasing_specificity
+=== RUN   TestLoadRoutes_listenerIsolation/HTTPRoutes_with_hostnames_intersecting_the_listener_hostnames
+=== RUN   TestLoadRoutes_listenerIsolation/HTTPRoute_attached_to_every_listener_is_only_served_by_the_most_specific_one
+=== RUN   TestLoadRoutes_listenerIsolation/GRPCRoutes_attached_to_listeners_with_and_without_hostname
+=== RUN   TestLoadRoutes_listenerIsolation/HTTPRoutes_attached_to_HTTPS_listeners_sharing_the_port_detect_the_misdirected_requests
+--- PASS: TestLoadRoutes_listenerIsolation (0.00s)
+    --- PASS: TestLoadRoutes_listenerIsolation/HTTPRoute_attached_to_every_listener_is_only_served_by_the_most_specific_one (0.23s)
+    --- PASS: TestLoadRoutes_listenerIsolation/HTTPRoutes_attached_to_listeners_with_hostnames_of_increasing_specificity (0.24s)
+    --- PASS: TestLoadRoutes_listenerIsolation/HTTPRoutes_with_hostnames_intersecting_the_listener_hostnames (0.24s)
+    --- PASS: TestLoadRoutes_listenerIsolation/GRPCRoutes_attached_to_listeners_with_and_without_hostname (0.24s)
+    --- PASS: TestLoadRoutes_listenerIsolation/HTTPRoutes_attached_to_HTTPS_listeners_sharing_the_port_detect_the_misdirected_requests (0.24s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/gateway	0.307s
+##### 8. authored tests, untouched test code, after a fixture exchange
+FIXTURE-EXCHANGE pkg/provider/kubernetes/gateway/fixtures/httproute/with_https_listeners_misdirected_requests.yml: parents between route https-app-3 (listener https-with-wildcard-hostname) and route https-app-4 (listener https-with-hostname-matching-wildcard)
+=== RUN   TestLoadRoutes_listenerIsolation
+=== RUN   TestLoadRoutes_listenerIsolation/HTTPRoutes_attached_to_listeners_with_hostnames_of_increasing_specificity
+=== RUN   TestLoadRoutes_listenerIsolation/HTTPRoutes_with_hostnames_intersecting_the_listener_hostnames
+=== RUN   TestLoadRoutes_listenerIsolation/HTTPRoute_attached_to_every_listener_is_only_served_by_the_most_specific_one
+=== RUN   TestLoadRoutes_listenerIsolation/GRPCRoutes_attached_to_listeners_with_and_without_hostname
+=== RUN   TestLoadRoutes_listenerIsolation/HTTPRoutes_attached_to_HTTPS_listeners_sharing_the_port_detect_the_misdirected_requests
+--- PASS: TestLoadRoutes_listenerIsolation (0.00s)
+    --- PASS: TestLoadRoutes_listenerIsolation/GRPCRoutes_attached_to_listeners_with_and_without_hostname (0.12s)
+    --- PASS: TestLoadRoutes_listenerIsolation/HTTPRoute_attached_to_every_listener_is_only_served_by_the_most_specific_one (0.12s)
+    --- PASS: TestLoadRoutes_listenerIsolation/HTTPRoutes_with_hostnames_intersecting_the_listener_hostnames (0.11s)
+    --- PASS: TestLoadRoutes_listenerIsolation/HTTPRoutes_attached_to_HTTPS_listeners_sharing_the_port_detect_the_misdirected_requests (0.12s)
+    --- PASS: TestLoadRoutes_listenerIsolation/HTTPRoutes_attached_to_listeners_with_hostnames_of_increasing_specificity (0.12s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/gateway	0.154s
+##### worktree after restore: 0 modified files

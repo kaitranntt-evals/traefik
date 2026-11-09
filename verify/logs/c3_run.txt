@@ -1,0 +1,92 @@
+##### branch HEAD cae6235c3aebf508ac49b2d6509b7fbc6314b445
+##### 1. where the authored test gets its asserted status
+139:		statusCode int
+142:		{serverName: "example.org", host: "example.org", statusCode: http.StatusOK, route: "detect-misdirected-requests-1"},
+143:		{serverName: "example.org", host: "second-example.org", statusCode: http.StatusMisdirectedRequest},
+144:		{serverName: "example.org", host: "unknown-example.org", statusCode: http.StatusNotFound},
+146:		{serverName: "second-example.org", host: "second-example.org", statusCode: http.StatusOK, route: "detect-misdirected-requests-2"},
+147:		{serverName: "second-example.org", host: "example.org", statusCode: http.StatusMisdirectedRequest},
+148:		{serverName: "second-example.org", host: "unknown-example.org", statusCode: http.StatusMisdirectedRequest},
+150:		{serverName: "third-example.wildcard.org", host: "third-example.wildcard.org", statusCode: http.StatusOK, route: "detect-misdirected-requests-3"},
+151:		{serverName: "third-example.wildcard.org", host: "fith-example.wildcard.org", statusCode: http.StatusOK, route: "detect-misdirected-requests-3"},
+152:		{serverName: "third-example.wildcard.org", host: "fourth-example.wildcard.org", statusCode: http.StatusMisdirectedRequest},
+153:		{serverName: "third-example.wildcard.org", host: "second-example.org", statusCode: http.StatusMisdirectedRequest},
+154:		{serverName: "third-example.wildcard.org", host: "unknown-example.org", statusCode: http.StatusMisdirectedRequest},
+156:		{serverName: "fourth-example.wildcard.org", host: "fourth-example.wildcard.org", statusCode: http.StatusOK, route: "detect-misdirected-requests-4"},
+157:		{serverName: "fourth-example.wildcard.org", host: "fith-example.wildcard.org", statusCode: http.StatusMisdirectedRequest},
+159:		{serverName: "unknown-example.org", host: "example.org", statusCode: http.StatusOK, route: "detect-misdirected-requests-1"},
+160:		{serverName: "unknown-example.org", host: "unknown-example.org", statusCode: http.StatusNotFound},
+170:		statusCode := http.StatusOK
+173:			statusCode = http.StatusMisdirectedRequest
+175:			statusCode = *conf.HTTP.Services[router.Service].Weighted.Services[0].Status
+178:		assert.Equal(t, test.statusCode, statusCode, "%s -> %s", test.serverName, test.host)
+##### 2. authored test, untouched
+=== RUN   TestListenerIsolation_HTTPSDetectMisdirectedRequests
+--- PASS: TestListenerIsolation_HTTPSDetectMisdirectedRequests (0.11s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/gateway	0.251s
+##### 3. test-local status vs production handling, untouched production code
+{"level":"error","time":"2026-11-09T02:05:34Z","message":"On EntryPoint \"websecure\", router \"httproute-default-detect-misdirected-requests-3-gw-default-my-gateway-ep-websecure-0-fbdb5a70df937e6042db@kubernetesgateway\", with no domains in its rule, is configured with a TLS options different than the default one, default TLSOp
+sni="example.org"                host="example.org"                asserted=200 test-local=200 production=200 router=httproute-default-detect-misdirected-requests-1-gw-default-my-gateway-ep-websecure-0-5e422da006de204fb3d1
+sni="example.org"                host="second-example.org"         asserted=421 test-local=421 production=421 router=httproute-default-detect-misdirected-requests-2-gw-default-my-gateway-ep-websecure-0-21fb336a7f1a7ded7c83
+sni="example.org"                host="unknown-example.org"        asserted=404 test-local=404 production=404 router=listener-isolation-gw-default-my-gateway-ep-websecure-c3edf98a3c7e2218ca39
+sni="second-example.org"         host="second-example.org"         asserted=200 test-local=200 production=200 router=httproute-default-detect-misdirected-requests-2-gw-default-my-gateway-ep-websecure-0-21fb336a7f1a7ded7c83
+sni="second-example.org"         host="example.org"                asserted=421 test-local=421 production=421 router=httproute-default-detect-misdirected-requests-1-gw-default-my-gateway-ep-websecure-0-5e422da006de204fb3d1
+sni="second-example.org"         host="unknown-example.org"        asserted=421 test-local=421 production=421 router=listener-isolation-gw-default-my-gateway-ep-websecure-c3edf98a3c7e2218ca39
+sni="third-example.wildcard.org" host="third-example.wildcard.org" asserted=200 test-local=200 production=421 router=httproute-default-detect-misdirected-requests-3-gw-default-my-gateway-ep-websecure-0-fbdb5a70df937e6042db  <-- DIVERGES
+sni="third-example.wildcard.org" host="fith-example.wildcard.org"  asserted=200 test-local=200 production=421 router=httproute-default-detect-misdirected-requests-3-gw-default-my-gateway-ep-websecure-0-fbdb5a70df937e6042db  <-- DIVERGES
+sni="third-example.wildcard.org" host="fourth-example.wildcard.org" asserted=421 test-local=421 production=421 router=httproute-default-detect-misdirected-requests-4-gw-default-my-gateway-ep-websecure-0-043461846a86a57eac66
+sni="third-example.wildcard.org" host="second-example.org"         asserted=421 test-local=421 production=421 router=httproute-default-detect-misdirected-requests-2-gw-default-my-gateway-ep-websecure-0-21fb336a7f1a7ded7c83
+sni="third-example.wildcard.org" host="unknown-example.org"        asserted=421 test-local=421 production=421 router=listener-isolation-gw-default-my-gateway-ep-websecure-c3edf98a3c7e2218ca39
+sni="fourth-example.wildcard.org" host="fourth-example.wildcard.org" asserted=200 test-local=200 production=200 router=httproute-default-detect-misdirected-requests-4-gw-default-my-gateway-ep-websecure-0-043461846a86a57eac66
+sni="fourth-example.wildcard.org" host="fith-example.wildcard.org"  asserted=421 test-local=421 production=421 router=httproute-default-detect-misdirected-requests-3-gw-default-my-gateway-ep-websecure-0-fbdb5a70df937e6042db
+sni="unknown-example.org"        host="example.org"                asserted=200 test-local=200 production=200 router=httproute-default-detect-misdirected-requests-1-gw-default-my-gateway-ep-websecure-0-5e422da006de204fb3d1
+sni="unknown-example.org"        host="unknown-example.org"        asserted=404 test-local=404 production=404 router=listener-isolation-gw-default-my-gateway-ep-websecure-c3edf98a3c7e2218ca39
+sni="a.b.wildcard.org"           host="a.b.wildcard.org"           asserted=  0 test-local=200 production=421 router=httproute-default-detect-misdirected-requests-3-gw-default-my-gateway-ep-websecure-0-fbdb5a70df937e6042db  <-- DIVERGES
+sni="a.b.wildcard.org"           host="second-example.org"         asserted=  0 test-local=421 production=421 router=httproute-default-detect-misdirected-requests-2-gw-default-my-gateway-ep-websecure-0-21fb336a7f1a7ded7c83
+sni="second-example.org"         host="a.b.wildcard.org"           asserted=  0 test-local=421 production=421 router=httproute-default-detect-misdirected-requests-3-gw-default-my-gateway-ep-websecure-0-fbdb5a70df937e6042db
+sni="SECOND-EXAMPLE.ORG"         host="second-example.org"         asserted=  0 test-local=200 production=200 router=httproute-default-detect-misdirected-requests-2-gw-default-my-gateway-ep-websecure-0-21fb336a7f1a7ded7c83
+sni="second-example.org."        host="second-example.org"         asserted=  0 test-local=421 production=421 router=httproute-default-detect-misdirected-requests-2-gw-default-my-gateway-ep-websecure-0-21fb336a7f1a7ded7c83
+sni=""                           host="second-example.org"         asserted=  0 test-local=421 production=421 router=httproute-default-detect-misdirected-requests-2-gw-default-my-gateway-ep-websecure-0-21fb336a7f1a7ded7c83
+sni=""                           host="example.org"                asserted=  0 test-local=200 production=200 router=httproute-default-detect-misdirected-requests-1-gw-default-my-gateway-ep-websecure-0-5e422da006de204fb3d1
+rows=22 diverged=3
+--- PASS: TestVerifyC3_TestLocalVsProduction (0.26s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/gateway	0.500s
+##### 4. mutation: production SNICheck never answers 421
+-	if s.tlsOptionsName != tlsOptionsNameUsed {
++	if false && s.tlsOptionsName != tlsOptionsNameUsed {
+##### 4a. authored test under the mutation
+=== RUN   TestListenerIsolation_HTTPSDetectMisdirectedRequests
+--- PASS: TestListenerIsolation_HTTPSDetectMisdirectedRequests (0.17s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/gateway	0.260s
+##### 4b. test-local status vs production handling under the mutation
+{"level":"error","time":"2026-11-09T02:05:56Z","message":"On EntryPoint \"websecure\", router \"httproute-default-detect-misdirected-requests-3-gw-default-my-gateway-ep-websecure-0-fbdb5a70df937e6042db@kubernetesgateway\", with no domains in its rule, is configured with a TLS options different than the default one, default TLSOp
+sni="example.org"                host="example.org"                asserted=200 test-local=200 production=200 router=httproute-default-detect-misdirected-requests-1-gw-default-my-gateway-ep-websecure-0-5e422da006de204fb3d1
+sni="example.org"                host="second-example.org"         asserted=421 test-local=421 production=200 router=httproute-default-detect-misdirected-requests-2-gw-default-my-gateway-ep-websecure-0-21fb336a7f1a7ded7c83  <-- DIVERGES
+sni="example.org"                host="unknown-example.org"        asserted=404 test-local=404 production=404 router=listener-isolation-gw-default-my-gateway-ep-websecure-c3edf98a3c7e2218ca39
+sni="second-example.org"         host="second-example.org"         asserted=200 test-local=200 production=200 router=httproute-default-detect-misdirected-requests-2-gw-default-my-gateway-ep-websecure-0-21fb336a7f1a7ded7c83
+sni="second-example.org"         host="example.org"                asserted=421 test-local=421 production=200 router=httproute-default-detect-misdirected-requests-1-gw-default-my-gateway-ep-websecure-0-5e422da006de204fb3d1  <-- DIVERGES
+sni="second-example.org"         host="unknown-example.org"        asserted=421 test-local=421 production=404 router=listener-isolation-gw-default-my-gateway-ep-websecure-c3edf98a3c7e2218ca39  <-- DIVERGES
+sni="third-example.wildcard.org" host="third-example.wildcard.org" asserted=200 test-local=200 production=200 router=httproute-default-detect-misdirected-requests-3-gw-default-my-gateway-ep-websecure-0-fbdb5a70df937e6042db
+sni="third-example.wildcard.org" host="fith-example.wildcard.org"  asserted=200 test-local=200 production=200 router=httproute-default-detect-misdirected-requests-3-gw-default-my-gateway-ep-websecure-0-fbdb5a70df937e6042db
+sni="third-example.wildcard.org" host="fourth-example.wildcard.org" asserted=421 test-local=421 production=200 router=httproute-default-detect-misdirected-requests-4-gw-default-my-gateway-ep-websecure-0-043461846a86a57eac66  <-- DIVERGES
+sni="third-example.wildcard.org" host="second-example.org"         asserted=421 test-local=421 production=200 router=httproute-default-detect-misdirected-requests-2-gw-default-my-gateway-ep-websecure-0-21fb336a7f1a7ded7c83  <-- DIVERGES
+sni="third-example.wildcard.org" host="unknown-example.org"        asserted=421 test-local=421 production=404 router=listener-isolation-gw-default-my-gateway-ep-websecure-c3edf98a3c7e2218ca39  <-- DIVERGES
+sni="fourth-example.wildcard.org" host="fourth-example.wildcard.org" asserted=200 test-local=200 production=200 router=httproute-default-detect-misdirected-requests-4-gw-default-my-gateway-ep-websecure-0-043461846a86a57eac66
+sni="fourth-example.wildcard.org" host="fith-example.wildcard.org"  asserted=421 test-local=421 production=200 router=httproute-default-detect-misdirected-requests-3-gw-default-my-gateway-ep-websecure-0-fbdb5a70df937e6042db  <-- DIVERGES
+sni="unknown-example.org"        host="example.org"                asserted=200 test-local=200 production=200 router=httproute-default-detect-misdirected-requests-1-gw-default-my-gateway-ep-websecure-0-5e422da006de204fb3d1
+sni="unknown-example.org"        host="unknown-example.org"        asserted=404 test-local=404 production=404 router=listener-isolation-gw-default-my-gateway-ep-websecure-c3edf98a3c7e2218ca39
+sni="a.b.wildcard.org"           host="a.b.wildcard.org"           asserted=  0 test-local=200 production=200 router=httproute-default-detect-misdirected-requests-3-gw-default-my-gateway-ep-websecure-0-fbdb5a70df937e6042db
+sni="a.b.wildcard.org"           host="second-example.org"         asserted=  0 test-local=421 production=200 router=httproute-default-detect-misdirected-requests-2-gw-default-my-gateway-ep-websecure-0-21fb336a7f1a7ded7c83  <-- DIVERGES
+sni="second-example.org"         host="a.b.wildcard.org"           asserted=  0 test-local=421 production=200 router=httproute-default-detect-misdirected-requests-3-gw-default-my-gateway-ep-websecure-0-fbdb5a70df937e6042db  <-- DIVERGES
+sni="SECOND-EXAMPLE.ORG"         host="second-example.org"         asserted=  0 test-local=200 production=200 router=httproute-default-detect-misdirected-requests-2-gw-default-my-gateway-ep-websecure-0-21fb336a7f1a7ded7c83
+sni="second-example.org."        host="second-example.org"         asserted=  0 test-local=421 production=200 router=httproute-default-detect-misdirected-requests-2-gw-default-my-gateway-ep-websecure-0-21fb336a7f1a7ded7c83  <-- DIVERGES
+sni=""                           host="second-example.org"         asserted=  0 test-local=421 production=200 router=httproute-default-detect-misdirected-requests-2-gw-default-my-gateway-ep-websecure-0-21fb336a7f1a7ded7c83  <-- DIVERGES
+sni=""                           host="example.org"                asserted=  0 test-local=200 production=200 router=httproute-default-detect-misdirected-requests-1-gw-default-my-gateway-ep-websecure-0-5e422da006de204fb3d1
+rows=22 diverged=11
+--- PASS: TestVerifyC3_TestLocalVsProduction (0.10s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/gateway	0.146s
+##### worktree after restore: 0 modified files
