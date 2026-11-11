@@ -1,0 +1,17 @@
+diff --git a/pkg/config/dynamic/secrets.go b/pkg/config/dynamic/secrets.go
+index 5a820ce8a..822ec158c 100644
+--- a/pkg/config/dynamic/secrets.go
++++ b/pkg/config/dynamic/secrets.go
+@@ -339,11 +339,7 @@ func (r *secretsResolution) value(v any) (any, error) {
+ 		return r.secret(v)
+ 
+ 	case []any:
+-		for i := range v {
+-			if v[i], err = r.value(v[i]); err != nil {
+-				return nil, err
+-			}
+-		}
++		return v, nil
+ 
+ 	case map[string]any:
+ 		for _, key := range sortedKeys(v) {

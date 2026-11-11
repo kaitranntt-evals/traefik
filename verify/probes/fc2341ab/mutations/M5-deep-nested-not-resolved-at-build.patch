@@ -1,0 +1,22 @@
+diff --git a/pkg/config/dynamic/secrets.go b/pkg/config/dynamic/secrets.go
+index 5a820ce8a..b488b49dc 100644
+--- a/pkg/config/dynamic/secrets.go
++++ b/pkg/config/dynamic/secrets.go
+@@ -347,6 +347,17 @@ func (r *secretsResolution) value(v any) (any, error) {
+ 
+ 	case map[string]any:
+ 		for _, key := range sortedKeys(v) {
++			if nested, isMap := v[key].(map[string]any); isMap && !r.collecting {
++				for _, k := range sortedKeys(nested) {
++					if _, deeper := nested[k].(map[string]any); deeper {
++						continue
++					}
++					if nested[k], err = r.value(nested[k]); err != nil {
++						return nil, err
++					}
++				}
++				continue
++			}
+ 			if v[key], err = r.value(v[key]); err != nil {
+ 				return nil, err
+ 			}
