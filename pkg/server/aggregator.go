@@ -226,6 +226,10 @@ func resolveHTTPTLSOptions(routers map[string]*dynamic.Router, strictTLSOptions 
 		conflictingRouters[ep] = findConflictingRouters(ep, epRouters, strictTLSOptions)
 	}
 
+	// A router conflicting on an entry point is copied under a new name, so the
+	// child routes referencing it as a parent need that copy to keep resolving.
+	conflictedNames := map[string][]string{}
+
 	for name, router := range routers {
 		router.EntryPoints = slices.DeleteFunc(router.EntryPoints, func(ep string) bool {
 			deleted := slices.Contains(conflictingRouters[ep], name)
@@ -239,7 +243,9 @@ func resolveHTTPTLSOptions(routers map[string]*dynamic.Router, strictTLSOptions 
 				rt.EntryPoints = []string{ep}
 				// The new name is not collision free but has very small possibility to collide.
 				// TODO: rework this naming whenever we'll introduce a resource reference mechanism not based on a string.
-				newRouters[ep+"-conflicted-"+name] = rt
+				newName := ep + "-conflicted-" + name
+				newRouters[newName] = rt
+				conflictedNames[name] = append(conflictedNames[name], newName)
 			}
 
 			return deleted
@@ -248,6 +254,43 @@ func resolveHTTPTLSOptions(routers map[string]*dynamic.Router, strictTLSOptions 
 		if len(router.EntryPoints) > 0 {
 			newRouters[name] = router
 		}
+	}
+
+	for _, names := range conflictedNames {
+		slices.Sort(names)
+	}
+
+	// A child router carries no entry point of its own, so it references every
+	// renamed copy of its parent, and the original name only while it exists.
+	for _, router := range newRouters {
+		if len(router.ParentRefs) == 0 {
+			continue
+		}
+
+		var parentRefs []string
+		for _, parentRef := range router.ParentRefs {
+			found := false
+
+			if _, ok := newRouters[parentRef]; ok && !slices.Contains(parentRefs, parentRef) {
+				parentRefs = append(parentRefs, parentRef)
+				found = true
+			}
+
+			for _, newName := range conflictedNames[parentRef] {
+				if !slices.Contains(parentRefs, newName) {
+					parentRefs = append(parentRefs, newName)
+				}
+				found = true
+			}
+
+			// A reference to a parent that exists neither under its own name nor
+			// under a renamed copy is kept as is, so the router still reports it.
+			if !found && !slices.Contains(parentRefs, parentRef) {
+				parentRefs = append(parentRefs, parentRef)
+			}
+		}
+
+		router.ParentRefs = parentRefs
 	}
 
 	return newRouters
