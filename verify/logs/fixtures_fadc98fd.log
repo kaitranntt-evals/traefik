@@ -1,0 +1,23 @@
+--- PASS: TestEval_GatewayHTTPListenerIsolation_SingleGatewaySpecificity (0.06s)
+--- FAIL: TestEval_GatewayHTTPListenerIsolation_TrailingDotWildcard (0.00s)
+--- FAIL: TestEval_GatewayHTTPListenerIsolation_TrailingDotWildcardFallthrough (0.00s)
+--- PASS: TestEval_GatewayHTTPListenerIsolation_MultiGatewayElection (0.00s)
+--- PASS: TestEval_GatewayHTTPListenerIsolation_ChildlessRouterPruning (0.00s)
+--- PASS: TestEval_GatewayHTTPListenerIsolation_ProtocolSeparation (0.00s)
+--- PASS: TestEval_GatewayHTTPListenerIsolation_WildcardApexDistinctParents (0.00s)
+--- PASS: TestEval_GatewayGRPCRouteListenerIsolation (0.01s)
+--- PASS: TestEval_GatewaySupportedFeatures (0.00s)
+--- PASS: TestEval_HarnessLeafServiceStatusAndOpaqueNameResolution (0.00s)
+--- PASS: TestEval_OpaqueRouterAndServiceKeysOnRealFixturePreservesRouting (0.00s)
+--- PASS: TestEval_GatewayHTTPListenerIsolation_UnsectionedAttachment (0.01s)
+--- PASS: TestEval_GatewayRouteAcceptanceIndependentOfIsolation (0.01s)
+--- PASS: TestEval_GatewayHTTPListenerIsolation_RouteKindRestrictedListeners (0.01s)
+--- PASS: TestEval_GatewayHTTPListenerIsolation_SingleGatewaySpecificity_ProductionHTTP (0.06s)
+--- FAIL: TestEval_GatewayHTTPSListenerDetectMisdirectedRequests (0.97s)
+--- FAIL: TestEval_GatewayHTTPSSiblingGatewayReachability (1.70s)
+--- PASS: TestEval_GatewayHTTPSListenerIsolation_RouteKindRestrictedListeners (0.03s)
+--- PASS: TestEval_GatewayHTTPSListenerIsolation_UnsectionedAttachment (0.42s)
+--- PASS: TestEval_GatewayHTTPSListenerDetectMisdirectedRequests_FilterError (0.16s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/provider/kubernetes/gateway	3.478s
+FAIL

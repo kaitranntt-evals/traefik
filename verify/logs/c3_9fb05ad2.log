@@ -1,0 +1,62 @@
+C3 | http | CLAIM outside.test + missing Service, listeners *.example.com + abc.example.com | hostnames=[outside.test] backend=missing-svc section=""
+C3 |   published HTTPRoute/http-probe parent=my-gateway: Accepted=False reason=NoMatchingListenerHostname message=""
+C3 |   published HTTPRoute/http-probe parent=my-gateway: ResolvedRefs=True reason=ResolvedRefs message=""
+C3 |   log {"level":"debug","http_route":"http-probe","namespace":"default","message":"Skipping HTTPRoute, its hostnames are owned by more specific listeners"}
+C3 |   log {"level":"debug","http_route":"http-probe","namespace":"default","message":"Skipping HTTPRoute, its hostnames are owned by more specific listeners"}
+C3 | grpc | CLAIM outside.test + missing Service, listeners *.example.com + abc.example.com | hostnames=[outside.test] backend=missing-svc section=""
+C3 |   published GRPCRoute/grpc-probe parent=my-gateway: Accepted=False reason=NoMatchingListenerHostname message=""
+C3 |   published GRPCRoute/grpc-probe parent=my-gateway: ResolvedRefs=True reason=ResolvedRefs message=""
+C3 |   log {"level":"debug","grpc_route":"grpc-probe","namespace":"default","message":"Skipping GRPCRoute, its hostnames are owned by more specific listeners"}
+C3 |   log {"level":"debug","grpc_route":"grpc-probe","namespace":"default","message":"Skipping GRPCRoute, its hostnames are owned by more specific listeners"}
+C3 | http | CONTROL outside.test + existing Service whoami | hostnames=[outside.test] backend=whoami section=""
+C3 |   published HTTPRoute/http-probe parent=my-gateway: Accepted=False reason=NoMatchingListenerHostname message=""
+C3 |   published HTTPRoute/http-probe parent=my-gateway: ResolvedRefs=True reason=ResolvedRefs message=""
+C3 |   log {"level":"debug","http_route":"http-probe","namespace":"default","message":"Skipping HTTPRoute, its hostnames are owned by more specific listeners"}
+C3 |   log {"level":"debug","http_route":"http-probe","namespace":"default","message":"Skipping HTTPRoute, its hostnames are owned by more specific listeners"}
+C3 | grpc | CONTROL outside.test + existing Service whoami | hostnames=[outside.test] backend=whoami section=""
+C3 |   published GRPCRoute/grpc-probe parent=my-gateway: Accepted=False reason=NoMatchingListenerHostname message=""
+C3 |   published GRPCRoute/grpc-probe parent=my-gateway: ResolvedRefs=True reason=ResolvedRefs message=""
+C3 |   log {"level":"debug","grpc_route":"grpc-probe","namespace":"default","message":"Skipping GRPCRoute, its hostnames are owned by more specific listeners"}
+C3 |   log {"level":"debug","grpc_route":"grpc-probe","namespace":"default","message":"Skipping GRPCRoute, its hostnames are owned by more specific listeners"}
+C3 | http | CONTROL bar.example.com (intersects wildcard listener) + missing Service | hostnames=[bar.example.com] backend=missing-svc section=""
+C3 |   published HTTPRoute/http-probe parent=my-gateway: Accepted=True reason=Accepted message=""
+C3 |   published HTTPRoute/http-probe parent=my-gateway: ResolvedRefs=False reason=BackendNotFound message="Cannot load HTTPBackendRef default/missing-svc: getting service: service \"missing-svc\" not found"
+C3 |   router httproute-default-http-probe-gw-default-my-gateway-ep-web-0-a0b9980aea999963a893 rule=Host("bar.example.com") && Path("/x") service=httproute-default-http-probe-gw-default-my-gateway-ep-web-0-a0b9980aea999963a893-wrr
+C3 |   log {"level":"error","http_route":"http-probe","namespace":"default","message":"Unable to load HTTPRoute backend: Cannot load HTTPBackendRef default/missing-svc: getting service: service \"missing-svc\" not found"}
+C3 |   log {"level":"debug","http_route":"http-probe","namespace":"default","message":"Skipping HTTPRoute, its hostnames are owned by more specific listeners"}
+C3 | grpc | CONTROL bar.example.com (intersects wildcard listener) + missing Service | hostnames=[bar.example.com] backend=missing-svc section=""
+C3 |   published GRPCRoute/grpc-probe parent=my-gateway: Accepted=True reason=Accepted message=""
+C3 |   published GRPCRoute/grpc-probe parent=my-gateway: ResolvedRefs=False reason=BackendNotFound message="Cannot load GRPCBackendRef default/missing-svc: getting service: service \"missing-svc\" not found"
+C3 |   router grpcroute-default-grpc-probe-gw-default-my-gateway-ep-web-0-c7561d90a08f3b15152e rule=Host("bar.example.com") && PathRegexp("/helloworld\\.Greeter/SayHello") service=grpcroute-default-grpc-probe-gw-default-my-gateway-ep-web-0-c7561d90a08f3b15152e-wrr
+C3 |   log {"level":"debug","grpc_route":"grpc-probe","namespace":"default","message":"Skipping GRPCRoute, its hostnames are owned by more specific listeners"}
+C3 | http | CONTROL no route hostnames + missing Service | hostnames=[] backend=missing-svc section=""
+C3 |   published HTTPRoute/http-probe parent=my-gateway: Accepted=True reason=Accepted message=""
+C3 |   published HTTPRoute/http-probe parent=my-gateway: ResolvedRefs=False reason=BackendNotFound message="Cannot load HTTPBackendRef default/missing-svc: getting service: service \"missing-svc\" not found"
+C3 |   router httproute-default-http-probe-gw-default-my-gateway-ep-web-0-7731d51191232c98a3bd rule=Host("abc.example.com") && Path("/x") service=httproute-default-http-probe-gw-default-my-gateway-ep-web-0-7731d51191232c98a3bd-wrr
+C3 |   router httproute-default-http-probe-gw-default-my-gateway-ep-web-0-9ea1489ca9208fd4a158 rule=Host("**.example.com") && !Host("abc.example.com") && Path("/x") service=httproute-default-http-probe-gw-default-my-gateway-ep-web-0-9ea1489ca9208fd4a158-wrr
+C3 |   log {"level":"error","http_route":"http-probe","namespace":"default","message":"Unable to load HTTPRoute backend: Cannot load HTTPBackendRef default/missing-svc: getting service: service \"missing-svc\" not found"}
+C3 |   log {"level":"error","http_route":"http-probe","namespace":"default","message":"Unable to load HTTPRoute backend: Cannot load HTTPBackendRef default/missing-svc: getting service: service \"missing-svc\" not found"}
+C3 | grpc | CONTROL no route hostnames + missing Service | hostnames=[] backend=missing-svc section=""
+C3 |   published GRPCRoute/grpc-probe parent=my-gateway: Accepted=True reason=Accepted message=""
+C3 |   published GRPCRoute/grpc-probe parent=my-gateway: ResolvedRefs=False reason=BackendNotFound message="Cannot load GRPCBackendRef default/missing-svc: getting service: service \"missing-svc\" not found"
+C3 |   router grpcroute-default-grpc-probe-gw-default-my-gateway-ep-web-0-92ce0f2085792ed6464b rule=Host("**.example.com") && !Host("abc.example.com") && PathRegexp("/helloworld\\.Greeter/SayHello") service=grpcroute-default-grpc-probe-gw-default-my-gateway-ep-web-0-92ce0f2085792ed6464b-wrr
+C3 |   router grpcroute-default-grpc-probe-gw-default-my-gateway-ep-web-0-d21abddf5542148a0fc4 rule=Host("abc.example.com") && PathRegexp("/helloworld\\.Greeter/SayHello") service=grpcroute-default-grpc-probe-gw-default-my-gateway-ep-web-0-d21abddf5542148a0fc4-wrr
+C3 | http | EXTRA outside.test + missing Service, single listener *.example.com (no isolation involved) | hostnames=[outside.test] backend=missing-svc section=""
+C3 |   published HTTPRoute/http-probe parent=my-gateway: Accepted=False reason=NoMatchingListenerHostname message=""
+C3 |   published HTTPRoute/http-probe parent=my-gateway: ResolvedRefs=True reason=ResolvedRefs message=""
+C3 |   log {"level":"debug","http_route":"http-probe","namespace":"default","message":"Skipping HTTPRoute, its hostnames are owned by more specific listeners"}
+C3 | grpc | EXTRA outside.test + missing Service, single listener *.example.com (no isolation involved) | hostnames=[outside.test] backend=missing-svc section=""
+C3 |   published GRPCRoute/grpc-probe parent=my-gateway: Accepted=False reason=NoMatchingListenerHostname message=""
+C3 |   published GRPCRoute/grpc-probe parent=my-gateway: ResolvedRefs=True reason=ResolvedRefs message=""
+C3 |   log {"level":"debug","grpc_route":"grpc-probe","namespace":"default","message":"Skipping GRPCRoute, its hostnames are owned by more specific listeners"}
+C3 | http | EXTRA abc.example.com with sectionName=wildcard (shadowed there, but the precise listener iteration still validates) + missing Service | hostnames=[abc.example.com] backend=missing-svc section="wildcard"
+C3 |   published HTTPRoute/http-probe parent=my-gateway: Accepted=True reason=Accepted message=""
+C3 |   published HTTPRoute/http-probe parent=my-gateway: ResolvedRefs=False reason=BackendNotFound message="Cannot load HTTPBackendRef default/missing-svc: getting service: service \"missing-svc\" not found"
+C3 |   log {"level":"debug","http_route":"http-probe","namespace":"default","message":"Skipping HTTPRoute, its hostnames are owned by more specific listeners"}
+C3 |   log {"level":"error","http_route":"http-probe","namespace":"default","message":"Unable to load HTTPRoute backend: Cannot load HTTPBackendRef default/missing-svc: getting service: service \"missing-svc\" not found"}
+C3 | grpc | EXTRA abc.example.com with sectionName=wildcard (shadowed there, but the precise listener iteration still validates) + missing Service | hostnames=[abc.example.com] backend=missing-svc section="wildcard"
+C3 |   published GRPCRoute/grpc-probe parent=my-gateway: Accepted=True reason=Accepted message=""
+C3 |   published GRPCRoute/grpc-probe parent=my-gateway: ResolvedRefs=False reason=BackendNotFound message="Cannot load GRPCBackendRef default/missing-svc: getting service: service \"missing-svc\" not found"
+C3 |   log {"level":"debug","grpc_route":"grpc-probe","namespace":"default","message":"Skipping GRPCRoute, its hostnames are owned by more specific listeners"}
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/gateway	0.090s

@@ -1,0 +1,26 @@
+## docs files changed by the branch
+ .../routing-configuration/kubernetes/gateway-api.md         | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+## the promise: Listener Isolation section of docs/content/reference/routing-configuration/kubernetes/gateway-api.md
+### Listener Isolation
+
+When several listeners of a `Gateway` share the same port and protocol, a request is served only by the routes attached to the listener with the most specific hostname matching it.
+For example, with listeners for `foo.example.com` and `*.example.com`, a request to `foo.example.com` is never served by the routes attached to the `*.example.com` listener,
+and a request for a hostname matching a listener without matching any of its routes is answered with a `404`.
+
+For HTTPS listeners, Traefik also detects misdirected requests, i.e. requests whose SNI and `Host` header are served by different listeners, and answers them with a `421 Misdirected Request`.
+
+!!! info "TLS options"
+    To detect misdirected requests, Traefik associates dedicated, empty [TLS options](../http/tls/tls-options.md) with each HTTPS listener that has a hostname
+    and shares its port with other listeners of the `Gateway`.
+    Those TLS options replace the `default` TLS options for the connections that are matched on the listener hostname.
+
+## qualifications inside docs/content/reference/routing-configuration/kubernetes/gateway-api.md (wildcard / HostRegexp / fallback / default TLS options / strict)
+154:    Those TLS options replace the `default` TLS options for the connections that are matched on the listener hostname.
+## every docs/ mention of Gateway listeners together with TLS options
+evalrepo/evalon/traefik-ga-fadc98fd:docs/content/reference/routing-configuration/kubernetes/gateway-api.md:152:    To detect misdirected requests, Traefik associates dedicated, empty [TLS options](../http/tls/tls-options.md) with each HTTPS listener that has a hostname
+evalrepo/evalon/traefik-ga-fadc98fd:docs/content/reference/routing-configuration/kubernetes/gateway-api.md:154:    Those TLS options replace the `default` TLS options for the connections that are matched on the listener hostname.
+## generic (non-Gateway) statements about HostRegexp and TLS options under docs/
+evalrepo/evalon/traefik-ga-fadc98fd:docs/content/migrate/v3.md:626:Previously, TLSOptions selection was limited to exact `Host` matches, and using `HostRegexp` or wildcards would fall back to the default TLS options with a warning message like: `No domain found in rule HostRegexp(...) the TLS option foo cannot be applied`.
+evalrepo/evalon/traefik-ga-fadc98fd:docs/content/migrate/v3.md:628:Note: TLSOptions for `HostRegexp` matchers remains unsupported. Use wildcard `Host` matchers as an alternative.
+evalrepo/evalon/traefik-ga-fadc98fd:docs/content/reference/routing-configuration/http/routing/rules-and-priority.md:58:    It should be preferred over the `HostRegexp` matcher as it allows attaching a TLS option and is more efficient.

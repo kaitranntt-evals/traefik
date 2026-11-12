@@ -1,0 +1,66 @@
+C1C2 wildcard+exact strict=false | provider output: 2 TLS options
+C1C2 wildcard+exact strict=false |   provider tls.Options["listener-websecure-https-abc-example-com-84b9126a78b887b479e2"].ALPNProtocols=[h2 http/1.1 acme-tls/1] (len=3)
+C1C2 wildcard+exact strict=false |   provider tls.Options["listener-websecure-https-example-com-aa0f3a4a63da2a2e7cbb"].ALPNProtocols=[h2 http/1.1 acme-tls/1] (len=3)
+C1C2 wildcard+exact strict=false |   aggregated tls.Options["default"].ALPNProtocols=[h2 http/1.1 acme-tls/1] -> tlsManager.Get NextProtos=[h2 http/1.1 acme-tls/1] (len=3)
+C1C2 wildcard+exact strict=false |   aggregated tls.Options["listener-websecure-https-abc-example-com-84b9126a78b887b479e2@kubernetesgateway"].ALPNProtocols=[h2 http/1.1 acme-tls/1] -> tlsManager.Get NextProtos=[h2 http/1.1 acme-tls/1] (len=3)
+C1C2 wildcard+exact strict=false |   aggregated tls.Options["listener-websecure-https-example-com-aa0f3a4a63da2a2e7cbb@kubernetesgateway"].ALPNProtocols=[h2 http/1.1 acme-tls/1] -> tlsManager.Get NextProtos=[h2 http/1.1 acme-tls/1] (len=3)
+C1C2 wildcard+exact strict=false |   aggregated router listener-websecure-h…7b479e2@kubernetesgateway rule=Host("abc.example.com") configuredOptions="listener-websecure-https-abc-example-com-84b9126a78b887b479e2" resolvedOptions="listener-websecure-https-abc-example-com-84b9126a78b887b479e2@kubernetesgateway"
+C1C2 wildcard+exact strict=false |   aggregated router listener-websecure-h…a2e7cbb@kubernetesgateway rule=(Host("**.example.com")) && !(Host("abc.example.com")) configuredOptions="listener-websecure-https-example-com-aa0f3a4a63da2a2e7cbb" resolvedOptions="listener-websecure-https-example-com-aa0f3a4a63da2a2e7cbb@kubernetesgateway"
+C1C2 wildcard+exact strict=false |   SNI abc.example.com        -> TCP router selects TLS options "listener-websecure-https-abc-example-com-84b9126a78b887b479e2@kubernetesgateway" NextProtos=[h2 http/1.1 acme-tls/1] | real handshake offering [h2 http/1.1] negotiated "h2"
+C1C2 wildcard+exact strict=false |   SNI xyz.example.com        -> TCP router selects TLS options "listener-websecure-https-example-com-aa0f3a4a63da2a2e7cbb@kubernetesgateway" NextProtos=[h2 http/1.1 acme-tls/1] | real handshake offering [h2 http/1.1] negotiated "h2"
+C1C2 wildcard+exact strict=false |   SNI bar.example.com        -> TCP router selects TLS options "listener-websecure-https-example-com-aa0f3a4a63da2a2e7cbb@kubernetesgateway" NextProtos=[h2 http/1.1 acme-tls/1] | real handshake offering [h2 http/1.1] negotiated "h2"
+C1C2 wildcard+exact strict=false |   SNI other.test             -> TCP router selects TLS options "default" NextProtos=[h2 http/1.1 acme-tls/1] | real handshake offering [h2 http/1.1] negotiated "h2"
+C1C2 wildcard+exact strict=false |   real HTTPS request SNI=abc.example.com Host=abc.example.com /precise -> proto=HTTP/2.0 status=200 body="10.10.0.1"
+C1C2 wildcard+exact strict=false |   real HTTP/2-only (gRPC-like) request SNI=abc.example.com Host=abc.example.com /precise -> proto=HTTP/2.0 status=200 body="10.10.0.1"
+C1C2 wildcard+exact strict=false |   real HTTPS request SNI=xyz.example.com Host=xyz.example.com /wildcard -> proto=HTTP/2.0 status=200 body="10.10.0.1"
+C1C2 wildcard+exact strict=false |   real HTTP/2-only (gRPC-like) request SNI=xyz.example.com Host=xyz.example.com /wildcard -> proto=HTTP/2.0 status=200 body="10.10.0.1"
+C1C2 wildcard+exact strict=false |   real HTTPS request SNI=bar.example.com Host=bar.example.com /bar -> proto=HTTP/2.0 status=200 body="10.10.0.1"
+C1C2 wildcard+exact strict=false |   real HTTP/2-only (gRPC-like) request SNI=bar.example.com Host=bar.example.com /bar -> proto=HTTP/2.0 status=200 body="10.10.0.1"
+C1C2 wildcard+exact strict=false |   real HTTPS request SNI=abc.example.com Host=xyz.example.com /wildcard -> proto=HTTP/2.0 status=421 body="Misdirected Request"
+C1C2 wildcard+exact strict=false |   real HTTPS request SNI=xyz.example.com Host=abc.example.com /precise -> proto=HTTP/2.0 status=421 body="Misdirected Request"
+C1C2 wildcard+exact strict=true | provider output: 2 TLS options
+C1C2 wildcard+exact strict=true |   provider tls.Options["listener-websecure-https-abc-example-com-84b9126a78b887b479e2"].ALPNProtocols=[h2 http/1.1 acme-tls/1] (len=3)
+C1C2 wildcard+exact strict=true |   provider tls.Options["listener-websecure-https-example-com-aa0f3a4a63da2a2e7cbb"].ALPNProtocols=[h2 http/1.1 acme-tls/1] (len=3)
+C1C2 wildcard+exact strict=true |   aggregated tls.Options["default"].ALPNProtocols=[h2 http/1.1 acme-tls/1] -> tlsManager.Get NextProtos=[h2 http/1.1 acme-tls/1] (len=3)
+C1C2 wildcard+exact strict=true |   aggregated tls.Options["listener-websecure-https-abc-example-com-84b9126a78b887b479e2@kubernetesgateway"].ALPNProtocols=[h2 http/1.1 acme-tls/1] -> tlsManager.Get NextProtos=[h2 http/1.1 acme-tls/1] (len=3)
+C1C2 wildcard+exact strict=true |   aggregated tls.Options["listener-websecure-https-example-com-aa0f3a4a63da2a2e7cbb@kubernetesgateway"].ALPNProtocols=[h2 http/1.1 acme-tls/1] -> tlsManager.Get NextProtos=[h2 http/1.1 acme-tls/1] (len=3)
+C1C2 wildcard+exact strict=true |   aggregated router listener-websecure-h…7b479e2@kubernetesgateway rule=Host("abc.example.com") configuredOptions="listener-websecure-https-abc-example-com-84b9126a78b887b479e2" resolvedOptions="listener-websecure-https-abc-example-com-84b9126a78b887b479e2@kubernetesgateway"
+C1C2 wildcard+exact strict=true |   aggregated router listener-websecure-h…a2e7cbb@kubernetesgateway rule=(Host("**.example.com")) && !(Host("abc.example.com")) configuredOptions="listener-websecure-https-example-com-aa0f3a4a63da2a2e7cbb" resolvedOptions="listener-websecure-https-example-com-aa0f3a4a63da2a2e7cbb@kubernetesgateway"
+C1C2 wildcard+exact strict=true |   SNI abc.example.com        -> TCP router selects TLS options "listener-websecure-https-abc-example-com-84b9126a78b887b479e2@kubernetesgateway" NextProtos=[h2 http/1.1 acme-tls/1] | real handshake offering [h2 http/1.1] negotiated "h2"
+C1C2 wildcard+exact strict=true |   SNI xyz.example.com        -> TCP router selects TLS options "listener-websecure-https-example-com-aa0f3a4a63da2a2e7cbb@kubernetesgateway" NextProtos=[h2 http/1.1 acme-tls/1] | real handshake offering [h2 http/1.1] negotiated "h2"
+C1C2 wildcard+exact strict=true |   SNI bar.example.com        -> TCP router selects TLS options "listener-websecure-https-example-com-aa0f3a4a63da2a2e7cbb@kubernetesgateway" NextProtos=[h2 http/1.1 acme-tls/1] | real handshake offering [h2 http/1.1] negotiated "h2"
+C1C2 wildcard+exact strict=true |   SNI other.test             -> TCP router selects TLS options "default" NextProtos=[h2 http/1.1 acme-tls/1] | real handshake offering [h2 http/1.1] negotiated "h2"
+C1C2 wildcard+exact strict=true |   real HTTPS request SNI=abc.example.com Host=abc.example.com /precise -> proto=HTTP/2.0 status=200 body="10.10.0.1"
+C1C2 wildcard+exact strict=true |   real HTTP/2-only (gRPC-like) request SNI=abc.example.com Host=abc.example.com /precise -> proto=HTTP/2.0 status=200 body="10.10.0.1"
+C1C2 wildcard+exact strict=true |   real HTTPS request SNI=xyz.example.com Host=xyz.example.com /wildcard -> proto=HTTP/2.0 status=200 body="10.10.0.1"
+C1C2 wildcard+exact strict=true |   real HTTP/2-only (gRPC-like) request SNI=xyz.example.com Host=xyz.example.com /wildcard -> proto=HTTP/2.0 status=200 body="10.10.0.1"
+C1C2 wildcard+exact strict=true |   real HTTPS request SNI=bar.example.com Host=bar.example.com /bar -> proto=HTTP/2.0 status=200 body="10.10.0.1"
+C1C2 wildcard+exact strict=true |   real HTTP/2-only (gRPC-like) request SNI=bar.example.com Host=bar.example.com /bar -> proto=HTTP/2.0 status=200 body="10.10.0.1"
+C1C2 wildcard+exact strict=true |   real HTTPS request SNI=abc.example.com Host=xyz.example.com /wildcard -> proto=HTTP/2.0 status=421 body="Misdirected Request"
+C1C2 wildcard+exact strict=true |   real HTTPS request SNI=xyz.example.com Host=abc.example.com /precise -> proto=HTTP/2.0 status=421 body="Misdirected Request"
+C1C2 two-wildcards strict=false | provider output: 2 TLS options
+C1C2 two-wildcards strict=false |   provider tls.Options["listener-websecure-https-example-com-aa0f3a4a63da2a2e7cbb"].ALPNProtocols=[h2 http/1.1 acme-tls/1] (len=3)
+C1C2 two-wildcards strict=false |   provider tls.Options["listener-websecure-https-foo-example-com-1822c2677801f90ccf48"].ALPNProtocols=[h2 http/1.1 acme-tls/1] (len=3)
+C1C2 two-wildcards strict=false |   aggregated tls.Options["default"].ALPNProtocols=[h2 http/1.1 acme-tls/1] -> tlsManager.Get NextProtos=[h2 http/1.1 acme-tls/1] (len=3)
+C1C2 two-wildcards strict=false |   aggregated tls.Options["listener-websecure-https-example-com-aa0f3a4a63da2a2e7cbb@kubernetesgateway"].ALPNProtocols=[h2 http/1.1 acme-tls/1] -> tlsManager.Get NextProtos=[h2 http/1.1 acme-tls/1] (len=3)
+C1C2 two-wildcards strict=false |   aggregated tls.Options["listener-websecure-https-foo-example-com-1822c2677801f90ccf48@kubernetesgateway"].ALPNProtocols=[h2 http/1.1 acme-tls/1] -> tlsManager.Get NextProtos=[h2 http/1.1 acme-tls/1] (len=3)
+C1C2 two-wildcards strict=false |   aggregated router listener-websecure-h…a2e7cbb@kubernetesgateway rule=(Host("**.example.com")) && !(Host("**.foo.example.com")) configuredOptions="listener-websecure-https-example-com-aa0f3a4a63da2a2e7cbb" resolvedOptions="listener-websecure-https-example-com-aa0f3a4a63da2a2e7cbb@kubernetesgateway"
+C1C2 two-wildcards strict=false |   aggregated router listener-websecure-h…90ccf48@kubernetesgateway rule=Host("**.foo.example.com") configuredOptions="listener-websecure-https-foo-example-com-1822c2677801f90ccf48" resolvedOptions="listener-websecure-https-foo-example-com-1822c2677801f90ccf48@kubernetesgateway"
+C1C2 two-wildcards strict=false |   SNI xyz.example.com        -> TCP router selects TLS options "listener-websecure-https-example-com-aa0f3a4a63da2a2e7cbb@kubernetesgateway" NextProtos=[h2 http/1.1 acme-tls/1] | real handshake offering [h2 http/1.1] negotiated "h2"
+C1C2 two-wildcards strict=false |   SNI a.foo.example.com      -> TCP router selects TLS options "listener-websecure-https-foo-example-com-1822c2677801f90ccf48@kubernetesgateway" NextProtos=[h2 http/1.1 acme-tls/1] | real handshake offering [h2 http/1.1] negotiated "h2"
+C1C2 two-wildcards strict=false |   real HTTPS request SNI=xyz.example.com Host=xyz.example.com /wildcard -> proto=HTTP/2.0 status=200 body="10.10.0.1"
+C1C2 two-wildcards strict=false |   real HTTP/2-only (gRPC-like) request SNI=xyz.example.com Host=xyz.example.com /wildcard -> proto=HTTP/2.0 status=200 body="10.10.0.1"
+C1C2 two-wildcards strict=false |   real HTTPS request SNI=a.foo.example.com Host=a.foo.example.com /nested -> proto=HTTP/2.0 status=200 body="10.10.0.1"
+C1C2 two-wildcards strict=false |   real HTTP/2-only (gRPC-like) request SNI=a.foo.example.com Host=a.foo.example.com /nested -> proto=HTTP/2.0 status=200 body="10.10.0.1"
+C1C2 two-wildcards strict=false |   real HTTPS request SNI=a.foo.example.com Host=xyz.example.com /wildcard -> proto=HTTP/2.0 status=421 body="Misdirected Request"
+C1C2 two-wildcards strict=false |   real HTTPS request SNI=xyz.example.com Host=a.foo.example.com /nested -> proto=HTTP/2.0 status=421 body="Misdirected Request"
+C1C2 single-listener control | provider output: 1 TLS options
+C1C2 single-listener control |   provider tls.Options["listener-websecure-https-abc-example-com-84b9126a78b887b479e2"].ALPNProtocols=[h2 http/1.1 acme-tls/1] (len=3)
+C1C2 single-listener control |   aggregated tls.Options["default"].ALPNProtocols=[h2 http/1.1 acme-tls/1] -> tlsManager.Get NextProtos=[h2 http/1.1 acme-tls/1] (len=3)
+C1C2 single-listener control |   aggregated tls.Options["listener-websecure-https-abc-example-com-84b9126a78b887b479e2@kubernetesgateway"].ALPNProtocols=[h2 http/1.1 acme-tls/1] -> tlsManager.Get NextProtos=[h2 http/1.1 acme-tls/1] (len=3)
+C1C2 single-listener control |   aggregated router listener-websecure-h…7b479e2@kubernetesgateway rule=Host("abc.example.com") configuredOptions="listener-websecure-https-abc-example-com-84b9126a78b887b479e2" resolvedOptions="listener-websecure-https-abc-example-com-84b9126a78b887b479e2@kubernetesgateway"
+C1C2 single-listener control |   SNI abc.example.com        -> TCP router selects TLS options "listener-websecure-https-abc-example-com-84b9126a78b887b479e2@kubernetesgateway" NextProtos=[h2 http/1.1 acme-tls/1] | real handshake offering [h2 http/1.1] negotiated "h2"
+C1C2 single-listener control |   real HTTPS request SNI=abc.example.com Host=abc.example.com /precise -> proto=HTTP/2.0 status=200 body="10.10.0.1"
+C1C2 single-listener control |   real HTTP/2-only (gRPC-like) request SNI=abc.example.com Host=abc.example.com /precise -> proto=HTTP/2.0 status=200 body="10.10.0.1"
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/gateway	0.338s
