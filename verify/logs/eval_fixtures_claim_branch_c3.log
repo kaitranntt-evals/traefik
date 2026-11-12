@@ -1,0 +1,1489 @@
+--- FAIL: TestEval_GatewayHTTPListenerIsolation_SingleGatewaySpecificity (0.08s)
+    --- FAIL: TestEval_GatewayHTTPListenerIsolation_SingleGatewaySpecificity/rejected_listener_not_suppressing (0.00s)
+        eval_isolation_test.go:591: 
+            	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_isolation_test.go:591
+            	Error:      	Not equal: 
+            	            	expected: 200
+            	            	actual  : 404
+            	Test:       	TestEval_GatewayHTTPListenerIsolation_SingleGatewaySpecificity/rejected_listener_not_suppressing
+            	Messages:   	rejected listener must not suppress catch-all route
+        eval_isolation_test.go:592: 
+            	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_isolation_test.go:592
+            	Error:      	Not equal: 
+            	            	expected: "catchall"
+            	            	actual  : "404 page not found\n"
+            	            	
+            	            	Diff:
+            	            	--- Expected
+            	            	+++ Actual
+            	            	@@ -1 +1,2 @@
+            	            	-catchall
+            	            	+404 page not found
+            	            	+
+            	Test:       	TestEval_GatewayHTTPListenerIsolation_SingleGatewaySpecificity/rejected_listener_not_suppressing
+{"level":"info","time":"2026-11-12T17:18:08Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: httproute-default-http-app-precise-gw-default-my-gateway-ep-web-0-5b6dacf4c7da9367767b-svc-default-whoami-precise-0"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: httproute-default-http-app-catchall-gw-default-my-gateway-ep-web-0-5f1e8db00013fed6d041-svc-default-whoami-catchall-0"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"info","time":"2026-11-12T17:18:08Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-0fa0806dc8bc441269fe-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: httproute-default-http-app-catchall-gw-default-my-gateway-ep-websecure-0-fdbf9fe621d4c678fbb1-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:08Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-0fa0806dc8bc441269fe-svc-default-whoami-precise-0"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: httproute-default-http-app-catchall-gw-default-my-gateway-ep-websecure-0-fdbf9fe621d4c678fbb1-svc-default-whoami-catchall-0"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-6c92b7d100471f64a985-svc-default-whoami-precise-0"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: h2c://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: grpcroute-default-grpc-app-catchall-gw-default-my-gateway-ep-websecure-0-b46ce3ef1fcb2f7d8ec7-svc-default-whoami-catchall-0"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: h2c://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:08Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-6c92b7d100471f64a985-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: grpcroute-default-grpc-app-catchall-gw-default-my-gateway-ep-websecure-0-b46ce3ef1fcb2f7d8ec7-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:08Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: httproute-default-http-app-wildcard-gw-default-my-gateway-ep-websecure-0-3dc5bc95e1a45d296b30-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: httproute-default-http-app-catchall-gw-default-my-gateway-ep-websecure-0-36acc1899c24df653161-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: httproute-default-http-app-wildcard-gw-default-my-gateway-ep-websecure-0-3dc5bc95e1a45d296b30-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: httproute-default-http-app-catchall-gw-default-my-gateway-ep-websecure-0-36acc1899c24df653161-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: httproute-default-http-app-catchall-gw-default-my-gateway-ep-websecure-0-36acc1899c24df653161-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: httproute-default-http-app-wildcard-gw-default-my-gateway-ep-websecure-0-3dc5bc95e1a45d296b30-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"info","time":"2026-11-12T17:18:08Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: httproute-default-http-app-literal-gw-default-my-gateway-ep-websecure-0-77b3c8e4adbbcb424261-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: httproute-default-http-app-wildcard-gw-default-my-gateway-ep-websecure-0-c5ffe7cde9617f28c2b0-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:08Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: grpcroute-default-grpc-app-literal-gw-default-my-gateway-ep-websecure-0-53b8a70585a0fb977e74-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: grpcroute-default-grpc-app-wildcard-gw-default-my-gateway-ep-websecure-0-01d1a078f279576eeb2a-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:08Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: httproute-default-http-app-exact-gw-default-my-gateway-ep-websecure-0-15c1368c5627573ff8ed-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: httproute-default-http-app-wildcard-gw-default-my-gateway-ep-websecure-0-e0b47501352a46387499-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: grpcroute-default-grpc-app-exact-gw-default-my-gateway-ep-websecure-0-105863d4e0d4b4005558-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: grpcroute-default-grpc-app-wildcard-gw-default-my-gateway-ep-websecure-0-28240c0c3bd4098f8e01-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:08Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: httproute-default-http-app-exact-gw-default-my-gateway-ep-websecure-0-15c1368c5627573ff8ed-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: httproute-default-http-app-wildcard-gw-default-my-gateway-ep-websecure-0-e0b47501352a46387499-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: grpcroute-default-grpc-app-exact-gw-default-my-gateway-ep-websecure-0-105863d4e0d4b4005558-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: grpcroute-default-grpc-app-wildcard-gw-default-my-gateway-ep-websecure-0-28240c0c3bd4098f8e01-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:08Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-0fa0806dc8bc441269fe-svc-default-whoami-precise-0"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: httproute-default-http-app-catchall-gw-default-my-gateway-ep-websecure-0-fdbf9fe621d4c678fbb1-svc-default-whoami-catchall-0"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-6c92b7d100471f64a985-svc-default-whoami-precise-0"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: h2c://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: grpcroute-default-grpc-app-catchall-gw-default-my-gateway-ep-websecure-0-b46ce3ef1fcb2f7d8ec7-svc-default-whoami-catchall-0"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: h2c://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:08Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: httproute-default-http-app-wildcard-gw-default-my-gateway-ep-websecure-0-3dc5bc95e1a45d296b30-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: httproute-default-http-app-wildcard-gw-default-my-gateway-ep-websecure-0-3dc5bc95e1a45d296b30-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: grpcroute-default-grpc-app-wildcard-gw-default-my-gateway-ep-websecure-0-0442b64ac928dd9f238b-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: grpcroute-default-grpc-app-wildcard-gw-default-my-gateway-ep-websecure-0-0442b64ac928dd9f238b-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"info","time":"2026-11-12T17:18:08Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: httproute-default-http-app-catchall-gw-default-my-gateway-ep-websecure-0-b5212b4e9451e4f2ed43-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:08Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:08Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-0fa0806dc8bc441269fe-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: httproute-default-http-app-catchall-gw-default-my-gateway-ep-websecure-0-fdbf9fe621d4c678fbb1-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:09Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-0fa0806dc8bc441269fe-svc-default-whoami-precise-0"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: httproute-default-http-app-catchall-gw-default-my-gateway-ep-websecure-0-fdbf9fe621d4c678fbb1-svc-default-whoami-catchall-0"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-6c92b7d100471f64a985-svc-default-whoami-precise-0"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: h2c://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: grpcroute-default-grpc-app-catchall-gw-default-my-gateway-ep-websecure-0-b46ce3ef1fcb2f7d8ec7-svc-default-whoami-catchall-0"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: h2c://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:09Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-6c92b7d100471f64a985-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: grpcroute-default-grpc-app-catchall-gw-default-my-gateway-ep-websecure-0-b46ce3ef1fcb2f7d8ec7-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:09Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: httproute-default-http-app-wildcard-gw-default-my-gateway-ep-websecure-0-3dc5bc95e1a45d296b30-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: httproute-default-http-app-catchall-gw-default-my-gateway-ep-websecure-0-36acc1899c24df653161-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: httproute-default-http-app-wildcard-gw-default-my-gateway-ep-websecure-0-3dc5bc95e1a45d296b30-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: httproute-default-http-app-catchall-gw-default-my-gateway-ep-websecure-0-36acc1899c24df653161-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: httproute-default-http-app-catchall-gw-default-my-gateway-ep-websecure-0-36acc1899c24df653161-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: httproute-default-http-app-wildcard-gw-default-my-gateway-ep-websecure-0-3dc5bc95e1a45d296b30-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"info","time":"2026-11-12T17:18:09Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: httproute-default-http-app-literal-gw-default-my-gateway-ep-websecure-0-77b3c8e4adbbcb424261-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: httproute-default-http-app-wildcard-gw-default-my-gateway-ep-websecure-0-c5ffe7cde9617f28c2b0-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:09Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: grpcroute-default-grpc-app-literal-gw-default-my-gateway-ep-websecure-0-53b8a70585a0fb977e74-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: grpcroute-default-grpc-app-wildcard-gw-default-my-gateway-ep-websecure-0-01d1a078f279576eeb2a-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:09Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: httproute-default-http-app-exact-gw-default-my-gateway-ep-websecure-0-15c1368c5627573ff8ed-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: httproute-default-http-app-wildcard-gw-default-my-gateway-ep-websecure-0-e0b47501352a46387499-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: grpcroute-default-grpc-app-exact-gw-default-my-gateway-ep-websecure-0-105863d4e0d4b4005558-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: grpcroute-default-grpc-app-wildcard-gw-default-my-gateway-ep-websecure-0-28240c0c3bd4098f8e01-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:09Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: httproute-default-http-app-exact-gw-default-my-gateway-ep-websecure-0-15c1368c5627573ff8ed-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: httproute-default-http-app-wildcard-gw-default-my-gateway-ep-websecure-0-e0b47501352a46387499-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: grpcroute-default-grpc-app-exact-gw-default-my-gateway-ep-websecure-0-105863d4e0d4b4005558-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: grpcroute-default-grpc-app-wildcard-gw-default-my-gateway-ep-websecure-0-28240c0c3bd4098f8e01-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:09Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-0fa0806dc8bc441269fe-svc-default-whoami-precise-0"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: httproute-default-http-app-catchall-gw-default-my-gateway-ep-websecure-0-fdbf9fe621d4c678fbb1-svc-default-whoami-catchall-0"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-6c92b7d100471f64a985-svc-default-whoami-precise-0"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: h2c://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: grpcroute-default-grpc-app-catchall-gw-default-my-gateway-ep-websecure-0-b46ce3ef1fcb2f7d8ec7-svc-default-whoami-catchall-0"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: h2c://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:09Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:09Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: httproute-default-http-app-wildcard-gw-default-my-gateway-ep-websecure-0-3dc5bc95e1a45d296b30-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: httproute-default-http-app-wildcard-gw-default-my-gateway-ep-websecure-0-3dc5bc95e1a45d296b30-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: grpcroute-default-grpc-app-wildcard-gw-default-my-gateway-ep-websecure-0-0442b64ac928dd9f238b-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: grpcroute-default-grpc-app-wildcard-gw-default-my-gateway-ep-websecure-0-0442b64ac928dd9f238b-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"info","time":"2026-11-12T17:18:10Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: httproute-default-http-app-catchall-gw-default-my-gateway-ep-websecure-0-b5212b4e9451e4f2ed43-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: misdirected-request"}
+--- FAIL: TestEval_GatewayHTTPSListenerDetectMisdirectedRequests (1.91s)
+    --- FAIL: TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=false (0.86s)
+        --- FAIL: TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=false/wildcard_narrowed_route (0.02s)
+            eval_https_test.go:517: 
+                	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:517
+                	Error:      	Not equal: 
+                	            	expected: 421
+                	            	actual  : 200
+                	Test:       	TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=false/wildcard_narrowed_route
+                	Messages:   	empty SNI cannot access wildcard host
+        --- FAIL: TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=false/entry_point_basic_auth (0.05s)
+            --- FAIL: TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=false/entry_point_basic_auth/http (0.00s)
+                --- FAIL: TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=false/entry_point_basic_auth/http/authenticated=false (0.00s)
+                    eval_https_test.go:683: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:683
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 401
+                        	Test:       	TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=false/entry_point_basic_auth/http/authenticated=false
+                        	Messages:   	SNI=xyz.example.com Host=abc.example.com path=/precise
+                    eval_https_test.go:683: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:683
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 401
+                        	Test:       	TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=false/entry_point_basic_auth/http/authenticated=false
+                        	Messages:   	SNI=abc.example.com Host=xyz.example.com path=/catchall
+                    eval_https_test.go:683: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:683
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 401
+                        	Test:       	TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=false/entry_point_basic_auth/http/authenticated=false
+                        	Messages:   	SNI=xyz.example.com Host=abc.example.com path=/nope
+                    eval_https_test.go:683: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:683
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 401
+                        	Test:       	TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=false/entry_point_basic_auth/http/authenticated=false
+                        	Messages:   	SNI=abc.example.com Host=xyz.example.com path=/nope
+            --- FAIL: TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=false/entry_point_basic_auth/grpc (0.00s)
+                --- FAIL: TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=false/entry_point_basic_auth/grpc/authenticated=false (0.00s)
+                    eval_https_test.go:683: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:683
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 401
+                        	Test:       	TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=false/entry_point_basic_auth/grpc/authenticated=false
+                        	Messages:   	SNI=xyz.example.com Host=abc.example.com path=/helloworld.Greeter/SayGoodbye
+                    eval_https_test.go:683: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:683
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 401
+                        	Test:       	TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=false/entry_point_basic_auth/grpc/authenticated=false
+                        	Messages:   	SNI=abc.example.com Host=xyz.example.com path=/helloworld.Greeter/SayHello
+                    eval_https_test.go:683: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:683
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 401
+                        	Test:       	TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=false/entry_point_basic_auth/grpc/authenticated=false
+                        	Messages:   	SNI=xyz.example.com Host=abc.example.com path=/nope
+                    eval_https_test.go:683: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:683
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 401
+                        	Test:       	TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=false/entry_point_basic_auth/grpc/authenticated=false
+                        	Messages:   	SNI=abc.example.com Host=xyz.example.com path=/nope
+        --- FAIL: TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=false/rejected_listener_ignored (0.08s)
+            eval_https_test.go:773: 
+                	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:773
+                	Error:      	Not equal: 
+                	            	expected: 200
+                	            	actual  : 421
+                	Test:       	TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=false/rejected_listener_ignored
+                	Messages:   	SNI=rejected.example.com Host=other.example.com
+            eval_https_test.go:774: 
+                	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:774
+                	Error:      	Not equal: 
+                	            	expected: "10.10.0.1"
+                	            	actual  : ""
+                	            	
+                	            	Diff:
+                	            	--- Expected
+                	            	+++ Actual
+                	            	@@ -1 +1 @@
+                	            	-10.10.0.1
+                	            	+
+                	Test:       	TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=false/rejected_listener_ignored
+            eval_https_test.go:776: 
+                	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:776
+                	Error:      	Not equal: 
+                	            	expected: 200
+                	            	actual  : 421
+                	Test:       	TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=false/rejected_listener_ignored
+                	Messages:   	gRPC SNI=rejected.example.com Host=other.example.com
+            eval_https_test.go:773: 
+                	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:773
+                	Error:      	Not equal: 
+                	            	expected: 200
+                	            	actual  : 404
+                	Test:       	TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=false/rejected_listener_ignored
+                	Messages:   	SNI=other.example.com Host=rejected.example.com
+            eval_https_test.go:774: 
+                	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:774
+                	Error:      	Not equal: 
+                	            	expected: "10.10.0.1"
+                	            	actual  : "404 page not found\n"
+                	            	
+                	            	Diff:
+                	            	--- Expected
+                	            	+++ Actual
+                	            	@@ -1 +1,2 @@
+                	            	-10.10.0.1
+                	            	+404 page not found
+                	            	+
+                	Test:       	TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=false/rejected_listener_ignored
+            eval_https_test.go:776: 
+                	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:776
+                	Error:      	Not equal: 
+                	            	expected: 200
+                	            	actual  : 404
+                	Test:       	TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=false/rejected_listener_ignored
+                	Messages:   	gRPC SNI=other.example.com Host=rejected.example.com
+            eval_https_test.go:773: 
+                	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:773
+                	Error:      	Not equal: 
+                	            	expected: 200
+                	            	actual  : 404
+                	Test:       	TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=false/rejected_listener_ignored
+                	Messages:   	SNI=rejected.example.com Host=rejected.example.com
+            eval_https_test.go:774: 
+                	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:774
+                	Error:      	Not equal: 
+                	            	expected: "10.10.0.1"
+                	            	actual  : "404 page not found\n"
+                	            	
+                	            	Diff:
+                	            	--- Expected
+                	            	+++ Actual
+                	            	@@ -1 +1,2 @@
+                	            	-10.10.0.1
+                	            	+404 page not found
+                	            	+
+                	Test:       	TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=false/rejected_listener_ignored
+            eval_https_test.go:776: 
+                	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:776
+                	Error:      	Not equal: 
+                	            	expected: 200
+                	            	actual  : 404
+                	Test:       	TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=false/rejected_listener_ignored
+                	Messages:   	gRPC SNI=rejected.example.com Host=rejected.example.com
+    --- FAIL: TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=true (1.05s)
+        --- FAIL: TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=true/wildcard_narrowed_route (0.10s)
+            eval_https_test.go:517: 
+                	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:517
+                	Error:      	Not equal: 
+                	            	expected: 421
+                	            	actual  : 200
+                	Test:       	TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=true/wildcard_narrowed_route
+                	Messages:   	empty SNI cannot access wildcard host
+        --- FAIL: TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=true/entry_point_basic_auth (0.32s)
+            --- FAIL: TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=true/entry_point_basic_auth/http (0.00s)
+                --- FAIL: TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=true/entry_point_basic_auth/http/authenticated=false (0.00s)
+                    eval_https_test.go:683: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:683
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 401
+                        	Test:       	TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=true/entry_point_basic_auth/http/authenticated=false
+                        	Messages:   	SNI=xyz.example.com Host=abc.example.com path=/precise
+                    eval_https_test.go:683: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:683
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 401
+                        	Test:       	TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=true/entry_point_basic_auth/http/authenticated=false
+                        	Messages:   	SNI=abc.example.com Host=xyz.example.com path=/catchall
+                    eval_https_test.go:683: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:683
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 401
+                        	Test:       	TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=true/entry_point_basic_auth/http/authenticated=false
+                        	Messages:   	SNI=xyz.example.com Host=abc.example.com path=/nope
+                    eval_https_test.go:683: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:683
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 401
+                        	Test:       	TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=true/entry_point_basic_auth/http/authenticated=false
+                        	Messages:   	SNI=abc.example.com Host=xyz.example.com path=/nope
+            --- FAIL: TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=true/entry_point_basic_auth/grpc (0.00s)
+                --- FAIL: TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=true/entry_point_basic_auth/grpc/authenticated=false (0.00s)
+                    eval_https_test.go:683: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:683
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 401
+                        	Test:       	TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=true/entry_point_basic_auth/grpc/authenticated=false
+                        	Messages:   	SNI=xyz.example.com Host=abc.example.com path=/helloworld.Greeter/SayGoodbye
+                    eval_https_test.go:683: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:683
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 401
+                        	Test:       	TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=true/entry_point_basic_auth/grpc/authenticated=false
+                        	Messages:   	SNI=abc.example.com Host=xyz.example.com path=/helloworld.Greeter/SayHello
+                    eval_https_test.go:683: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:683
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 401
+                        	Test:       	TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=true/entry_point_basic_auth/grpc/authenticated=false
+                        	Messages:   	SNI=xyz.example.com Host=abc.example.com path=/nope
+                    eval_https_test.go:683: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:683
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 401
+                        	Test:       	TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=true/entry_point_basic_auth/grpc/authenticated=false
+                        	Messages:   	SNI=abc.example.com Host=xyz.example.com path=/nope
+        --- FAIL: TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=true/rejected_listener_ignored (0.04s)
+            eval_https_test.go:773: 
+                	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:773
+                	Error:      	Not equal: 
+                	            	expected: 200
+                	            	actual  : 421
+                	Test:       	TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=true/rejected_listener_ignored
+                	Messages:   	SNI=rejected.example.com Host=other.example.com
+            eval_https_test.go:774: 
+                	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:774
+                	Error:      	Not equal: 
+                	            	expected: "10.10.0.1"
+                	            	actual  : ""
+                	            	
+                	            	Diff:
+                	            	--- Expected
+                	            	+++ Actual
+                	            	@@ -1 +1 @@
+                	            	-10.10.0.1
+                	            	+
+                	Test:       	TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=true/rejected_listener_ignored
+            eval_https_test.go:776: 
+                	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:776
+                	Error:      	Not equal: 
+                	            	expected: 200
+                	            	actual  : 421
+                	Test:       	TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=true/rejected_listener_ignored
+                	Messages:   	gRPC SNI=rejected.example.com Host=other.example.com
+            eval_https_test.go:773: 
+                	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:773
+                	Error:      	Not equal: 
+                	            	expected: 200
+                	            	actual  : 404
+                	Test:       	TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=true/rejected_listener_ignored
+                	Messages:   	SNI=other.example.com Host=rejected.example.com
+            eval_https_test.go:774: 
+                	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:774
+                	Error:      	Not equal: 
+                	            	expected: "10.10.0.1"
+                	            	actual  : "404 page not found\n"
+                	            	
+                	            	Diff:
+                	            	--- Expected
+                	            	+++ Actual
+                	            	@@ -1 +1,2 @@
+                	            	-10.10.0.1
+                	            	+404 page not found
+                	            	+
+                	Test:       	TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=true/rejected_listener_ignored
+            eval_https_test.go:776: 
+                	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:776
+                	Error:      	Not equal: 
+                	            	expected: 200
+                	            	actual  : 404
+                	Test:       	TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=true/rejected_listener_ignored
+                	Messages:   	gRPC SNI=other.example.com Host=rejected.example.com
+            eval_https_test.go:773: 
+                	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:773
+                	Error:      	Not equal: 
+                	            	expected: 200
+                	            	actual  : 404
+                	Test:       	TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=true/rejected_listener_ignored
+                	Messages:   	SNI=rejected.example.com Host=rejected.example.com
+            eval_https_test.go:774: 
+                	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:774
+                	Error:      	Not equal: 
+                	            	expected: "10.10.0.1"
+                	            	actual  : "404 page not found\n"
+                	            	
+                	            	Diff:
+                	            	--- Expected
+                	            	+++ Actual
+                	            	@@ -1 +1,2 @@
+                	            	-10.10.0.1
+                	            	+404 page not found
+                	            	+
+                	Test:       	TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=true/rejected_listener_ignored
+            eval_https_test.go:776: 
+                	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:776
+                	Error:      	Not equal: 
+                	            	expected: 200
+                	            	actual  : 404
+                	Test:       	TestEval_GatewayHTTPSListenerDetectMisdirectedRequests/strictTLSOptions=true/rejected_listener_ignored
+                	Messages:   	gRPC SNI=rejected.example.com Host=rejected.example.com
+{"level":"info","time":"2026-11-12T17:18:10Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Skipping addition of certificate for domain(s) \"*.example.com,example.com,foo.com\", to TLS Store default, as it already exists for this store."}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: httproute-default-http-app-other-gw-default-gw-a-ep-websecure-0-b411e40851ab3393768e-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: httproute-default-http-app-precise-gw-default-gw-a-ep-websecure-0-25386d4087844bff6669-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: httproute-default-http-app-other-precise-gw-default-gw-a-ep-websecure-0-a7a3913264ce1dba67f6-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: httproute-default-http-app-other-gw-default-gw-a-ep-websecure-0-b411e40851ab3393768e-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: httproute-default-http-app-catchall-gw-default-gw-a-ep-websecure-0-151189f16ee1052bd55f-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"info","time":"2026-11-12T17:18:10Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Adding certificate for domain(s) team.example.com,xyz.other.com"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Adding certificate for domain(s) team-a.example.com,xyz.other.com"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: httproute-team-a-route-team-a-precise-gw-team-a-edge-ep-websecure-0-5507fa5185736f276662-svc-team-a-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: httproute-team-route-team-precise-gw-team-a-edge-ep-websecure-0-2993a90db0717225cf1d-svc-team-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: httproute-team-a-route-team-a-gw-team-a-edge-ep-websecure-0-a5dc56388d08c37b8dd0-svc-team-a-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: httproute-team-route-team-gw-team-a-edge-ep-websecure-0-e4d585d79b08445ca322-svc-team-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: httproute-team-route-team-gw-team-a-edge-ep-websecure-0-e4d585d79b08445ca322-svc-team-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"info","time":"2026-11-12T17:18:10Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Adding certificate for domain(s) b1,b2"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Adding certificate for domain(s) a1,a2"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: httproute-team-a-route-a-broad-gw-team-a-edge-ep-websecure-0-26ac77d6959850ce9e79-svc-team-a-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: httproute-team-a-route-a-precise-gw-team-a-edge-ep-websecure-0-3017a9c592eb2b8ffcf1-svc-team-a-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: httproute-team-route-b-broad-gw-team-a-edge-ep-websecure-0-f1070dcb46157abe1552-svc-team-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: httproute-team-route-b-precise-gw-team-a-edge-ep-websecure-0-842f3c16f53986c967cd-svc-team-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:10Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Adding certificate for domain(s) b1,b2"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Adding certificate for domain(s) a1,a2"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: httproute-team-a-route-a-broad-gw-team-a-edge-ep-websecure-0-26ac77d6959850ce9e79-svc-team-a-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: httproute-team-a-route-a-precise-gw-team-a-edge-ep-websecure-0-3017a9c592eb2b8ffcf1-svc-team-a-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: httproute-team-route-b-broad-gw-team-a-edge-ep-websecure-0-f1070dcb46157abe1552-svc-team-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: httproute-team-route-b-precise-gw-team-a-edge-ep-websecure-0-842f3c16f53986c967cd-svc-team-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:10Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Adding certificate for domain(s) *.b,x.b"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Adding certificate for domain(s) *.a,x.a"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: httproute-team-a-route-a-broad-gw-team-a-edge-ep-websecure-0-d1702f209a1f853022f5-svc-team-a-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: httproute-team-a-route-a-precise-gw-team-a-edge-ep-websecure-0-c68946b6d9909a5652d5-svc-team-a-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: httproute-team-route-b-broad-gw-team-a-edge-ep-websecure-0-ff7dfeb1861f0f0ea840-svc-team-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: httproute-team-route-b-precise-gw-team-a-edge-ep-websecure-0-ea263fd71e4192e1708e-svc-team-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:10Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Adding certificate for domain(s) *.b,x.b"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Adding certificate for domain(s) *.a,x.a"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: httproute-team-a-route-a-broad-gw-team-a-edge-ep-websecure-0-d1702f209a1f853022f5-svc-team-a-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: httproute-team-a-route-a-precise-gw-team-a-edge-ep-websecure-0-c68946b6d9909a5652d5-svc-team-a-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: httproute-team-route-b-broad-gw-team-a-edge-ep-websecure-0-ff7dfeb1861f0f0ea840-svc-team-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: httproute-team-route-b-precise-gw-team-a-edge-ep-websecure-0-ea263fd71e4192e1708e-svc-team-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:10Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Adding certificate for domain(s) b.example.com"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Adding certificate for domain(s) a.example.com"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: httproute-team-a-route-a-broad-gw-team-a-edge-ep-websecure-0-87079e4790037ab4a4e1-svc-team-a-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: httproute-team-a-route-a-precise-gw-team-a-edge-ep-websecure-0-c5ac97c47b7c086773b6-svc-team-a-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: httproute-team-route-b-broad-gw-team-a-edge-ep-websecure-0-f26c3bea3aaf2b025975-svc-team-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: httproute-team-route-b-precise-gw-team-a-edge-ep-websecure-0-5d8faa679558ddf34cc3-svc-team-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:10Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Adding certificate for domain(s) a.example.com"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Adding certificate for domain(s) b.example.com"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: httproute-team-a-route-a-broad-gw-team-a-edge-ep-websecure-0-87079e4790037ab4a4e1-svc-team-a-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: httproute-team-a-route-a-precise-gw-team-a-edge-ep-websecure-0-c5ac97c47b7c086773b6-svc-team-a-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: httproute-team-route-b-broad-gw-team-a-edge-ep-websecure-0-f26c3bea3aaf2b025975-svc-team-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: httproute-team-route-b-precise-gw-team-a-edge-ep-websecure-0-5d8faa679558ddf34cc3-svc-team-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:10Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:10Z","message":"Skipping addition of certificate for domain(s) \"*.example.com,example.com,foo.com\", to TLS Store default, as it already exists for this store."}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: grpcroute-default-grpc-a-precise-gw-default-grpc-gw-a-ep-websecure-0-efcab98fdded2afbc0ec-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: grpcroute-default-grpc-b-precise-gw-default-grpc-gw-b-ep-websecure-0-5767efa27a78866a2c99-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: grpcroute-default-grpc-a-catchall-gw-default-grpc-gw-a-ep-websecure-0-a7eab7e602a03f7e30c7-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: grpcroute-default-grpc-b-catchall-gw-default-grpc-gw-b-ep-websecure-0-00f9292335f42e94fe33-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: grpcroute-default-grpc-b-catchall-gw-default-grpc-gw-b-ep-websecure-0-00f9292335f42e94fe33-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: grpcroute-default-grpc-a-catchall-gw-default-grpc-gw-a-ep-websecure-0-a7eab7e602a03f7e30c7-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:11Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Skipping addition of certificate for domain(s) \"*.example.com,example.com,foo.com\", to TLS Store default, as it already exists for this store."}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: grpcroute-default-grpc-a-precise-gw-default-grpc-gw-a-ep-websecure-0-efcab98fdded2afbc0ec-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: grpcroute-default-grpc-b-precise-gw-default-grpc-gw-b-ep-websecure-0-5767efa27a78866a2c99-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: grpcroute-default-grpc-a-catchall-gw-default-grpc-gw-a-ep-websecure-0-a7eab7e602a03f7e30c7-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: grpcroute-default-grpc-b-catchall-gw-default-grpc-gw-b-ep-websecure-0-00f9292335f42e94fe33-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: grpcroute-default-grpc-b-catchall-gw-default-grpc-gw-b-ep-websecure-0-00f9292335f42e94fe33-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: grpcroute-default-grpc-a-catchall-gw-default-grpc-gw-a-ep-websecure-0-a7eab7e602a03f7e30c7-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:11Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Skipping addition of certificate for domain(s) \"*.example.com,example.com,foo.com\", to TLS Store default, as it already exists for this store."}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: httproute-default-app-a-precise-gw-default-gw-shared-a-ep-websecure-0-dc0b8a18d80fe57239ee-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: httproute-default-app-b-precise-gw-default-gw-shared-b-ep-websecure-0-b92a41d687da89352b26-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: httproute-default-app-a-catchall-gw-default-gw-shared-a-ep-websecure-0-2636a926683ee8c5178f-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: httproute-default-app-b-catchall-gw-default-gw-shared-b-ep-websecure-0-cf52e7907c3e74d668af-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:11Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Skipping addition of certificate for domain(s) \"*.example.com,example.com,foo.com\", to TLS Store default, as it already exists for this store."}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: httproute-default-app-a-http-gw-default-gw-single-a-ep-websecure-0-116026961d748bc6fd32-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: httproute-default-app-b-http-gw-default-gw-single-b-ep-websecure-0-3c7c90e0b512d1ad6421-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: grpcroute-default-app-a-grpc-gw-default-gw-single-a-ep-websecure-0-2df03b55cb93daad0d54-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: grpcroute-default-app-b-grpc-gw-default-gw-single-b-ep-websecure-0-a4e8c4ca7a60419440dc-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"info","time":"2026-11-12T17:18:11Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Skipping addition of certificate for domain(s) \"*.example.com,example.com,foo.com\", to TLS Store default, as it already exists for this store."}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: httproute-default-app-a-http-gw-default-gw-exact-ep-websecure-0-d9debd2a82cb24e5690f-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: httproute-default-app-wide-http-gw-default-gw-wide-ep-websecure-0-acea27dbb8a610c373d5-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: httproute-default-app-wide-http-gw-default-gw-wide-ep-websecure-0-acea27dbb8a610c373d5-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: grpcroute-default-app-a-grpc-gw-default-gw-exact-ep-websecure-0-55515793d2e51d6b77cb-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: grpcroute-default-app-wide-grpc-gw-default-gw-wide-ep-websecure-0-62ee58160522f740c3ef-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"info","time":"2026-11-12T17:18:11Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Skipping addition of certificate for domain(s) \"*.example.com,example.com,foo.com\", to TLS Store default, as it already exists for this store."}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: httproute-default-app-a-http-gw-default-gw-z-exact-ep-websecure-0-a032c7e5a36a226b1e8e-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: httproute-default-app-wide-http-gw-default-gw-a-wide-ep-websecure-0-725a736ca895c2144d63-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: httproute-default-app-wide-http-gw-default-gw-a-wide-ep-websecure-0-725a736ca895c2144d63-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: grpcroute-default-app-a-grpc-gw-default-gw-z-exact-ep-websecure-0-6e45c3faa9f92abf1c4b-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: grpcroute-default-app-wide-grpc-gw-default-gw-a-wide-ep-websecure-0-320c5c5c3f0443d26ec3-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"info","time":"2026-11-12T17:18:11Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Skipping addition of certificate for domain(s) \"*.example.com,example.com,foo.com\", to TLS Store default, as it already exists for this store."}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: httproute-default-first-precise-gw-default-gw-first-ep-websecure-0-a1b787362d61935033c4-svc-default-whoami-precise-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: httproute-default-sibling-root-gw-default-gw-sibling-ep-websecure-0-eccaf90ee69432ba0a56-svc-default-whoami-catchall-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: httproute-default-sibling-root-gw-default-gw-sibling-ep-websecure-0-eccaf90ee69432ba0a56-svc-default-whoami-catchall-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: httproute-default-first-catchall-gw-default-gw-first-ep-websecure-0-56d1cee4deaeb8a4f528-svc-default-whoami-precise-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: httproute-default-sibling-root-gw-default-gw-sibling-ep-websecure-0-eccaf90ee69432ba0a56-svc-default-whoami-catchall-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"info","time":"2026-11-12T17:18:11Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Skipping addition of certificate for domain(s) \"*.example.com,example.com,foo.com\", to TLS Store default, as it already exists for this store."}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: httproute-default-first-precise-gw-default-gw-first-ep-websecure-0-a1b787362d61935033c4-svc-default-whoami-precise-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: httproute-default-sibling-root-gw-default-gw-sibling-ep-websecure-0-eccaf90ee69432ba0a56-svc-default-whoami-catchall-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: httproute-default-sibling-root-gw-default-gw-sibling-ep-websecure-0-eccaf90ee69432ba0a56-svc-default-whoami-catchall-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: httproute-default-first-catchall-gw-default-gw-first-ep-websecure-0-56d1cee4deaeb8a4f528-svc-default-whoami-precise-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: httproute-default-sibling-root-gw-default-gw-sibling-ep-websecure-0-eccaf90ee69432ba0a56-svc-default-whoami-catchall-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"info","time":"2026-11-12T17:18:11Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Skipping addition of certificate for domain(s) \"*.example.com,example.com,foo.com\", to TLS Store default, as it already exists for this store."}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: httproute-default-cc-a-exact-gw-default-gw-cc-a-ep-websecure-0-ad2396fa8c04773bdd93-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: httproute-default-cc-b-exact-gw-default-gw-cc-b-ep-websecure-0-22520442262ed0dcea59-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: httproute-default-cc-a-catchall-gw-default-gw-cc-a-ep-websecure-0-f4c4c1f2f13672c4c126-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: httproute-default-cc-b-catchall-gw-default-gw-cc-b-ep-websecure-0-3f7e0cf3f1e9d7cbb84d-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:11Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:11Z","message":"Skipping addition of certificate for domain(s) \"*.example.com,example.com,foo.com\", to TLS Store default, as it already exists for this store."}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: httproute-default-cc-a-exact-gw-default-gw-cc-a-ep-websecure-0-ad2396fa8c04773bdd93-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: httproute-default-cc-b-exact-gw-default-gw-cc-b-ep-websecure-0-22520442262ed0dcea59-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: httproute-default-cc-a-catchall-gw-default-gw-cc-a-ep-websecure-0-f4c4c1f2f13672c4c126-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: httproute-default-cc-b-catchall-gw-default-gw-cc-b-ep-websecure-0-3f7e0cf3f1e9d7cbb84d-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:12Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Skipping addition of certificate for domain(s) \"*.example.com,example.com,foo.com\", to TLS Store default, as it already exists for this store."}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: httproute-default-http-app-other-gw-default-gw-a-ep-websecure-0-b411e40851ab3393768e-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: httproute-default-http-app-precise-gw-default-gw-a-ep-websecure-0-25386d4087844bff6669-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: httproute-default-http-app-other-precise-gw-default-gw-a-ep-websecure-0-a7a3913264ce1dba67f6-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: httproute-default-http-app-other-gw-default-gw-a-ep-websecure-0-b411e40851ab3393768e-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: httproute-default-http-app-catchall-gw-default-gw-a-ep-websecure-0-151189f16ee1052bd55f-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"info","time":"2026-11-12T17:18:12Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Adding certificate for domain(s) team-a.example.com,xyz.other.com"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Adding certificate for domain(s) team.example.com,xyz.other.com"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: httproute-team-a-route-team-a-precise-gw-team-a-edge-ep-websecure-0-5507fa5185736f276662-svc-team-a-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: httproute-team-route-team-precise-gw-team-a-edge-ep-websecure-0-2993a90db0717225cf1d-svc-team-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: httproute-team-a-route-team-a-gw-team-a-edge-ep-websecure-0-a5dc56388d08c37b8dd0-svc-team-a-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: httproute-team-route-team-gw-team-a-edge-ep-websecure-0-e4d585d79b08445ca322-svc-team-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: httproute-team-a-route-team-a-gw-team-a-edge-ep-websecure-0-a5dc56388d08c37b8dd0-svc-team-a-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:12Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Adding certificate for domain(s) b1,b2"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Adding certificate for domain(s) a1,a2"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: httproute-team-a-route-a-broad-gw-team-a-edge-ep-websecure-0-26ac77d6959850ce9e79-svc-team-a-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: httproute-team-a-route-a-precise-gw-team-a-edge-ep-websecure-0-3017a9c592eb2b8ffcf1-svc-team-a-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: httproute-team-route-b-broad-gw-team-a-edge-ep-websecure-0-f1070dcb46157abe1552-svc-team-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: httproute-team-route-b-precise-gw-team-a-edge-ep-websecure-0-842f3c16f53986c967cd-svc-team-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:12Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Adding certificate for domain(s) b1,b2"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Adding certificate for domain(s) a1,a2"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: httproute-team-a-route-a-broad-gw-team-a-edge-ep-websecure-0-26ac77d6959850ce9e79-svc-team-a-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: httproute-team-a-route-a-precise-gw-team-a-edge-ep-websecure-0-3017a9c592eb2b8ffcf1-svc-team-a-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: httproute-team-route-b-broad-gw-team-a-edge-ep-websecure-0-f1070dcb46157abe1552-svc-team-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: httproute-team-route-b-precise-gw-team-a-edge-ep-websecure-0-842f3c16f53986c967cd-svc-team-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:12Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Adding certificate for domain(s) *.b,x.b"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Adding certificate for domain(s) *.a,x.a"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: httproute-team-a-route-a-broad-gw-team-a-edge-ep-websecure-0-d1702f209a1f853022f5-svc-team-a-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: httproute-team-a-route-a-precise-gw-team-a-edge-ep-websecure-0-c68946b6d9909a5652d5-svc-team-a-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: httproute-team-route-b-broad-gw-team-a-edge-ep-websecure-0-ff7dfeb1861f0f0ea840-svc-team-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: httproute-team-route-b-precise-gw-team-a-edge-ep-websecure-0-ea263fd71e4192e1708e-svc-team-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:12Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Adding certificate for domain(s) *.b,x.b"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Adding certificate for domain(s) *.a,x.a"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: httproute-team-a-route-a-broad-gw-team-a-edge-ep-websecure-0-d1702f209a1f853022f5-svc-team-a-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: httproute-team-a-route-a-precise-gw-team-a-edge-ep-websecure-0-c68946b6d9909a5652d5-svc-team-a-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: httproute-team-route-b-broad-gw-team-a-edge-ep-websecure-0-ff7dfeb1861f0f0ea840-svc-team-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: httproute-team-route-b-precise-gw-team-a-edge-ep-websecure-0-ea263fd71e4192e1708e-svc-team-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:12Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Adding certificate for domain(s) b.example.com"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Adding certificate for domain(s) a.example.com"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: httproute-team-a-route-a-broad-gw-team-a-edge-ep-websecure-0-87079e4790037ab4a4e1-svc-team-a-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: httproute-team-a-route-a-precise-gw-team-a-edge-ep-websecure-0-c5ac97c47b7c086773b6-svc-team-a-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: httproute-team-route-b-broad-gw-team-a-edge-ep-websecure-0-f26c3bea3aaf2b025975-svc-team-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: httproute-team-route-b-precise-gw-team-a-edge-ep-websecure-0-5d8faa679558ddf34cc3-svc-team-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:12Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Adding certificate for domain(s) b.example.com"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Adding certificate for domain(s) a.example.com"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: httproute-team-a-route-a-broad-gw-team-a-edge-ep-websecure-0-87079e4790037ab4a4e1-svc-team-a-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: httproute-team-a-route-a-precise-gw-team-a-edge-ep-websecure-0-c5ac97c47b7c086773b6-svc-team-a-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: httproute-team-route-b-broad-gw-team-a-edge-ep-websecure-0-f26c3bea3aaf2b025975-svc-team-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: httproute-team-route-b-precise-gw-team-a-edge-ep-websecure-0-5d8faa679558ddf34cc3-svc-team-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:12Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:12Z","message":"Skipping addition of certificate for domain(s) \"*.example.com,example.com,foo.com\", to TLS Store default, as it already exists for this store."}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: grpcroute-default-grpc-a-precise-gw-default-grpc-gw-a-ep-websecure-0-efcab98fdded2afbc0ec-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: grpcroute-default-grpc-b-precise-gw-default-grpc-gw-b-ep-websecure-0-5767efa27a78866a2c99-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: grpcroute-default-grpc-a-catchall-gw-default-grpc-gw-a-ep-websecure-0-a7eab7e602a03f7e30c7-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: grpcroute-default-grpc-b-catchall-gw-default-grpc-gw-b-ep-websecure-0-00f9292335f42e94fe33-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: grpcroute-default-grpc-b-catchall-gw-default-grpc-gw-b-ep-websecure-0-00f9292335f42e94fe33-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: grpcroute-default-grpc-a-catchall-gw-default-grpc-gw-a-ep-websecure-0-a7eab7e602a03f7e30c7-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:13Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Skipping addition of certificate for domain(s) \"*.example.com,example.com,foo.com\", to TLS Store default, as it already exists for this store."}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: grpcroute-default-grpc-a-precise-gw-default-grpc-gw-a-ep-websecure-0-efcab98fdded2afbc0ec-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: grpcroute-default-grpc-b-precise-gw-default-grpc-gw-b-ep-websecure-0-5767efa27a78866a2c99-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: grpcroute-default-grpc-a-catchall-gw-default-grpc-gw-a-ep-websecure-0-a7eab7e602a03f7e30c7-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: grpcroute-default-grpc-b-catchall-gw-default-grpc-gw-b-ep-websecure-0-00f9292335f42e94fe33-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: grpcroute-default-grpc-b-catchall-gw-default-grpc-gw-b-ep-websecure-0-00f9292335f42e94fe33-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: grpcroute-default-grpc-a-catchall-gw-default-grpc-gw-a-ep-websecure-0-a7eab7e602a03f7e30c7-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:13Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Skipping addition of certificate for domain(s) \"*.example.com,example.com,foo.com\", to TLS Store default, as it already exists for this store."}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: httproute-default-app-a-precise-gw-default-gw-shared-a-ep-websecure-0-dc0b8a18d80fe57239ee-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: httproute-default-app-b-precise-gw-default-gw-shared-b-ep-websecure-0-b92a41d687da89352b26-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: httproute-default-app-a-catchall-gw-default-gw-shared-a-ep-websecure-0-2636a926683ee8c5178f-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: httproute-default-app-b-catchall-gw-default-gw-shared-b-ep-websecure-0-cf52e7907c3e74d668af-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:13Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Skipping addition of certificate for domain(s) \"*.example.com,example.com,foo.com\", to TLS Store default, as it already exists for this store."}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: httproute-default-app-a-http-gw-default-gw-single-a-ep-websecure-0-116026961d748bc6fd32-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: httproute-default-app-b-http-gw-default-gw-single-b-ep-websecure-0-3c7c90e0b512d1ad6421-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: grpcroute-default-app-a-grpc-gw-default-gw-single-a-ep-websecure-0-2df03b55cb93daad0d54-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: grpcroute-default-app-b-grpc-gw-default-gw-single-b-ep-websecure-0-a4e8c4ca7a60419440dc-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"info","time":"2026-11-12T17:18:13Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Skipping addition of certificate for domain(s) \"*.example.com,example.com,foo.com\", to TLS Store default, as it already exists for this store."}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: httproute-default-app-a-http-gw-default-gw-exact-ep-websecure-0-d9debd2a82cb24e5690f-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: httproute-default-app-wide-http-gw-default-gw-wide-ep-websecure-0-acea27dbb8a610c373d5-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: httproute-default-app-wide-http-gw-default-gw-wide-ep-websecure-0-acea27dbb8a610c373d5-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: grpcroute-default-app-a-grpc-gw-default-gw-exact-ep-websecure-0-55515793d2e51d6b77cb-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: grpcroute-default-app-wide-grpc-gw-default-gw-wide-ep-websecure-0-62ee58160522f740c3ef-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"info","time":"2026-11-12T17:18:13Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Skipping addition of certificate for domain(s) \"*.example.com,example.com,foo.com\", to TLS Store default, as it already exists for this store."}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: httproute-default-app-a-http-gw-default-gw-z-exact-ep-websecure-0-a032c7e5a36a226b1e8e-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: httproute-default-app-wide-http-gw-default-gw-a-wide-ep-websecure-0-725a736ca895c2144d63-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: httproute-default-app-wide-http-gw-default-gw-a-wide-ep-websecure-0-725a736ca895c2144d63-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: grpcroute-default-app-a-grpc-gw-default-gw-z-exact-ep-websecure-0-6e45c3faa9f92abf1c4b-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: grpcroute-default-app-wide-grpc-gw-default-gw-a-wide-ep-websecure-0-320c5c5c3f0443d26ec3-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"info","time":"2026-11-12T17:18:13Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Skipping addition of certificate for domain(s) \"*.example.com,example.com,foo.com\", to TLS Store default, as it already exists for this store."}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: httproute-default-first-precise-gw-default-gw-first-ep-websecure-0-a1b787362d61935033c4-svc-default-whoami-precise-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: httproute-default-sibling-root-gw-default-gw-sibling-ep-websecure-0-eccaf90ee69432ba0a56-svc-default-whoami-catchall-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: httproute-default-sibling-root-gw-default-gw-sibling-ep-websecure-0-eccaf90ee69432ba0a56-svc-default-whoami-catchall-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: httproute-default-first-catchall-gw-default-gw-first-ep-websecure-0-56d1cee4deaeb8a4f528-svc-default-whoami-precise-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: httproute-default-sibling-root-gw-default-gw-sibling-ep-websecure-0-eccaf90ee69432ba0a56-svc-default-whoami-catchall-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"info","time":"2026-11-12T17:18:13Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Skipping addition of certificate for domain(s) \"*.example.com,example.com,foo.com\", to TLS Store default, as it already exists for this store."}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: httproute-default-first-precise-gw-default-gw-first-ep-websecure-0-a1b787362d61935033c4-svc-default-whoami-precise-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: httproute-default-sibling-root-gw-default-gw-sibling-ep-websecure-0-eccaf90ee69432ba0a56-svc-default-whoami-catchall-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: httproute-default-sibling-root-gw-default-gw-sibling-ep-websecure-0-eccaf90ee69432ba0a56-svc-default-whoami-catchall-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: httproute-default-first-catchall-gw-default-gw-first-ep-websecure-0-56d1cee4deaeb8a4f528-svc-default-whoami-precise-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: httproute-default-sibling-root-gw-default-gw-sibling-ep-websecure-0-eccaf90ee69432ba0a56-svc-default-whoami-catchall-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"info","time":"2026-11-12T17:18:13Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Skipping addition of certificate for domain(s) \"*.example.com,example.com,foo.com\", to TLS Store default, as it already exists for this store."}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: httproute-default-cc-a-exact-gw-default-gw-cc-a-ep-websecure-0-ad2396fa8c04773bdd93-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: httproute-default-cc-b-exact-gw-default-gw-cc-b-ep-websecure-0-22520442262ed0dcea59-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: httproute-default-cc-a-catchall-gw-default-gw-cc-a-ep-websecure-0-f4c4c1f2f13672c4c126-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: httproute-default-cc-b-catchall-gw-default-gw-cc-b-ep-websecure-0-3f7e0cf3f1e9d7cbb84d-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:13Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:13Z","message":"Skipping addition of certificate for domain(s) \"*.example.com,example.com,foo.com\", to TLS Store default, as it already exists for this store."}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: httproute-default-cc-a-exact-gw-default-gw-cc-a-ep-websecure-0-ad2396fa8c04773bdd93-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: httproute-default-cc-b-exact-gw-default-gw-cc-b-ep-websecure-0-22520442262ed0dcea59-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: httproute-default-cc-a-catchall-gw-default-gw-cc-a-ep-websecure-0-f4c4c1f2f13672c4c126-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: httproute-default-cc-b-catchall-gw-default-gw-cc-b-ep-websecure-0-3f7e0cf3f1e9d7cbb84d-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+--- FAIL: TestEval_GatewayHTTPSSiblingGatewayReachability (3.97s)
+    --- FAIL: TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=false (2.00s)
+        --- FAIL: TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=false/namespaced_identity_collisions (0.11s)
+            eval_https_test.go:1054: 
+                	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:1054
+                	Error:      	Not equal: 
+                	            	expected: 421
+                	            	actual  : 200
+                	Test:       	TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=false/namespaced_identity_collisions
+                	Messages:   	team/a-edge cross SNI/Host must return 421
+        --- FAIL: TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=false/identity_collision_unmatched_path (0.79s)
+            --- FAIL: TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=false/identity_collision_unmatched_path/exact (0.22s)
+                --- FAIL: TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=false/identity_collision_unmatched_path/exact/order=0 (0.18s)
+                    eval_https_test.go:1123: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:1123
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 404
+                        	Test:       	TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=false/identity_collision_unmatched_path/exact/order=0
+                        	Messages:   	same-Gateway crossing SNI=b1 Host=b2
+                    eval_https_test.go:1123: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:1123
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 404
+                        	Test:       	TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=false/identity_collision_unmatched_path/exact/order=0
+                        	Messages:   	same-Gateway crossing SNI=b2 Host=b1
+                --- FAIL: TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=false/identity_collision_unmatched_path/exact/order=1 (0.04s)
+                    eval_https_test.go:1123: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:1123
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 404
+                        	Test:       	TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=false/identity_collision_unmatched_path/exact/order=1
+                        	Messages:   	same-Gateway crossing SNI=b1 Host=b2
+                    eval_https_test.go:1123: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:1123
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 404
+                        	Test:       	TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=false/identity_collision_unmatched_path/exact/order=1
+                        	Messages:   	same-Gateway crossing SNI=b2 Host=b1
+            --- FAIL: TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=false/identity_collision_unmatched_path/wildcard (0.39s)
+                --- FAIL: TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=false/identity_collision_unmatched_path/wildcard/order=0 (0.25s)
+                    eval_https_test.go:1123: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:1123
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 404
+                        	Test:       	TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=false/identity_collision_unmatched_path/wildcard/order=0
+                        	Messages:   	same-Gateway crossing SNI=y.b Host=x.b
+                    eval_https_test.go:1123: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:1123
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 404
+                        	Test:       	TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=false/identity_collision_unmatched_path/wildcard/order=0
+                        	Messages:   	same-Gateway crossing SNI=x.b Host=y.b
+                --- FAIL: TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=false/identity_collision_unmatched_path/wildcard/order=1 (0.14s)
+                    eval_https_test.go:1123: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:1123
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 404
+                        	Test:       	TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=false/identity_collision_unmatched_path/wildcard/order=1
+                        	Messages:   	same-Gateway crossing SNI=y.b Host=x.b
+                    eval_https_test.go:1123: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:1123
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 404
+                        	Test:       	TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=false/identity_collision_unmatched_path/wildcard/order=1
+                        	Messages:   	same-Gateway crossing SNI=x.b Host=y.b
+            --- FAIL: TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=false/identity_collision_unmatched_path/catchall (0.19s)
+                --- FAIL: TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=false/identity_collision_unmatched_path/catchall/order=0 (0.06s)
+                    eval_https_test.go:1123: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:1123
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 404
+                        	Test:       	TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=false/identity_collision_unmatched_path/catchall/order=0
+                        	Messages:   	same-Gateway crossing SNI=neutral.other.com Host=b.example.com
+                    eval_https_test.go:1123: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:1123
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 404
+                        	Test:       	TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=false/identity_collision_unmatched_path/catchall/order=0
+                        	Messages:   	same-Gateway crossing SNI=b.example.com Host=neutral.other.com
+                --- FAIL: TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=false/identity_collision_unmatched_path/catchall/order=1 (0.13s)
+                    eval_https_test.go:1123: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:1123
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 404
+                        	Test:       	TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=false/identity_collision_unmatched_path/catchall/order=1
+                        	Messages:   	same-Gateway crossing SNI=neutral.other.com Host=a.example.com
+                    eval_https_test.go:1123: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:1123
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 404
+                        	Test:       	TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=false/identity_collision_unmatched_path/catchall/order=1
+                        	Messages:   	same-Gateway crossing SNI=a.example.com Host=neutral.other.com
+    --- FAIL: TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=true (1.96s)
+        --- FAIL: TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=true/namespaced_identity_collisions (0.03s)
+            eval_https_test.go:1050: 
+                	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:1050
+                	Error:      	Not equal: 
+                	            	expected: 421
+                	            	actual  : 200
+                	Test:       	TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=true/namespaced_identity_collisions
+                	Messages:   	team-a/edge cross SNI/Host must return 421
+        --- FAIL: TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=true/identity_collision_unmatched_path (0.83s)
+            --- FAIL: TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=true/identity_collision_unmatched_path/exact (0.29s)
+                --- FAIL: TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=true/identity_collision_unmatched_path/exact/order=0 (0.13s)
+                    eval_https_test.go:1123: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:1123
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 404
+                        	Test:       	TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=true/identity_collision_unmatched_path/exact/order=0
+                        	Messages:   	same-Gateway crossing SNI=b1 Host=b2
+                    eval_https_test.go:1123: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:1123
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 404
+                        	Test:       	TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=true/identity_collision_unmatched_path/exact/order=0
+                        	Messages:   	same-Gateway crossing SNI=b2 Host=b1
+                --- FAIL: TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=true/identity_collision_unmatched_path/exact/order=1 (0.16s)
+                    eval_https_test.go:1123: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:1123
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 404
+                        	Test:       	TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=true/identity_collision_unmatched_path/exact/order=1
+                        	Messages:   	same-Gateway crossing SNI=b1 Host=b2
+                    eval_https_test.go:1123: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:1123
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 404
+                        	Test:       	TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=true/identity_collision_unmatched_path/exact/order=1
+                        	Messages:   	same-Gateway crossing SNI=b2 Host=b1
+            --- FAIL: TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=true/identity_collision_unmatched_path/wildcard (0.35s)
+                --- FAIL: TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=true/identity_collision_unmatched_path/wildcard/order=0 (0.11s)
+                    eval_https_test.go:1123: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:1123
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 404
+                        	Test:       	TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=true/identity_collision_unmatched_path/wildcard/order=0
+                        	Messages:   	same-Gateway crossing SNI=y.b Host=x.b
+                    eval_https_test.go:1123: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:1123
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 404
+                        	Test:       	TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=true/identity_collision_unmatched_path/wildcard/order=0
+                        	Messages:   	same-Gateway crossing SNI=x.b Host=y.b
+                --- FAIL: TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=true/identity_collision_unmatched_path/wildcard/order=1 (0.23s)
+                    eval_https_test.go:1123: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:1123
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 404
+                        	Test:       	TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=true/identity_collision_unmatched_path/wildcard/order=1
+                        	Messages:   	same-Gateway crossing SNI=y.b Host=x.b
+                    eval_https_test.go:1123: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:1123
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 404
+                        	Test:       	TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=true/identity_collision_unmatched_path/wildcard/order=1
+                        	Messages:   	same-Gateway crossing SNI=x.b Host=y.b
+            --- FAIL: TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=true/identity_collision_unmatched_path/catchall (0.20s)
+                --- FAIL: TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=true/identity_collision_unmatched_path/catchall/order=0 (0.10s)
+                    eval_https_test.go:1123: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:1123
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 404
+                        	Test:       	TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=true/identity_collision_unmatched_path/catchall/order=0
+                        	Messages:   	same-Gateway crossing SNI=neutral.other.com Host=b.example.com
+                    eval_https_test.go:1123: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:1123
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 404
+                        	Test:       	TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=true/identity_collision_unmatched_path/catchall/order=0
+                        	Messages:   	same-Gateway crossing SNI=b.example.com Host=neutral.other.com
+                --- FAIL: TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=true/identity_collision_unmatched_path/catchall/order=1 (0.10s)
+                    eval_https_test.go:1123: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:1123
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 404
+                        	Test:       	TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=true/identity_collision_unmatched_path/catchall/order=1
+                        	Messages:   	same-Gateway crossing SNI=neutral.other.com Host=b.example.com
+                    eval_https_test.go:1123: 
+                        	Error Trace:	/home/ubuntu/repos/traefik-c3/pkg/provider/kubernetes/gateway/eval_https_test.go:1123
+                        	Error:      	Not equal: 
+                        	            	expected: 421
+                        	            	actual  : 404
+                        	Test:       	TestEval_GatewayHTTPSSiblingGatewayReachability/strictTLSOptions=true/identity_collision_unmatched_path/catchall/order=1
+                        	Messages:   	same-Gateway crossing SNI=b.example.com Host=neutral.other.com
+{"level":"info","time":"2026-11-12T17:18:14Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-6c92b7d100471f64a985-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: httproute-default-http-app-catchall-gw-default-my-gateway-ep-websecure-0-fdbf9fe621d4c678fbb1-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:14Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-6c92b7d100471f64a985-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: httproute-default-http-app-catchall-gw-default-my-gateway-ep-websecure-0-fdbf9fe621d4c678fbb1-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:14Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: httproute-default-http-app-unsectioned-gw-default-my-gateway-ep-websecure-0-6a792263584329dc669d-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: httproute-default-http-app-catchall-gw-default-my-gateway-ep-websecure-0-fdbf9fe621d4c678fbb1-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: httproute-default-http-app-unsectioned-gw-default-my-gateway-ep-websecure-0-dbca170e19e290357dfc-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: grpcroute-default-grpc-app-unsectioned-gw-default-my-gateway-ep-websecure-0-6dc1d81e80a4e0ca9726-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: grpcroute-default-grpc-app-unsectioned-gw-default-my-gateway-ep-websecure-0-2d23b80bf16aad1f9343-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:14Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: httproute-default-http-precise-gw-default-my-gateway-ep-websecure-0-1c2639be0849fe91eb37-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: httproute-default-http-unsectioned-abc-gw-default-my-gateway-ep-websecure-0-9c1adb14518bc35420bf-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: grpcroute-default-grpc-unsectioned-abc-gw-default-my-gateway-ep-websecure-0-38ffe3080d12cec342d1-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: httproute-default-http-catchall-gw-default-my-gateway-ep-websecure-0-f570873f28f8e5ce4b27-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:14Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: httproute-default-http-app-unsectioned-gw-default-my-gateway-ep-websecure-0-6a792263584329dc669d-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: httproute-default-http-app-catchall-gw-default-my-gateway-ep-websecure-0-fdbf9fe621d4c678fbb1-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: httproute-default-http-app-unsectioned-gw-default-my-gateway-ep-websecure-0-dbca170e19e290357dfc-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: grpcroute-default-grpc-app-unsectioned-gw-default-my-gateway-ep-websecure-0-6dc1d81e80a4e0ca9726-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: grpcroute-default-grpc-app-unsectioned-gw-default-my-gateway-ep-websecure-0-2d23b80bf16aad1f9343-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:14Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: httproute-default-http-precise-gw-default-my-gateway-ep-websecure-0-1c2639be0849fe91eb37-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: httproute-default-http-unsectioned-abc-gw-default-my-gateway-ep-websecure-0-9c1adb14518bc35420bf-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: grpcroute-default-grpc-unsectioned-abc-gw-default-my-gateway-ep-websecure-0-38ffe3080d12cec342d1-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: httproute-default-http-catchall-gw-default-my-gateway-ep-websecure-0-f570873f28f8e5ce4b27-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:14Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: httproute-default-http-app-unsectioned-gw-default-my-gateway-ep-websecure-0-6a792263584329dc669d-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: httproute-default-http-app-catchall-gw-default-my-gateway-ep-websecure-0-fdbf9fe621d4c678fbb1-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: httproute-default-http-app-unsectioned-gw-default-my-gateway-ep-websecure-0-dbca170e19e290357dfc-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: grpcroute-default-grpc-app-unsectioned-gw-default-my-gateway-ep-websecure-0-6dc1d81e80a4e0ca9726-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: grpcroute-default-grpc-app-unsectioned-gw-default-my-gateway-ep-websecure-0-2d23b80bf16aad1f9343-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:14Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: httproute-default-http-precise-gw-default-my-gateway-ep-websecure-0-1c2639be0849fe91eb37-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: httproute-default-http-unsectioned-abc-gw-default-my-gateway-ep-websecure-0-9c1adb14518bc35420bf-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: grpcroute-default-grpc-unsectioned-abc-gw-default-my-gateway-ep-websecure-0-38ffe3080d12cec342d1-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: httproute-default-http-catchall-gw-default-my-gateway-ep-websecure-0-f570873f28f8e5ce4b27-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:14Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: httproute-default-http-app-unsectioned-gw-default-my-gateway-ep-websecure-0-6a792263584329dc669d-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: httproute-default-http-app-catchall-gw-default-my-gateway-ep-websecure-0-fdbf9fe621d4c678fbb1-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: httproute-default-http-app-unsectioned-gw-default-my-gateway-ep-websecure-0-dbca170e19e290357dfc-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: grpcroute-default-grpc-app-unsectioned-gw-default-my-gateway-ep-websecure-0-6dc1d81e80a4e0ca9726-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: grpcroute-default-grpc-app-unsectioned-gw-default-my-gateway-ep-websecure-0-2d23b80bf16aad1f9343-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:14Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: httproute-default-http-precise-gw-default-my-gateway-ep-websecure-0-1c2639be0849fe91eb37-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: httproute-default-http-unsectioned-abc-gw-default-my-gateway-ep-websecure-0-9c1adb14518bc35420bf-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: grpcroute-default-grpc-unsectioned-abc-gw-default-my-gateway-ep-websecure-0-38ffe3080d12cec342d1-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: httproute-default-http-catchall-gw-default-my-gateway-ep-websecure-0-f570873f28f8e5ce4b27-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:14Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: httproute-default-http-control-precise-gw-default-my-gateway-ep-websecure-0-aa83d19ca3cf29741784-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: httproute-default-http-control-catchall-gw-default-my-gateway-ep-websecure-0-30fe993d8bcc967e4498-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: invalid-httproute-filter"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: invalid-httproute-filter"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:14Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: invalid-grpcroute-filter"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: invalid-grpcroute-filter"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:14Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: httproute-default-http-control-precise-gw-default-my-gateway-ep-websecure-0-aa83d19ca3cf29741784-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: httproute-default-http-control-catchall-gw-default-my-gateway-ep-websecure-0-30fe993d8bcc967e4498-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: invalid-httproute-filter"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: invalid-httproute-filter"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:14Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: invalid-grpcroute-filter"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: invalid-grpcroute-filter"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"info","time":"2026-11-12T17:18:14Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-6c92b7d100471f64a985-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: grpcroute-default-grpc-app-wildcard-gw-default-my-gateway-ep-websecure-0-98db8b2439618a3d7dae-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"info","time":"2026-11-12T17:18:14Z","message":"Starting provider aggregator *gateway_test.evalOneShotProvider"}
+{"level":"debug","time":"2026-11-12T17:18:14Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/provider/kubernetes/gateway	7.250s
+FAIL

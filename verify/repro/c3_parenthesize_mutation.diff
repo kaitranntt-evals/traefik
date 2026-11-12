@@ -1,0 +1,13 @@
+diff --git a/pkg/provider/kubernetes/gateway/kubernetes.go b/pkg/provider/kubernetes/gateway/kubernetes.go
+index 7d9d9b0f9..8114c8535 100644
+--- a/pkg/provider/kubernetes/gateway/kubernetes.go
++++ b/pkg/provider/kubernetes/gateway/kubernetes.go
+@@ -786,7 +786,7 @@ func buildMisdirectedRequestRule(listener gatewayListener) string {
+ 	}
+ 
+ 	if listener.Hostname != nil && len(otherSNIs) > 0 {
+-		misdirectedSNIs = append(misdirectedSNIs, fmt.Sprintf("(!%s && %s)", buildHostSNIRule(*listener.Hostname), strings.Join(otherSNIs, " || ")))
++		misdirectedSNIs = append(misdirectedSNIs, fmt.Sprintf("(!%s && (%s))", buildHostSNIRule(*listener.Hostname), strings.Join(otherSNIs, " || ")))
+ 	}
+ 
+ 	if len(misdirectedSNIs) == 0 {

@@ -1,0 +1,236 @@
+=== RUN   TestVerifyC1C2_Control_GatewayAlone
+    verify_c1c2_tlsconflict_test.go:148: PROVIDER(kubernetesgateway) router "grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-c64af9e9295b12ea4016"
+              rule=Host("abc.example.com") && PathRegexp("/helloworld\\.Greeter/SayHello") eps=[websecure] service="grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-c64af9e9295b12ea4016-wrr" parentRefs=[] tls.options=""
+    verify_c1c2_tlsconflict_test.go:148: PROVIDER(kubernetesgateway) router "httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-f135e3391225e82b3b08"
+              rule=Host("abc.example.com") && Path("/gw") eps=[websecure] service="httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-f135e3391225e82b3b08-wrr" parentRefs=[] tls.options=""
+    verify_c1c2_tlsconflict_test.go:148: PROVIDER(kubernetesgateway) router "httproute-default-http-app-sibling-gw-default-my-gateway-ep-websecure-0-786db502b3b7f5ee97a0"
+              rule=Host("xyz.example.com") && Path("/gw") eps=[websecure] service="httproute-default-http-app-sibling-gw-default-my-gateway-ep-websecure-0-786db502b3b7f5ee97a0-wrr" parentRefs=[] tls.options=""
+{"level":"info","time":"2026-11-12T17:22:04Z","message":"Starting provider aggregator *gateway_test.verifyProvider"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+    verify_c1c2_tlsconflict_test.go:148: AGG router "grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-c64af9e9295b12ea4016@kubernetesgateway"
+              rule=Host("abc.example.com") && PathRegexp("/helloworld\\.Greeter/SayHello") priority=59 eps=[websecure] service="grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-c64af9e9295b12ea4016-wrr" tls.options="" resolved="default" conflicting=false
+    verify_c1c2_tlsconflict_test.go:148: AGG router "httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-f135e3391225e82b3b08@kubernetesgateway"
+              rule=Host("abc.example.com") && Path("/gw") priority=100016 eps=[websecure] service="httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-f135e3391225e82b3b08-wrr" tls.options="" resolved="default" conflicting=false
+    verify_c1c2_tlsconflict_test.go:148: AGG router "httproute-default-http-app-sibling-gw-default-my-gateway-ep-websecure-0-786db502b3b7f5ee97a0@kubernetesgateway"
+              rule=Host("xyz.example.com") && Path("/gw") priority=100016 eps=[websecure] service="httproute-default-http-app-sibling-gw-default-my-gateway-ep-websecure-0-786db502b3b7f5ee97a0-wrr" tls.options="" resolved="default" conflicting=false
+    verify_c1c2_tlsconflict_test.go:148: REFERENCE-INTEGRITY child ParentRefs after aggregation: resolved=0 dangling=0
+    verify_c1c2_tlsconflict_test.go:148: RUNTIME router "grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-c64af9e9295b12ea4016@kubernetesgateway" status=enabled childRefs=[] err=[]
+    verify_c1c2_tlsconflict_test.go:148: RUNTIME router "httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-f135e3391225e82b3b08@kubernetesgateway" status=enabled childRefs=[] err=[]
+    verify_c1c2_tlsconflict_test.go:148: RUNTIME router "httproute-default-http-app-sibling-gw-default-my-gateway-ep-websecure-0-786db502b3b7f5ee97a0@kubernetesgateway" status=enabled childRefs=[] err=[]
+    verify_c1c2_tlsconflict_test.go:148: ROUTE-AVAILABILITY child routers disabled by ParseRouterTree: 0
+{"level":"warn","entryPointName":"websecure","time":"2026-11-12T17:22:04Z","message":"aliasHeadersStrategy is not configured: the request headers whose name aliases another header name (e.g. X_Auth_User or X.Auth.User for X-Auth-User) are forwarded as is. The backends deriving variable names from the header names (CGI, WSGI, PHP, NGINX, ...) read them as the header they alias, which allows a client to spoof the headers Traefik manages. Please set it to delete or reject on the entry points fronting such backends."}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-f135e3391225e82b3b08-svc-default-whoami-precise-0"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","entryPointName":"websecure","time":"2026-11-12T17:22:04Z","message":"Starting TCP Server"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-f135e3391225e82b3b08-svc-default-whoami-precise-0"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+    verify_c1c2_tlsconflict_test.go:148: REQUEST SNI=abc.example.com Host=abc.example.com path=/gw                          -> in-process 200 "10.10.1.1" | real TLS 200 "10.10.1.1"   (Gateway HTTPRoute on the conflicting listener)
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-c64af9e9295b12ea4016-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-c64af9e9295b12ea4016-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+    verify_c1c2_tlsconflict_test.go:148: REQUEST SNI=abc.example.com Host=abc.example.com path=/helloworld.Greeter/SayHello -> in-process 200 "10.10.0.1" | real TLS 200 "10.10.0.1"   (Gateway GRPCRoute on the conflicting listener)
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: httproute-default-http-app-sibling-gw-default-my-gateway-ep-websecure-0-786db502b3b7f5ee97a0-svc-default-whoami-catchall-0"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: httproute-default-http-app-sibling-gw-default-my-gateway-ep-websecure-0-786db502b3b7f5ee97a0-svc-default-whoami-catchall-0"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+    verify_c1c2_tlsconflict_test.go:148: REQUEST SNI=xyz.example.com Host=xyz.example.com path=/gw                          -> in-process 200 "10.10.2.1" | real TLS 200 "10.10.2.1"   (Gateway HTTPRoute on the sibling listener (no conflict))
+{"level":"debug","entryPointName":"websecure","time":"2026-11-12T17:22:04Z","message":"Waiting 10s seconds before killing connections"}
+{"level":"debug","entryPointName":"websecure","time":"2026-11-12T17:22:04Z","message":"Entrypoint closed"}
+--- PASS: TestVerifyC1C2_Control_GatewayAlone (0.17s)
+=== RUN   TestVerifyC1C2_Control_OtherProviderDifferentHost
+    verify_c1c2_tlsconflict_test.go:152: PROVIDER(kubernetesgateway) router "grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-c64af9e9295b12ea4016"
+              rule=Host("abc.example.com") && PathRegexp("/helloworld\\.Greeter/SayHello") eps=[websecure] service="grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-c64af9e9295b12ea4016-wrr" parentRefs=[] tls.options=""
+    verify_c1c2_tlsconflict_test.go:152: PROVIDER(kubernetesgateway) router "httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-f135e3391225e82b3b08"
+              rule=Host("abc.example.com") && Path("/gw") eps=[websecure] service="httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-f135e3391225e82b3b08-wrr" parentRefs=[] tls.options=""
+    verify_c1c2_tlsconflict_test.go:152: PROVIDER(kubernetesgateway) router "httproute-default-http-app-sibling-gw-default-my-gateway-ep-websecure-0-786db502b3b7f5ee97a0"
+              rule=Host("xyz.example.com") && Path("/gw") eps=[websecure] service="httproute-default-http-app-sibling-gw-default-my-gateway-ep-websecure-0-786db502b3b7f5ee97a0-wrr" parentRefs=[] tls.options=""
+{"level":"info","time":"2026-11-12T17:22:04Z","message":"Starting provider aggregator *gateway_test.verifyProvider"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+    verify_c1c2_tlsconflict_test.go:152: AGG router "grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-c64af9e9295b12ea4016@kubernetesgateway"
+              rule=Host("abc.example.com") && PathRegexp("/helloworld\\.Greeter/SayHello") priority=59 eps=[websecure] service="grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-c64af9e9295b12ea4016-wrr" tls.options="" resolved="default" conflicting=false
+    verify_c1c2_tlsconflict_test.go:152: AGG router "httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-f135e3391225e82b3b08@kubernetesgateway"
+              rule=Host("abc.example.com") && Path("/gw") priority=100016 eps=[websecure] service="httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-f135e3391225e82b3b08-wrr" tls.options="" resolved="default" conflicting=false
+    verify_c1c2_tlsconflict_test.go:152: AGG router "httproute-default-http-app-sibling-gw-default-my-gateway-ep-websecure-0-786db502b3b7f5ee97a0@kubernetesgateway"
+              rule=Host("xyz.example.com") && Path("/gw") priority=100016 eps=[websecure] service="httproute-default-http-app-sibling-gw-default-my-gateway-ep-websecure-0-786db502b3b7f5ee97a0-wrr" tls.options="" resolved="default" conflicting=false
+    verify_c1c2_tlsconflict_test.go:152: AGG router "other-app@file"
+              rule=Host("unrelated.example.com") && PathPrefix("/file") priority=52 eps=[websecure] service="other-svc" tls.options="" resolved="default" conflicting=false
+    verify_c1c2_tlsconflict_test.go:152: REFERENCE-INTEGRITY child ParentRefs after aggregation: resolved=0 dangling=0
+    verify_c1c2_tlsconflict_test.go:152: RUNTIME router "grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-c64af9e9295b12ea4016@kubernetesgateway" status=enabled childRefs=[] err=[]
+    verify_c1c2_tlsconflict_test.go:152: RUNTIME router "httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-f135e3391225e82b3b08@kubernetesgateway" status=enabled childRefs=[] err=[]
+    verify_c1c2_tlsconflict_test.go:152: RUNTIME router "httproute-default-http-app-sibling-gw-default-my-gateway-ep-websecure-0-786db502b3b7f5ee97a0@kubernetesgateway" status=enabled childRefs=[] err=[]
+    verify_c1c2_tlsconflict_test.go:152: RUNTIME router "other-app@file" status=enabled childRefs=[] err=[]
+    verify_c1c2_tlsconflict_test.go:152: ROUTE-AVAILABILITY child routers disabled by ParseRouterTree: 0
+{"level":"warn","entryPointName":"websecure","time":"2026-11-12T17:22:04Z","message":"aliasHeadersStrategy is not configured: the request headers whose name aliases another header name (e.g. X_Auth_User or X.Auth.User for X-Auth-User) are forwarded as is. The backends deriving variable names from the header names (CGI, WSGI, PHP, NGINX, ...) read them as the header they alias, which allows a client to spoof the headers Traefik manages. Please set it to delete or reject on the entry points fronting such backends."}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-f135e3391225e82b3b08-svc-default-whoami-precise-0"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","entryPointName":"websecure","time":"2026-11-12T17:22:04Z","message":"Starting TCP Server"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-f135e3391225e82b3b08-svc-default-whoami-precise-0"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+    verify_c1c2_tlsconflict_test.go:152: REQUEST SNI=abc.example.com Host=abc.example.com path=/gw                          -> in-process 200 "10.10.1.1" | real TLS 200 "10.10.1.1"   (Gateway HTTPRoute on the conflicting listener)
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-c64af9e9295b12ea4016-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-c64af9e9295b12ea4016-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+    verify_c1c2_tlsconflict_test.go:152: REQUEST SNI=abc.example.com Host=abc.example.com path=/helloworld.Greeter/SayHello -> in-process 200 "10.10.0.1" | real TLS 200 "10.10.0.1"   (Gateway GRPCRoute on the conflicting listener)
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: httproute-default-http-app-sibling-gw-default-my-gateway-ep-websecure-0-786db502b3b7f5ee97a0-svc-default-whoami-catchall-0"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: httproute-default-http-app-sibling-gw-default-my-gateway-ep-websecure-0-786db502b3b7f5ee97a0-svc-default-whoami-catchall-0"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+    verify_c1c2_tlsconflict_test.go:152: REQUEST SNI=xyz.example.com Host=xyz.example.com path=/gw                          -> in-process 200 "10.10.2.1" | real TLS 200 "10.10.2.1"   (Gateway HTTPRoute on the sibling listener (no conflict))
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: http://10.99.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: http://10.99.0.1:80"}
+    verify_c1c2_tlsconflict_test.go:152: REQUEST SNI=unrelated.example.com Host=unrelated.example.com path=/file                        -> in-process 200 "10.99.0.1" | real TLS 200 "10.99.0.1"   (other provider's router)
+{"level":"debug","entryPointName":"websecure","time":"2026-11-12T17:22:04Z","message":"Waiting 10s seconds before killing connections"}
+{"level":"debug","entryPointName":"websecure","time":"2026-11-12T17:22:04Z","message":"Entrypoint closed"}
+--- PASS: TestVerifyC1C2_Control_OtherProviderDifferentHost (0.05s)
+=== RUN   TestVerifyC1C2_NonStrict_OtherProviderSameHost_DefaultTLSOptions
+    verify_c1c2_tlsconflict_test.go:158: PROVIDER(kubernetesgateway) router "grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-c64af9e9295b12ea4016"
+              rule=Host("abc.example.com") && PathRegexp("/helloworld\\.Greeter/SayHello") eps=[websecure] service="grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-c64af9e9295b12ea4016-wrr" parentRefs=[] tls.options=""
+    verify_c1c2_tlsconflict_test.go:158: PROVIDER(kubernetesgateway) router "httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-f135e3391225e82b3b08"
+              rule=Host("abc.example.com") && Path("/gw") eps=[websecure] service="httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-f135e3391225e82b3b08-wrr" parentRefs=[] tls.options=""
+    verify_c1c2_tlsconflict_test.go:158: PROVIDER(kubernetesgateway) router "httproute-default-http-app-sibling-gw-default-my-gateway-ep-websecure-0-786db502b3b7f5ee97a0"
+              rule=Host("xyz.example.com") && Path("/gw") eps=[websecure] service="httproute-default-http-app-sibling-gw-default-my-gateway-ep-websecure-0-786db502b3b7f5ee97a0-wrr" parentRefs=[] tls.options=""
+{"level":"info","time":"2026-11-12T17:22:04Z","message":"Starting provider aggregator *gateway_test.verifyProvider"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+    verify_c1c2_tlsconflict_test.go:158: AGG router "grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-c64af9e9295b12ea4016@kubernetesgateway"
+              rule=Host("abc.example.com") && PathRegexp("/helloworld\\.Greeter/SayHello") priority=59 eps=[websecure] service="grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-c64af9e9295b12ea4016-wrr" tls.options="" resolved="default" conflicting=false
+    verify_c1c2_tlsconflict_test.go:158: AGG router "httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-f135e3391225e82b3b08@kubernetesgateway"
+              rule=Host("abc.example.com") && Path("/gw") priority=100016 eps=[websecure] service="httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-f135e3391225e82b3b08-wrr" tls.options="" resolved="default" conflicting=false
+    verify_c1c2_tlsconflict_test.go:158: AGG router "httproute-default-http-app-sibling-gw-default-my-gateway-ep-websecure-0-786db502b3b7f5ee97a0@kubernetesgateway"
+              rule=Host("xyz.example.com") && Path("/gw") priority=100016 eps=[websecure] service="httproute-default-http-app-sibling-gw-default-my-gateway-ep-websecure-0-786db502b3b7f5ee97a0-wrr" tls.options="" resolved="default" conflicting=false
+    verify_c1c2_tlsconflict_test.go:158: AGG router "other-app@file"
+              rule=Host("abc.example.com") && PathPrefix("/file") priority=46 eps=[websecure] service="other-svc" tls.options="" resolved="default" conflicting=false
+    verify_c1c2_tlsconflict_test.go:158: REFERENCE-INTEGRITY child ParentRefs after aggregation: resolved=0 dangling=0
+    verify_c1c2_tlsconflict_test.go:158: RUNTIME router "grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-c64af9e9295b12ea4016@kubernetesgateway" status=enabled childRefs=[] err=[]
+    verify_c1c2_tlsconflict_test.go:158: RUNTIME router "httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-f135e3391225e82b3b08@kubernetesgateway" status=enabled childRefs=[] err=[]
+    verify_c1c2_tlsconflict_test.go:158: RUNTIME router "httproute-default-http-app-sibling-gw-default-my-gateway-ep-websecure-0-786db502b3b7f5ee97a0@kubernetesgateway" status=enabled childRefs=[] err=[]
+    verify_c1c2_tlsconflict_test.go:158: RUNTIME router "other-app@file" status=enabled childRefs=[] err=[]
+    verify_c1c2_tlsconflict_test.go:158: ROUTE-AVAILABILITY child routers disabled by ParseRouterTree: 0
+{"level":"warn","entryPointName":"websecure","time":"2026-11-12T17:22:04Z","message":"aliasHeadersStrategy is not configured: the request headers whose name aliases another header name (e.g. X_Auth_User or X.Auth.User for X-Auth-User) are forwarded as is. The backends deriving variable names from the header names (CGI, WSGI, PHP, NGINX, ...) read them as the header they alias, which allows a client to spoof the headers Traefik manages. Please set it to delete or reject on the entry points fronting such backends."}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-f135e3391225e82b3b08-svc-default-whoami-precise-0"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","entryPointName":"websecure","time":"2026-11-12T17:22:04Z","message":"Starting TCP Server"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-f135e3391225e82b3b08-svc-default-whoami-precise-0"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+    verify_c1c2_tlsconflict_test.go:158: REQUEST SNI=abc.example.com Host=abc.example.com path=/gw                          -> in-process 200 "10.10.1.1" | real TLS 200 "10.10.1.1"   (Gateway HTTPRoute on the conflicting listener)
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-c64af9e9295b12ea4016-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-c64af9e9295b12ea4016-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+    verify_c1c2_tlsconflict_test.go:158: REQUEST SNI=abc.example.com Host=abc.example.com path=/helloworld.Greeter/SayHello -> in-process 200 "10.10.0.1" | real TLS 200 "10.10.0.1"   (Gateway GRPCRoute on the conflicting listener)
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: httproute-default-http-app-sibling-gw-default-my-gateway-ep-websecure-0-786db502b3b7f5ee97a0-svc-default-whoami-catchall-0"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: httproute-default-http-app-sibling-gw-default-my-gateway-ep-websecure-0-786db502b3b7f5ee97a0-svc-default-whoami-catchall-0"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+    verify_c1c2_tlsconflict_test.go:158: REQUEST SNI=xyz.example.com Host=xyz.example.com path=/gw                          -> in-process 200 "10.10.2.1" | real TLS 200 "10.10.2.1"   (Gateway HTTPRoute on the sibling listener (no conflict))
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: http://10.99.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: http://10.99.0.1:80"}
+    verify_c1c2_tlsconflict_test.go:158: REQUEST SNI=abc.example.com Host=abc.example.com path=/file                        -> in-process 200 "10.99.0.1" | real TLS 200 "10.99.0.1"   (other provider's router)
+{"level":"debug","entryPointName":"websecure","time":"2026-11-12T17:22:04Z","message":"Waiting 10s seconds before killing connections"}
+{"level":"debug","entryPointName":"websecure","time":"2026-11-12T17:22:04Z","message":"Entrypoint closed"}
+--- PASS: TestVerifyC1C2_NonStrict_OtherProviderSameHost_DefaultTLSOptions (0.02s)
+=== RUN   TestVerifyC1C2_NonStrict_OtherProviderSameHost_CustomTLSOptions
+    verify_c1c2_tlsconflict_test.go:162: PROVIDER(kubernetesgateway) router "grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-c64af9e9295b12ea4016"
+              rule=Host("abc.example.com") && PathRegexp("/helloworld\\.Greeter/SayHello") eps=[websecure] service="grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-c64af9e9295b12ea4016-wrr" parentRefs=[] tls.options=""
+    verify_c1c2_tlsconflict_test.go:162: PROVIDER(kubernetesgateway) router "httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-f135e3391225e82b3b08"
+              rule=Host("abc.example.com") && Path("/gw") eps=[websecure] service="httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-f135e3391225e82b3b08-wrr" parentRefs=[] tls.options=""
+    verify_c1c2_tlsconflict_test.go:162: PROVIDER(kubernetesgateway) router "httproute-default-http-app-sibling-gw-default-my-gateway-ep-websecure-0-786db502b3b7f5ee97a0"
+              rule=Host("xyz.example.com") && Path("/gw") eps=[websecure] service="httproute-default-http-app-sibling-gw-default-my-gateway-ep-websecure-0-786db502b3b7f5ee97a0-wrr" parentRefs=[] tls.options=""
+{"level":"info","time":"2026-11-12T17:22:04Z","message":"Starting provider aggregator *gateway_test.verifyProvider"}
+{"level":"error","time":"2026-11-12T17:22:04Z","message":"On EntryPoint \"websecure\", Host \"abc.example.com\" is served by multiple routers with different TLS options, default TLSOptions will be applied for the following routers: [grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-c64af9e9295b12ea4016@kubernetesgateway httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-f135e3391225e82b3b08@kubernetesgateway other-app@file]"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+    verify_c1c2_tlsconflict_test.go:162: AGG router "httproute-default-http-app-sibling-gw-default-my-gateway-ep-websecure-0-786db502b3b7f5ee97a0@kubernetesgateway"
+              rule=Host("xyz.example.com") && Path("/gw") priority=100016 eps=[websecure] service="httproute-default-http-app-sibling-gw-default-my-gateway-ep-websecure-0-786db502b3b7f5ee97a0-wrr" tls.options="" resolved="default" conflicting=false
+    verify_c1c2_tlsconflict_test.go:162: AGG router "websecure-conflicted-grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-c64af9e9295b12ea4016@kubernetesgateway"
+              rule=Host("abc.example.com") && PathRegexp("/helloworld\\.Greeter/SayHello") priority=59 eps=[websecure] service="grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-c64af9e9295b12ea4016-wrr" tls.options="" resolved="default" conflicting=false
+    verify_c1c2_tlsconflict_test.go:162: AGG router "websecure-conflicted-httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-f135e3391225e82b3b08@kubernetesgateway"
+              rule=Host("abc.example.com") && Path("/gw") priority=100016 eps=[websecure] service="httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-f135e3391225e82b3b08-wrr" tls.options="" resolved="default" conflicting=false
+    verify_c1c2_tlsconflict_test.go:162: AGG router "websecure-conflicted-other-app@file"
+              rule=Host("abc.example.com") && PathPrefix("/file") priority=46 eps=[websecure] service="other-svc" tls.options="modern" resolved="default" conflicting=false
+    verify_c1c2_tlsconflict_test.go:162: REFERENCE-INTEGRITY child ParentRefs after aggregation: resolved=0 dangling=0
+    verify_c1c2_tlsconflict_test.go:162: RUNTIME router "httproute-default-http-app-sibling-gw-default-my-gateway-ep-websecure-0-786db502b3b7f5ee97a0@kubernetesgateway" status=enabled childRefs=[] err=[]
+    verify_c1c2_tlsconflict_test.go:162: RUNTIME router "websecure-conflicted-grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-c64af9e9295b12ea4016@kubernetesgateway" status=enabled childRefs=[] err=[]
+    verify_c1c2_tlsconflict_test.go:162: RUNTIME router "websecure-conflicted-httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-f135e3391225e82b3b08@kubernetesgateway" status=enabled childRefs=[] err=[]
+    verify_c1c2_tlsconflict_test.go:162: RUNTIME router "websecure-conflicted-other-app@file" status=warning childRefs=[] err=[router's TLSOptions configuration is conflicting with other routers on the same entrypoint and host, default TLS options will be used instead]
+    verify_c1c2_tlsconflict_test.go:162: ROUTE-AVAILABILITY child routers disabled by ParseRouterTree: 0
+{"level":"warn","entryPointName":"websecure","time":"2026-11-12T17:22:04Z","message":"aliasHeadersStrategy is not configured: the request headers whose name aliases another header name (e.g. X_Auth_User or X.Auth.User for X-Auth-User) are forwarded as is. The backends deriving variable names from the header names (CGI, WSGI, PHP, NGINX, ...) read them as the header they alias, which allows a client to spoof the headers Traefik manages. Please set it to delete or reject on the entry points fronting such backends."}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-f135e3391225e82b3b08-svc-default-whoami-precise-0"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","entryPointName":"websecure","time":"2026-11-12T17:22:04Z","message":"Starting TCP Server"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-f135e3391225e82b3b08-svc-default-whoami-precise-0"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+    verify_c1c2_tlsconflict_test.go:162: REQUEST SNI=abc.example.com Host=abc.example.com path=/gw                          -> in-process 200 "10.10.1.1" | real TLS 200 "10.10.1.1"   (Gateway HTTPRoute on the conflicting listener)
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-c64af9e9295b12ea4016-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-c64af9e9295b12ea4016-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+    verify_c1c2_tlsconflict_test.go:162: REQUEST SNI=abc.example.com Host=abc.example.com path=/helloworld.Greeter/SayHello -> in-process 200 "10.10.0.1" | real TLS 200 "10.10.0.1"   (Gateway GRPCRoute on the conflicting listener)
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: httproute-default-http-app-sibling-gw-default-my-gateway-ep-websecure-0-786db502b3b7f5ee97a0-svc-default-whoami-catchall-0"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: httproute-default-http-app-sibling-gw-default-my-gateway-ep-websecure-0-786db502b3b7f5ee97a0-svc-default-whoami-catchall-0"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+    verify_c1c2_tlsconflict_test.go:162: REQUEST SNI=xyz.example.com Host=xyz.example.com path=/gw                          -> in-process 200 "10.10.2.1" | real TLS 200 "10.10.2.1"   (Gateway HTTPRoute on the sibling listener (no conflict))
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: http://10.99.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: http://10.99.0.1:80"}
+    verify_c1c2_tlsconflict_test.go:162: REQUEST SNI=abc.example.com Host=abc.example.com path=/file                        -> in-process 200 "10.99.0.1" | real TLS 200 "10.99.0.1"   (other provider's router)
+{"level":"debug","entryPointName":"websecure","time":"2026-11-12T17:22:04Z","message":"Waiting 10s seconds before killing connections"}
+{"level":"debug","entryPointName":"websecure","time":"2026-11-12T17:22:04Z","message":"Entrypoint closed"}
+--- PASS: TestVerifyC1C2_NonStrict_OtherProviderSameHost_CustomTLSOptions (0.06s)
+=== RUN   TestVerifyC1C2_Adjacent_WildcardListener_OtherProviderHostUnderWildcard
+    verify_c1c2_tlsconflict_test.go:168: PROVIDER(kubernetesgateway) router "grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-25a904ca0f0b3d512f60"
+              rule=HostRegexp("^[a-z0-9-\\.]+\\.example\\.com$") && PathRegexp("/helloworld\\.Greeter/SayHello") eps=[websecure] service="grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-25a904ca0f0b3d512f60-wrr" parentRefs=[] tls.options=""
+    verify_c1c2_tlsconflict_test.go:168: PROVIDER(kubernetesgateway) router "httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-126883e860887dac02cc"
+              rule=HostRegexp("^[a-z0-9-\\.]+\\.example\\.com$") && Path("/gw") eps=[websecure] service="httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-126883e860887dac02cc-wrr" parentRefs=[] tls.options=""
+    verify_c1c2_tlsconflict_test.go:168: PROVIDER(kubernetesgateway) router "httproute-default-http-app-sibling-gw-default-my-gateway-ep-websecure-0-786db502b3b7f5ee97a0"
+              rule=Host("xyz.example.com") && Path("/gw") eps=[websecure] service="httproute-default-http-app-sibling-gw-default-my-gateway-ep-websecure-0-786db502b3b7f5ee97a0-wrr" parentRefs=[] tls.options=""
+{"level":"info","time":"2026-11-12T17:22:04Z","message":"Starting provider aggregator *gateway_test.verifyProvider"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Adding certificate for domain(s) *.example.com,example.com,foo.com"}
+    verify_c1c2_tlsconflict_test.go:168: AGG router "grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-25a904ca0f0b3d512f60@kubernetesgateway"
+              rule=HostRegexp("^[a-z0-9-\\.]+\\.example\\.com$") && PathRegexp("/helloworld\\.Greeter/SayHello") priority=57 eps=[websecure] service="grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-25a904ca0f0b3d512f60-wrr" tls.options="" resolved="default" conflicting=false
+    verify_c1c2_tlsconflict_test.go:168: AGG router "httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-126883e860887dac02cc@kubernetesgateway"
+              rule=HostRegexp("^[a-z0-9-\\.]+\\.example\\.com$") && Path("/gw") priority=100014 eps=[websecure] service="httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-126883e860887dac02cc-wrr" tls.options="" resolved="default" conflicting=false
+    verify_c1c2_tlsconflict_test.go:168: AGG router "httproute-default-http-app-sibling-gw-default-my-gateway-ep-websecure-0-786db502b3b7f5ee97a0@kubernetesgateway"
+              rule=Host("xyz.example.com") && Path("/gw") priority=100016 eps=[websecure] service="httproute-default-http-app-sibling-gw-default-my-gateway-ep-websecure-0-786db502b3b7f5ee97a0-wrr" tls.options="" resolved="default" conflicting=false
+    verify_c1c2_tlsconflict_test.go:168: AGG router "other-app@file"
+              rule=Host("abc.example.com") && PathPrefix("/file") priority=46 eps=[websecure] service="other-svc" tls.options="" resolved="default" conflicting=false
+    verify_c1c2_tlsconflict_test.go:168: REFERENCE-INTEGRITY child ParentRefs after aggregation: resolved=0 dangling=0
+    verify_c1c2_tlsconflict_test.go:168: RUNTIME router "grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-25a904ca0f0b3d512f60@kubernetesgateway" status=enabled childRefs=[] err=[]
+    verify_c1c2_tlsconflict_test.go:168: RUNTIME router "httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-126883e860887dac02cc@kubernetesgateway" status=enabled childRefs=[] err=[]
+    verify_c1c2_tlsconflict_test.go:168: RUNTIME router "httproute-default-http-app-sibling-gw-default-my-gateway-ep-websecure-0-786db502b3b7f5ee97a0@kubernetesgateway" status=enabled childRefs=[] err=[]
+    verify_c1c2_tlsconflict_test.go:168: RUNTIME router "other-app@file" status=enabled childRefs=[] err=[]
+    verify_c1c2_tlsconflict_test.go:168: ROUTE-AVAILABILITY child routers disabled by ParseRouterTree: 0
+{"level":"warn","entryPointName":"websecure","time":"2026-11-12T17:22:04Z","message":"aliasHeadersStrategy is not configured: the request headers whose name aliases another header name (e.g. X_Auth_User or X.Auth.User for X-Auth-User) are forwarded as is. The backends deriving variable names from the header names (CGI, WSGI, PHP, NGINX, ...) read them as the header they alias, which allows a client to spoof the headers Traefik manages. Please set it to delete or reject on the entry points fronting such backends."}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-126883e860887dac02cc-svc-default-whoami-precise-0"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","entryPointName":"websecure","time":"2026-11-12T17:22:04Z","message":"Starting TCP Server"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-126883e860887dac02cc-svc-default-whoami-precise-0"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+    verify_c1c2_tlsconflict_test.go:168: REQUEST SNI=abc.example.com Host=abc.example.com path=/gw                          -> in-process 200 "10.10.1.1" | real TLS 200 "10.10.1.1"   (Gateway HTTPRoute on the conflicting listener)
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-25a904ca0f0b3d512f60-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-25a904ca0f0b3d512f60-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: h2c://10.10.0.1:80"}
+    verify_c1c2_tlsconflict_test.go:168: REQUEST SNI=abc.example.com Host=abc.example.com path=/helloworld.Greeter/SayHello -> in-process 200 "10.10.0.1" | real TLS 200 "10.10.0.1"   (Gateway GRPCRoute on the conflicting listener)
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: httproute-default-http-app-sibling-gw-default-my-gateway-ep-websecure-0-786db502b3b7f5ee97a0-svc-default-whoami-catchall-0"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: httproute-default-http-app-sibling-gw-default-my-gateway-ep-websecure-0-786db502b3b7f5ee97a0-svc-default-whoami-catchall-0"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+    verify_c1c2_tlsconflict_test.go:168: REQUEST SNI=xyz.example.com Host=xyz.example.com path=/gw                          -> in-process 200 "10.10.2.1" | real TLS 200 "10.10.2.1"   (Gateway HTTPRoute on the sibling listener (no conflict))
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: http://10.99.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:22:04Z","message":"Service selected by WRR: http://10.99.0.1:80"}
+    verify_c1c2_tlsconflict_test.go:168: REQUEST SNI=abc.example.com Host=abc.example.com path=/file                        -> in-process 200 "10.99.0.1" | real TLS 200 "10.99.0.1"   (other provider's router)
+{"level":"debug","entryPointName":"websecure","time":"2026-11-12T17:22:04Z","message":"Waiting 10s seconds before killing connections"}
+{"level":"debug","entryPointName":"websecure","time":"2026-11-12T17:22:04Z","message":"Entrypoint closed"}
+--- PASS: TestVerifyC1C2_Adjacent_WildcardListener_OtherProviderHostUnderWildcard (0.05s)
+=== RUN   TestVerifyC1C2_Scope_OtherProviderReusesListenerTLSOptions
+    verify_c1c2_tlsconflict_test.go:173: PROVIDER(kubernetesgateway) router "grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-c64af9e9295b12ea4016"
+              rule=Host("abc.example.com") && PathRegexp("/helloworld\\.Greeter/SayHello") eps=[websecure] service="grpcroute-default-grpc-app-precise-gw-default-my-gateway-ep-websecure-0-c64af9e9295b12ea4016-wrr" parentRefs=[] tls.options=""
+    verify_c1c2_tlsconflict_test.go:173: PROVIDER(kubernetesgateway) router "httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-f135e3391225e82b3b08"
+              rule=Host("abc.example.com") && Path("/gw") eps=[websecure] service="httproute-default-http-app-precise-gw-default-my-gateway-ep-websecure-0-f135e3391225e82b3b08-wrr" parentRefs=[] tls.options=""
+    verify_c1c2_tlsconflict_test.go:173: PROVIDER(kubernetesgateway) router "httproute-default-http-app-sibling-gw-default-my-gateway-ep-websecure-0-786db502b3b7f5ee97a0"
+              rule=Host("xyz.example.com") && Path("/gw") eps=[websecure] service="httproute-default-http-app-sibling-gw-default-my-gateway-ep-websecure-0-786db502b3b7f5ee97a0-wrr" parentRefs=[] tls.options=""
+    verify_c1c2_tlsconflict_test.go:181: this revision generates no per-listener TLS options
+--- SKIP: TestVerifyC1C2_Scope_OtherProviderReusesListenerTLSOptions (0.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/gateway	0.399s

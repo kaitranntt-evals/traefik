@@ -1,0 +1,184 @@
+=== RUN   TestVerifyC3_ThreeListenersNoCatchAll
+    verify_c3_misdirected_test.go:115: PROVIDER router "gateway-default-my-gateway-listener-exact-misdirected"
+              rule=Host("abc.foo.example.com") && (!HostSNI("abc.foo.example.com") && (HostSNI("**.example.com") || HostSNI("**.foo.example.com")))
+              priority=2147483647 service="gateway-default-my-gateway-listener-exact-misdirected-wrr" parentRefs=[] tls.options=""
+    verify_c3_misdirected_test.go:115: PROVIDER router "gateway-default-my-gateway-listener-foo-misdirected"
+              rule=Host("**.foo.example.com") && !Host("abc.foo.example.com") && (HostSNI("abc.foo.example.com") || (!HostSNI("**.foo.example.com") && (HostSNI("**.example.com"))))
+              priority=2147483647 service="gateway-default-my-gateway-listener-foo-misdirected-wrr" parentRefs=[] tls.options=""
+    verify_c3_misdirected_test.go:115: PROVIDER router "gateway-default-my-gateway-listener-wild-misdirected"
+              rule=Host("**.example.com") && !Host("**.foo.example.com") && !Host("abc.foo.example.com") && (HostSNI("**.foo.example.com") || HostSNI("abc.foo.example.com"))
+              priority=2147483647 service="gateway-default-my-gateway-listener-wild-misdirected-wrr" parentRefs=[] tls.options=""
+    verify_c3_misdirected_test.go:115: PROVIDER router "httproute-default-route-exact-gw-default-my-gateway-ep-websecure-0-3891e3b40eb56b7ac2d7"
+              rule=Host("abc.foo.example.com") && Path("/exact")
+              priority=100020 service="httproute-default-route-exact-gw-default-my-gateway-ep-websecure-0-3891e3b40eb56b7ac2d7-wrr" parentRefs=[] tls.options=""
+    verify_c3_misdirected_test.go:115: PROVIDER router "httproute-default-route-foo-gw-default-my-gateway-ep-websecure-0-7ccc044068c0c6ada3b1"
+              rule=Host("**.foo.example.com") && Path("/foo") && !Host("abc.foo.example.com")
+              priority=100018 service="httproute-default-route-foo-gw-default-my-gateway-ep-websecure-0-7ccc044068c0c6ada3b1-wrr" parentRefs=[] tls.options=""
+    verify_c3_misdirected_test.go:115: PROVIDER router "httproute-default-route-wild-gw-default-my-gateway-ep-websecure-0-cc1c32ba9eb921251f14"
+              rule=Host("**.example.com") && Path("/wild") && !Host("**.foo.example.com") && !Host("abc.foo.example.com")
+              priority=100014 service="httproute-default-route-wild-gw-default-my-gateway-ep-websecure-0-cc1c32ba9eb921251f14-wrr" parentRefs=[] tls.options=""
+{"level":"info","time":"2026-11-12T17:22:28Z","message":"Starting provider aggregator *gateway_test.verifyProvider"}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Adding certificate for domain(s) *.example.com,*.foo.example.com,abc.foo.example.com,example.com"}
+{"level":"warn","entryPointName":"websecure","time":"2026-11-12T17:22:28Z","message":"aliasHeadersStrategy is not configured: the request headers whose name aliases another header name (e.g. X_Auth_User or X.Auth.User for X-Auth-User) are forwarded as is. The backends deriving variable names from the header names (CGI, WSGI, PHP, NGINX, ...) read them as the header they alias, which allows a client to spoof the headers Traefik manages. Please set it to delete or reject on the entry points fronting such backends."}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: httproute-default-route-exact-gw-default-my-gateway-ep-websecure-0-3891e3b40eb56b7ac2d7-svc-default-whoami-precise-0"}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","entryPointName":"websecure","time":"2026-11-12T17:22:28Z","message":"Starting TCP Server"}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: httproute-default-route-exact-gw-default-my-gateway-ep-websecure-0-3891e3b40eb56b7ac2d7-svc-default-whoami-precise-0"}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+    verify_c3_misdirected_test.go:115: REQUEST SNI=abc.foo.example.com    Host=abc.foo.example.com    path=/exact  -> in-process 200 "10.10.1.1" | real TLS 200 "10.10.1.1"   (CLAIM: SNI == Host == exact listener hostname; spec-expected 200)
+    verify_c3_misdirected_test.go:115: REQUEST SNI=abc.foo.example.com    Host=abc.foo.example.com    path=/nope   -> in-process 404 "404 page not found\n" | real TLS 404 "404 page not found"   (same listener, unmatched path; spec-expected 404)
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: httproute-default-route-foo-gw-default-my-gateway-ep-websecure-0-7ccc044068c0c6ada3b1-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: httproute-default-route-foo-gw-default-my-gateway-ep-websecure-0-7ccc044068c0c6ada3b1-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+    verify_c3_misdirected_test.go:115: REQUEST SNI=xyz.foo.example.com    Host=xyz.foo.example.com    path=/foo    -> in-process 200 "10.10.0.1" | real TLS 200 "10.10.0.1"   (SNI == Host on *.foo.example.com listener; spec-expected 200)
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: httproute-default-route-wild-gw-default-my-gateway-ep-websecure-0-cc1c32ba9eb921251f14-svc-default-whoami-catchall-0"}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: httproute-default-route-wild-gw-default-my-gateway-ep-websecure-0-cc1c32ba9eb921251f14-svc-default-whoami-catchall-0"}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+    verify_c3_misdirected_test.go:115: REQUEST SNI=xyz.example.com        Host=xyz.example.com        path=/wild   -> in-process 200 "10.10.2.1" | real TLS 200 "10.10.2.1"   (SNI == Host on *.example.com listener; spec-expected 200)
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: misdirected-request"}
+    verify_c3_misdirected_test.go:115: REQUEST SNI=xyz.example.com        Host=abc.foo.example.com    path=/exact  -> in-process 421 "" | real TLS 421 ""   (crossed: SNI wild listener, Host exact listener; spec-expected 421)
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: misdirected-request"}
+    verify_c3_misdirected_test.go:115: REQUEST SNI=abc.foo.example.com    Host=xyz.example.com        path=/wild   -> in-process 421 "" | real TLS 421 ""   (crossed: SNI exact listener, Host wild listener; spec-expected 421)
+{"level":"debug","entryPointName":"websecure","time":"2026-11-12T17:22:28Z","message":"Waiting 10s seconds before killing connections"}
+{"level":"debug","entryPointName":"websecure","time":"2026-11-12T17:22:28Z","message":"Entrypoint closed"}
+--- PASS: TestVerifyC3_ThreeListenersNoCatchAll (0.09s)
+=== RUN   TestVerifyC3_ThreeListenersNoCatchAll_DedicatedTLSOptions
+    verify_c3_misdirected_test.go:131: PROVIDER router "gateway-default-my-gateway-listener-exact-misdirected"
+              rule=Host("abc.foo.example.com") && (!HostSNI("abc.foo.example.com") && (HostSNI("**.example.com") || HostSNI("**.foo.example.com")))
+              priority=2147483647 service="gateway-default-my-gateway-listener-exact-misdirected-wrr" parentRefs=[] tls.options="dedicated-abc-foo-example-com"
+    verify_c3_misdirected_test.go:131: PROVIDER router "gateway-default-my-gateway-listener-foo-misdirected"
+              rule=Host("**.foo.example.com") && !Host("abc.foo.example.com") && (HostSNI("abc.foo.example.com") || (!HostSNI("**.foo.example.com") && (HostSNI("**.example.com"))))
+              priority=2147483647 service="gateway-default-my-gateway-listener-foo-misdirected-wrr" parentRefs=[] tls.options="dedicated-wildcardwildcard-foo-example-com"
+    verify_c3_misdirected_test.go:131: PROVIDER router "gateway-default-my-gateway-listener-wild-misdirected"
+              rule=Host("**.example.com") && !Host("**.foo.example.com") && !Host("abc.foo.example.com") && (HostSNI("**.foo.example.com") || HostSNI("abc.foo.example.com"))
+              priority=2147483647 service="gateway-default-my-gateway-listener-wild-misdirected-wrr" parentRefs=[] tls.options="dedicated-wildcardwildcard-example-com"
+    verify_c3_misdirected_test.go:131: PROVIDER router "httproute-default-route-exact-gw-default-my-gateway-ep-websecure-0-3891e3b40eb56b7ac2d7"
+              rule=Host("abc.foo.example.com") && Path("/exact")
+              priority=100020 service="httproute-default-route-exact-gw-default-my-gateway-ep-websecure-0-3891e3b40eb56b7ac2d7-wrr" parentRefs=[] tls.options="dedicated-abc-foo-example-com"
+    verify_c3_misdirected_test.go:131: PROVIDER router "httproute-default-route-foo-gw-default-my-gateway-ep-websecure-0-7ccc044068c0c6ada3b1"
+              rule=Host("**.foo.example.com") && Path("/foo") && !Host("abc.foo.example.com")
+              priority=100018 service="httproute-default-route-foo-gw-default-my-gateway-ep-websecure-0-7ccc044068c0c6ada3b1-wrr" parentRefs=[] tls.options="dedicated-wildcardwildcard-foo-example-com"
+    verify_c3_misdirected_test.go:131: PROVIDER router "httproute-default-route-wild-gw-default-my-gateway-ep-websecure-0-cc1c32ba9eb921251f14"
+              rule=Host("**.example.com") && Path("/wild") && !Host("**.foo.example.com") && !Host("abc.foo.example.com")
+              priority=100014 service="httproute-default-route-wild-gw-default-my-gateway-ep-websecure-0-cc1c32ba9eb921251f14-wrr" parentRefs=[] tls.options="dedicated-wildcardwildcard-example-com"
+    verify_c3_misdirected_test.go:131: PROVIDER tls.options "dedicated-wildcardwildcard-example-com"
+    verify_c3_misdirected_test.go:131: PROVIDER tls.options "dedicated-wildcardwildcard-foo-example-com"
+    verify_c3_misdirected_test.go:131: PROVIDER tls.options "dedicated-abc-foo-example-com"
+{"level":"info","time":"2026-11-12T17:22:28Z","message":"Starting provider aggregator *gateway_test.verifyProvider"}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Adding certificate for domain(s) *.example.com,*.foo.example.com,abc.foo.example.com,example.com"}
+{"level":"warn","entryPointName":"websecure","time":"2026-11-12T17:22:28Z","message":"aliasHeadersStrategy is not configured: the request headers whose name aliases another header name (e.g. X_Auth_User or X.Auth.User for X-Auth-User) are forwarded as is. The backends deriving variable names from the header names (CGI, WSGI, PHP, NGINX, ...) read them as the header they alias, which allows a client to spoof the headers Traefik manages. Please set it to delete or reject on the entry points fronting such backends."}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: httproute-default-route-exact-gw-default-my-gateway-ep-websecure-0-3891e3b40eb56b7ac2d7-svc-default-whoami-precise-0"}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","entryPointName":"websecure","time":"2026-11-12T17:22:28Z","message":"Starting TCP Server"}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: httproute-default-route-exact-gw-default-my-gateway-ep-websecure-0-3891e3b40eb56b7ac2d7-svc-default-whoami-precise-0"}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+    verify_c3_misdirected_test.go:131: REQUEST SNI=abc.foo.example.com    Host=abc.foo.example.com    path=/exact  -> in-process 200 "10.10.1.1" | real TLS 200 "10.10.1.1"   (CLAIM: SNI == Host == exact listener hostname; spec-expected 200)
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: httproute-default-route-foo-gw-default-my-gateway-ep-websecure-0-7ccc044068c0c6ada3b1-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: httproute-default-route-foo-gw-default-my-gateway-ep-websecure-0-7ccc044068c0c6ada3b1-svc-default-whoami-0"}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: http://10.10.0.1:80"}
+    verify_c3_misdirected_test.go:131: REQUEST SNI=xyz.foo.example.com    Host=xyz.foo.example.com    path=/foo    -> in-process 200 "10.10.0.1" | real TLS 200 "10.10.0.1"   (SNI == Host on *.foo.example.com listener; spec-expected 200)
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: httproute-default-route-wild-gw-default-my-gateway-ep-websecure-0-cc1c32ba9eb921251f14-svc-default-whoami-catchall-0"}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: httproute-default-route-wild-gw-default-my-gateway-ep-websecure-0-cc1c32ba9eb921251f14-svc-default-whoami-catchall-0"}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: http://10.10.2.1:80"}
+    verify_c3_misdirected_test.go:131: REQUEST SNI=xyz.example.com        Host=xyz.example.com        path=/wild   -> in-process 200 "10.10.2.1" | real TLS 200 "10.10.2.1"   (SNI == Host on *.example.com listener; spec-expected 200)
+{"level":"debug","entryPointName":"websecure","time":"2026-11-12T17:22:28Z","message":"Waiting 10s seconds before killing connections"}
+{"level":"debug","entryPointName":"websecure","time":"2026-11-12T17:22:28Z","message":"Entrypoint closed"}
+--- PASS: TestVerifyC3_ThreeListenersNoCatchAll_DedicatedTLSOptions (0.04s)
+=== RUN   TestVerifyC3_Control_TwoListeners_FooWildcard
+    verify_c3_misdirected_test.go:143: PROVIDER router "gateway-default-my-gateway-listener-exact-misdirected"
+              rule=Host("abc.foo.example.com") && (!HostSNI("abc.foo.example.com") && (HostSNI("**.foo.example.com")))
+              priority=2147483647 service="gateway-default-my-gateway-listener-exact-misdirected-wrr" parentRefs=[] tls.options=""
+    verify_c3_misdirected_test.go:143: PROVIDER router "gateway-default-my-gateway-listener-foo-misdirected"
+              rule=Host("**.foo.example.com") && !Host("abc.foo.example.com") && HostSNI("abc.foo.example.com")
+              priority=2147483647 service="gateway-default-my-gateway-listener-foo-misdirected-wrr" parentRefs=[] tls.options=""
+    verify_c3_misdirected_test.go:143: PROVIDER router "httproute-default-route-exact-gw-default-my-gateway-ep-websecure-0-3891e3b40eb56b7ac2d7"
+              rule=Host("abc.foo.example.com") && Path("/exact")
+              priority=100020 service="httproute-default-route-exact-gw-default-my-gateway-ep-websecure-0-3891e3b40eb56b7ac2d7-wrr" parentRefs=[] tls.options=""
+    verify_c3_misdirected_test.go:143: PROVIDER router "httproute-default-route-foo-gw-default-my-gateway-ep-websecure-0-7ccc044068c0c6ada3b1"
+              rule=Host("**.foo.example.com") && Path("/foo") && !Host("abc.foo.example.com")
+              priority=100018 service="httproute-default-route-foo-gw-default-my-gateway-ep-websecure-0-7ccc044068c0c6ada3b1-wrr" parentRefs=[] tls.options=""
+{"level":"info","time":"2026-11-12T17:22:28Z","message":"Starting provider aggregator *gateway_test.verifyProvider"}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Adding certificate for domain(s) *.example.com,*.foo.example.com,abc.foo.example.com,example.com"}
+{"level":"warn","entryPointName":"websecure","time":"2026-11-12T17:22:28Z","message":"aliasHeadersStrategy is not configured: the request headers whose name aliases another header name (e.g. X_Auth_User or X.Auth.User for X-Auth-User) are forwarded as is. The backends deriving variable names from the header names (CGI, WSGI, PHP, NGINX, ...) read them as the header they alias, which allows a client to spoof the headers Traefik manages. Please set it to delete or reject on the entry points fronting such backends."}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: httproute-default-route-exact-gw-default-my-gateway-ep-websecure-0-3891e3b40eb56b7ac2d7-svc-default-whoami-precise-0"}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","entryPointName":"websecure","time":"2026-11-12T17:22:28Z","message":"Starting TCP Server"}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: httproute-default-route-exact-gw-default-my-gateway-ep-websecure-0-3891e3b40eb56b7ac2d7-svc-default-whoami-precise-0"}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+    verify_c3_misdirected_test.go:143: REQUEST SNI=abc.foo.example.com    Host=abc.foo.example.com    path=/exact  -> in-process 200 "10.10.1.1" | real TLS 200 "10.10.1.1"   (SNI == Host == exact listener hostname; spec-expected 200)
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: misdirected-request"}
+    verify_c3_misdirected_test.go:143: REQUEST SNI=xyz.foo.example.com    Host=abc.foo.example.com    path=/exact  -> in-process 421 "" | real TLS 421 ""   (crossed; spec-expected 421)
+{"level":"debug","entryPointName":"websecure","time":"2026-11-12T17:22:28Z","message":"Waiting 10s seconds before killing connections"}
+{"level":"debug","entryPointName":"websecure","time":"2026-11-12T17:22:28Z","message":"Entrypoint closed"}
+--- PASS: TestVerifyC3_Control_TwoListeners_FooWildcard (0.08s)
+=== RUN   TestVerifyC3_Control_TwoListeners_OuterWildcard
+    verify_c3_misdirected_test.go:155: PROVIDER router "gateway-default-my-gateway-listener-exact-misdirected"
+              rule=Host("abc.foo.example.com") && (!HostSNI("abc.foo.example.com") && (HostSNI("**.example.com")))
+              priority=2147483647 service="gateway-default-my-gateway-listener-exact-misdirected-wrr" parentRefs=[] tls.options=""
+    verify_c3_misdirected_test.go:155: PROVIDER router "gateway-default-my-gateway-listener-wild-misdirected"
+              rule=Host("**.example.com") && !Host("abc.foo.example.com") && HostSNI("abc.foo.example.com")
+              priority=2147483647 service="gateway-default-my-gateway-listener-wild-misdirected-wrr" parentRefs=[] tls.options=""
+    verify_c3_misdirected_test.go:155: PROVIDER router "httproute-default-route-exact-gw-default-my-gateway-ep-websecure-0-3891e3b40eb56b7ac2d7"
+              rule=Host("abc.foo.example.com") && Path("/exact")
+              priority=100020 service="httproute-default-route-exact-gw-default-my-gateway-ep-websecure-0-3891e3b40eb56b7ac2d7-wrr" parentRefs=[] tls.options=""
+    verify_c3_misdirected_test.go:155: PROVIDER router "httproute-default-route-wild-gw-default-my-gateway-ep-websecure-0-c1cdd148ce3b7605c894"
+              rule=Host("**.example.com") && Path("/wild") && !Host("abc.foo.example.com")
+              priority=100014 service="httproute-default-route-wild-gw-default-my-gateway-ep-websecure-0-c1cdd148ce3b7605c894-wrr" parentRefs=[] tls.options=""
+{"level":"info","time":"2026-11-12T17:22:28Z","message":"Starting provider aggregator *gateway_test.verifyProvider"}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Adding certificate for domain(s) *.example.com,*.foo.example.com,abc.foo.example.com,example.com"}
+{"level":"warn","entryPointName":"websecure","time":"2026-11-12T17:22:28Z","message":"aliasHeadersStrategy is not configured: the request headers whose name aliases another header name (e.g. X_Auth_User or X.Auth.User for X-Auth-User) are forwarded as is. The backends deriving variable names from the header names (CGI, WSGI, PHP, NGINX, ...) read them as the header they alias, which allows a client to spoof the headers Traefik manages. Please set it to delete or reject on the entry points fronting such backends."}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: httproute-default-route-exact-gw-default-my-gateway-ep-websecure-0-3891e3b40eb56b7ac2d7-svc-default-whoami-precise-0"}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","entryPointName":"websecure","time":"2026-11-12T17:22:28Z","message":"Starting TCP Server"}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: httproute-default-route-exact-gw-default-my-gateway-ep-websecure-0-3891e3b40eb56b7ac2d7-svc-default-whoami-precise-0"}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+    verify_c3_misdirected_test.go:155: REQUEST SNI=abc.foo.example.com    Host=abc.foo.example.com    path=/exact  -> in-process 200 "10.10.1.1" | real TLS 200 "10.10.1.1"   (SNI == Host == exact listener hostname; spec-expected 200)
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: misdirected-request"}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: misdirected-request"}
+    verify_c3_misdirected_test.go:155: REQUEST SNI=xyz.example.com        Host=abc.foo.example.com    path=/exact  -> in-process 421 "" | real TLS 421 ""   (crossed; spec-expected 421)
+{"level":"debug","entryPointName":"websecure","time":"2026-11-12T17:22:28Z","message":"Waiting 10s seconds before killing connections"}
+{"level":"debug","entryPointName":"websecure","time":"2026-11-12T17:22:28Z","message":"Entrypoint closed"}
+--- PASS: TestVerifyC3_Control_TwoListeners_OuterWildcard (0.08s)
+=== RUN   TestVerifyC3_Control_ThreeListenersPlusCatchAll
+    verify_c3_misdirected_test.go:166: PROVIDER router "gateway-default-my-gateway-listener-all-misdirected"
+              rule=!Host("**.example.com") && !Host("**.foo.example.com") && !Host("abc.foo.example.com") && (HostSNI("**.example.com") || HostSNI("**.foo.example.com") || HostSNI("abc.foo.example.com"))
+              priority=2147483647 service="gateway-default-my-gateway-listener-all-misdirected-wrr" parentRefs=[] tls.options=""
+    verify_c3_misdirected_test.go:166: PROVIDER router "gateway-default-my-gateway-listener-exact-misdirected"
+              rule=Host("abc.foo.example.com") && (!HostSNI("abc.foo.example.com") && (HostSNIRegexp("^.+$")))
+              priority=2147483647 service="gateway-default-my-gateway-listener-exact-misdirected-wrr" parentRefs=[] tls.options=""
+    verify_c3_misdirected_test.go:166: PROVIDER router "gateway-default-my-gateway-listener-foo-misdirected"
+              rule=Host("**.foo.example.com") && !Host("abc.foo.example.com") && (HostSNI("abc.foo.example.com") || (!HostSNI("**.foo.example.com") && (HostSNIRegexp("^.+$"))))
+              priority=2147483647 service="gateway-default-my-gateway-listener-foo-misdirected-wrr" parentRefs=[] tls.options=""
+    verify_c3_misdirected_test.go:166: PROVIDER router "gateway-default-my-gateway-listener-wild-misdirected"
+              rule=Host("**.example.com") && !Host("**.foo.example.com") && !Host("abc.foo.example.com") && (HostSNI("**.foo.example.com") || HostSNI("abc.foo.example.com") || (!HostSNI("**.example.com") && (HostSNIRegexp("^.+$"))))
+              priority=2147483647 service="gateway-default-my-gateway-listener-wild-misdirected-wrr" parentRefs=[] tls.options=""
+    verify_c3_misdirected_test.go:166: PROVIDER router "httproute-default-route-exact-gw-default-my-gateway-ep-websecure-0-3891e3b40eb56b7ac2d7"
+              rule=Host("abc.foo.example.com") && Path("/exact")
+              priority=100020 service="httproute-default-route-exact-gw-default-my-gateway-ep-websecure-0-3891e3b40eb56b7ac2d7-wrr" parentRefs=[] tls.options=""
+    verify_c3_misdirected_test.go:166: PROVIDER router "httproute-default-route-foo-gw-default-my-gateway-ep-websecure-0-7ccc044068c0c6ada3b1"
+              rule=Host("**.foo.example.com") && Path("/foo") && !Host("abc.foo.example.com")
+              priority=100018 service="httproute-default-route-foo-gw-default-my-gateway-ep-websecure-0-7ccc044068c0c6ada3b1-wrr" parentRefs=[] tls.options=""
+    verify_c3_misdirected_test.go:166: PROVIDER router "httproute-default-route-wild-gw-default-my-gateway-ep-websecure-0-cc1c32ba9eb921251f14"
+              rule=Host("**.example.com") && Path("/wild") && !Host("**.foo.example.com") && !Host("abc.foo.example.com")
+              priority=100014 service="httproute-default-route-wild-gw-default-my-gateway-ep-websecure-0-cc1c32ba9eb921251f14-wrr" parentRefs=[] tls.options=""
+{"level":"info","time":"2026-11-12T17:22:28Z","message":"Starting provider aggregator *gateway_test.verifyProvider"}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Adding certificate for domain(s) *.example.com,*.foo.example.com,abc.foo.example.com,example.com"}
+{"level":"warn","entryPointName":"websecure","time":"2026-11-12T17:22:28Z","message":"aliasHeadersStrategy is not configured: the request headers whose name aliases another header name (e.g. X_Auth_User or X.Auth.User for X-Auth-User) are forwarded as is. The backends deriving variable names from the header names (CGI, WSGI, PHP, NGINX, ...) read them as the header they alias, which allows a client to spoof the headers Traefik manages. Please set it to delete or reject on the entry points fronting such backends."}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: httproute-default-route-exact-gw-default-my-gateway-ep-websecure-0-3891e3b40eb56b7ac2d7-svc-default-whoami-precise-0"}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+{"level":"debug","entryPointName":"websecure","time":"2026-11-12T17:22:28Z","message":"Starting TCP Server"}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: httproute-default-route-exact-gw-default-my-gateway-ep-websecure-0-3891e3b40eb56b7ac2d7-svc-default-whoami-precise-0"}
+{"level":"debug","time":"2026-11-12T17:22:28Z","message":"Service selected by WRR: http://10.10.1.1:80"}
+    verify_c3_misdirected_test.go:166: REQUEST SNI=abc.foo.example.com    Host=abc.foo.example.com    path=/exact  -> in-process 200 "10.10.1.1" | real TLS 200 "10.10.1.1"   (SNI == Host == exact listener hostname; spec-expected 200)
+{"level":"debug","entryPointName":"websecure","time":"2026-11-12T17:22:28Z","message":"Waiting 10s seconds before killing connections"}
+{"level":"debug","entryPointName":"websecure","time":"2026-11-12T17:22:28Z","message":"Entrypoint closed"}
+--- PASS: TestVerifyC3_Control_ThreeListenersPlusCatchAll (0.02s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/gateway	0.349s

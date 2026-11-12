@@ -1,0 +1,41 @@
+diff --git a/pkg/server/aggregator.go b/pkg/server/aggregator.go
+index 357bb1f02..0838364ee 100644
+--- a/pkg/server/aggregator.go
++++ b/pkg/server/aggregator.go
+@@ -226,6 +226,7 @@ func resolveHTTPTLSOptions(routers map[string]*dynamic.Router, strictTLSOptions
+ 		conflictingRouters[ep] = findConflictingRouters(ep, epRouters, strictTLSOptions)
+ 	}
+ 
++	renamed := map[string][]string{}
+ 	for name, router := range routers {
+ 		router.EntryPoints = slices.DeleteFunc(router.EntryPoints, func(ep string) bool {
+ 			deleted := slices.Contains(conflictingRouters[ep], name)
+@@ -240,6 +241,7 @@ func resolveHTTPTLSOptions(routers map[string]*dynamic.Router, strictTLSOptions
+ 				// The new name is not collision free but has very small possibility to collide.
+ 				// TODO: rework this naming whenever we'll introduce a resource reference mechanism not based on a string.
+ 				newRouters[ep+"-conflicted-"+name] = rt
++				renamed[name] = append(renamed[name], ep+"-conflicted-"+name)
+ 			}
+ 
+ 			return deleted
+@@ -250,6 +252,20 @@ func resolveHTTPTLSOptions(routers map[string]*dynamic.Router, strictTLSOptions
+ 		}
+ 	}
+ 
++	for _, router := range newRouters {
++		var parentRefs []string
++		for _, ref := range router.ParentRefs {
++			names, ok := renamed[ref]
++			if _, exists := newRouters[ref]; exists || !ok {
++				parentRefs = append(parentRefs, ref)
++			}
++			parentRefs = append(parentRefs, names...)
++		}
++		if router.ParentRefs != nil {
++			router.ParentRefs = parentRefs
++		}
++	}
++
+ 	return newRouters
+ }
+ 
