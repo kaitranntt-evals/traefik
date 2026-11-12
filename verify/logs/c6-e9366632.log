@@ -1,0 +1,26 @@
+### branch HEAD: 49ebf053d3e6e8819d11983d0a390dde01285ee6
+$ go test -tags verify -count=1 -v -run '^TestVerify_C6' ./pkg/middlewares/auth
+    verify_c6_usersfile_probe_test.go:54: RESULT basic: one malformed entry, NO trailing newline: file content "malformedentry_verify_hash" -> error "error parsing BasicUser: invalid user entry file <file>" | names file = true | position numbers outside the path = []
+    verify_c6_usersfile_probe_test.go:59: 
+        	Error Trace:	/home/ubuntu/wt/e9366632/pkg/middlewares/auth/verify_c6_usersfile_probe_test.go:59
+        	Error:      	Should NOT be empty, but was []
+        	Test:       	TestVerify_C6_SingleEntryUsersFileNoTrailingNewline/basic:_one_malformed_entry,_NO_trailing_newline
+        	Messages:   	the diagnostic must identify the entry position
+    verify_c6_usersfile_probe_test.go:54: RESULT digest: one malformed entry, NO trailing newline: file content "malformedentry:verify_hash" -> error "error parsing DigestUser: invalid user entry file <file>" | names file = true | position numbers outside the path = []
+    verify_c6_usersfile_probe_test.go:59: 
+        	Error Trace:	/home/ubuntu/wt/e9366632/pkg/middlewares/auth/verify_c6_usersfile_probe_test.go:59
+        	Error:      	Should NOT be empty, but was []
+        	Test:       	TestVerify_C6_SingleEntryUsersFileNoTrailingNewline/digest:_one_malformed_entry,_NO_trailing_newline
+        	Messages:   	the diagnostic must identify the entry position
+    verify_c6_usersfile_probe_test.go:54: RESULT control basic: one malformed entry WITH trailing newline: file content "malformedentry_verify_hash\n" -> error "error parsing BasicUser: invalid user entry at line 1 of file <file>" | names file = true | position numbers outside the path = [1]
+    verify_c6_usersfile_probe_test.go:54: RESULT control digest: one malformed entry WITH trailing newline: file content "malformedentry:verify_hash\n" -> error "error parsing DigestUser: invalid user entry at line 1 of file <file>" | names file = true | position numbers outside the path = [1]
+    verify_c6_usersfile_probe_test.go:54: RESULT control basic: valid entry then malformed entry, no trailing newline: file content "alice:hashalpha\nmalformedentry_verify_hash" -> error "error parsing BasicUser: invalid user entry at line 2 of file <file>" | names file = true | position numbers outside the path = [2]
+--- FAIL: TestVerify_C6_SingleEntryUsersFileNoTrailingNewline (0.00s)
+    --- FAIL: TestVerify_C6_SingleEntryUsersFileNoTrailingNewline/basic:_one_malformed_entry,_NO_trailing_newline (0.00s)
+    --- FAIL: TestVerify_C6_SingleEntryUsersFileNoTrailingNewline/digest:_one_malformed_entry,_NO_trailing_newline (0.00s)
+    --- PASS: TestVerify_C6_SingleEntryUsersFileNoTrailingNewline/control_basic:_one_malformed_entry_WITH_trailing_newline (0.00s)
+    --- PASS: TestVerify_C6_SingleEntryUsersFileNoTrailingNewline/control_digest:_one_malformed_entry_WITH_trailing_newline (0.00s)
+    --- PASS: TestVerify_C6_SingleEntryUsersFileNoTrailingNewline/control_basic:_valid_entry_then_malformed_entry,_no_trailing_newline (0.00s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/middlewares/auth	0.022s
+FAIL

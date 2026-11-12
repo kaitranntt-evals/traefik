@@ -1,0 +1,139 @@
+### branch HEAD: 7de816dbc7456cf5079879f552da7565244b2588
+### changed files before: 0
+### added test files in scope: pkg/middlewares/auth/secrets_test.go pkg/server/middleware/secrets_test.go
+
+### BASELINE (unmodified branch)
+$ go test -count=1 -v -run '^(TestMalformedUserDoesNotExposeCredential|TestSecretMiddlewareConstruction|TestSecretBasicAuthConstruction|TestSecretTLSAndRedisResolution|TestSecretDigestAuthConstruction)$' ./pkg/server/middleware ./pkg/middlewares/auth
+--- PASS: TestSecretMiddlewareConstruction (0.00s)
+--- PASS: TestSecretBasicAuthConstruction (0.00s)
+--- PASS: TestSecretTLSAndRedisResolution (0.00s)
+--- PASS: TestSecretDigestAuthConstruction (0.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/server/middleware	0.024s
+--- PASS: TestMalformedUserDoesNotExposeCredential (0.00s)
+    --- PASS: TestMalformedUserDoesNotExposeCredential/basic (0.00s)
+    --- PASS: TestMalformedUserDoesNotExposeCredential/digest (0.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/middlewares/auth	0.024s
+
+### MUTATION R  (redactor appends the raw construction/decoding error after the URN list)
+-	return fmt.Errorf("middleware construction failed with secret references: %s", strings.Join(refs, ", "))
++	return fmt.Errorf("middleware construction failed with secret references: %s: %w", strings.Join(refs, ", "), err)
+
+### run under MUTATION R
+$ go test -count=1 -v -run '^(TestMalformedUserDoesNotExposeCredential|TestSecretMiddlewareConstruction|TestSecretBasicAuthConstruction|TestSecretTLSAndRedisResolution|TestSecretDigestAuthConstruction)$' ./pkg/server/middleware ./pkg/middlewares/auth
+    secrets_test.go:49:
+        	Error Trace:	/home/ubuntu/wt/5a6681ac/pkg/server/middleware/secrets_test.go:49
+        	Error:      	"middleware construction failed with secret references: urn:k8s:secret:test:key: plugin: error decoding secret-value" should not contain "secret-value"
+--- FAIL: TestSecretMiddlewareConstruction (0.00s)
+--- PASS: TestSecretBasicAuthConstruction (0.00s)
+--- PASS: TestSecretTLSAndRedisResolution (0.00s)
+--- PASS: TestSecretDigestAuthConstruction (0.00s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/server/middleware	0.022s
+--- PASS: TestMalformedUserDoesNotExposeCredential (0.00s)
+    --- PASS: TestMalformedUserDoesNotExposeCredential/basic (0.00s)
+    --- PASS: TestMalformedUserDoesNotExposeCredential/digest (0.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/middlewares/auth	0.022s
+FAIL
+
+### MUTATION U  (redactor drops the URN list)
+-	return fmt.Errorf("middleware construction failed with secret references: %s", strings.Join(refs, ", "))
++	return fmt.Errorf("middleware construction failed%s", strings.Repeat("", len(refs)))
+
+### run under MUTATION U
+$ go test -count=1 -v -run '^(TestMalformedUserDoesNotExposeCredential|TestSecretMiddlewareConstruction|TestSecretBasicAuthConstruction|TestSecretTLSAndRedisResolution|TestSecretDigestAuthConstruction)$' ./pkg/server/middleware ./pkg/middlewares/auth
+    secrets_test.go:48:
+        	Error Trace:	/home/ubuntu/wt/5a6681ac/pkg/server/middleware/secrets_test.go:48
+        	Error:      	"middleware construction failed" does not contain "urn:k8s:secret:test:key"
+--- FAIL: TestSecretMiddlewareConstruction (0.00s)
+--- PASS: TestSecretBasicAuthConstruction (0.00s)
+--- PASS: TestSecretTLSAndRedisResolution (0.00s)
+--- PASS: TestSecretDigestAuthConstruction (0.00s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/server/middleware	0.023s
+--- PASS: TestMalformedUserDoesNotExposeCredential (0.00s)
+    --- PASS: TestMalformedUserDoesNotExposeCredential/basic (0.00s)
+    --- PASS: TestMalformedUserDoesNotExposeCredential/digest (0.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/middlewares/auth	0.024s
+FAIL
+
+### MUTATION V  (redactor keeps the URN list but appends only the resolved Secret value)
+-	return fmt.Errorf("middleware construction failed with secret references: %s", strings.Join(refs, ", "))
++	return fmt.Errorf("middleware construction failed with secret references: %s: %s", strings.Join(refs, ", "), config.SecretValue(refs[0]))
+
+### run under MUTATION V
+$ go test -count=1 -v -run '^(TestMalformedUserDoesNotExposeCredential|TestSecretMiddlewareConstruction|TestSecretBasicAuthConstruction|TestSecretTLSAndRedisResolution|TestSecretDigestAuthConstruction)$' ./pkg/server/middleware ./pkg/middlewares/auth
+    secrets_test.go:49:
+        	Error Trace:	/home/ubuntu/wt/5a6681ac/pkg/server/middleware/secrets_test.go:49
+        	Error:      	"middleware construction failed with secret references: urn:k8s:secret:test:key: secret-value" should not contain "secret-value"
+--- FAIL: TestSecretMiddlewareConstruction (0.00s)
+--- PASS: TestSecretBasicAuthConstruction (0.00s)
+--- PASS: TestSecretTLSAndRedisResolution (0.00s)
+--- PASS: TestSecretDigestAuthConstruction (0.00s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/server/middleware	0.023s
+--- PASS: TestMalformedUserDoesNotExposeCredential (0.00s)
+    --- PASS: TestMalformedUserDoesNotExposeCredential/basic (0.00s)
+    --- PASS: TestMalformedUserDoesNotExposeCredential/digest (0.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/middlewares/auth	0.030s
+FAIL
+
+### MUTATION A  (Secret-backed auth entry error carries the malformed entry through the redactor)
+-				return nil, &SecretUserError{Reference: entry, Index: i + 1}
++				return nil, fmt.Errorf("%w: %s", &SecretUserError{Reference: entry, Index: i + 1}, user)
+-		return userErr
++		return err
+
+### run under MUTATION A
+$ go test -count=1 -v -run '^(TestMalformedUserDoesNotExposeCredential|TestSecretMiddlewareConstruction|TestSecretBasicAuthConstruction|TestSecretTLSAndRedisResolution|TestSecretDigestAuthConstruction)$' ./pkg/server/middleware ./pkg/middlewares/auth
+--- PASS: TestSecretMiddlewareConstruction (0.00s)
+    secrets_test.go:73:
+        	Error Trace:	/home/ubuntu/wt/5a6681ac/pkg/server/middleware/secrets_test.go:73
+        	Error:      	"invalid user entry 2 in urn:k8s:secret:test:users: secret-value" should not contain "secret-value"
+--- FAIL: TestSecretBasicAuthConstruction (0.00s)
+--- PASS: TestSecretTLSAndRedisResolution (0.00s)
+    secrets_test.go:116:
+        	Error Trace:	/home/ubuntu/wt/5a6681ac/pkg/server/middleware/secrets_test.go:116
+        	Error:      	"invalid user entry 2 in urn:k8s:secret:test:users: malformed-secret" should not contain "malformed-secret"
+--- FAIL: TestSecretDigestAuthConstruction (0.00s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/server/middleware	0.025s
+--- PASS: TestMalformedUserDoesNotExposeCredential (0.00s)
+    --- PASS: TestMalformedUserDoesNotExposeCredential/basic (0.00s)
+    --- PASS: TestMalformedUserDoesNotExposeCredential/digest (0.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/middlewares/auth	0.022s
+FAIL
+
+### MUTATION P  (auth parsers quote the malformed entry again, as on the base commit)
+-		return "", "", fmt.Errorf("error parsing BasicUser")
++		return "", "", fmt.Errorf("error parsing BasicUser: %v", user)
+-		return "", "", fmt.Errorf("error parsing DigestUser")
++		return "", "", fmt.Errorf("error parsing DigestUser: %v", user)
+
+### run under MUTATION P
+$ go test -count=1 -v -run '^(TestMalformedUserDoesNotExposeCredential|TestSecretMiddlewareConstruction|TestSecretBasicAuthConstruction|TestSecretTLSAndRedisResolution|TestSecretDigestAuthConstruction)$' ./pkg/server/middleware ./pkg/middlewares/auth
+--- PASS: TestSecretMiddlewareConstruction (0.00s)
+--- PASS: TestSecretBasicAuthConstruction (0.00s)
+--- PASS: TestSecretTLSAndRedisResolution (0.00s)
+--- PASS: TestSecretDigestAuthConstruction (0.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/server/middleware	0.021s
+    secrets_test.go:22:
+        	Error Trace:	/home/ubuntu/wt/5a6681ac/pkg/middlewares/auth/secrets_test.go:22
+        	Error:      	"invalid user entry 1: error parsing BasicUser: secret-value" should not contain "secret-value"
+    secrets_test.go:22:
+        	Error Trace:	/home/ubuntu/wt/5a6681ac/pkg/middlewares/auth/secrets_test.go:22
+        	Error:      	"invalid user entry 1: error parsing DigestUser: secret-value" should not contain "secret-value"
+--- FAIL: TestMalformedUserDoesNotExposeCredential (0.00s)
+    --- FAIL: TestMalformedUserDoesNotExposeCredential/basic (0.00s)
+    --- FAIL: TestMalformedUserDoesNotExposeCredential/digest (0.00s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/middlewares/auth	0.020s
+FAIL
+
+### changed files after: 0

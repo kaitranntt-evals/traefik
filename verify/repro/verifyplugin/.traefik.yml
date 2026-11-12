@@ -1,0 +1,6 @@
+displayName: Verify Local Plugin
+type: middleware
+runtime: yaegi
+import: verifyplugin
+basePkg: verifyplugin
+summary: Audit-owned local plugin with typed configuration fields (run v-63ba222f).

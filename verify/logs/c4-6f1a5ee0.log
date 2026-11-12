@@ -1,0 +1,156 @@
+### branch HEAD: bdc7590866e8a518085dcb5812130e12256903d8
+### changed files before: 0
+### added test files in scope: pkg/middlewares/auth/secrets_test.go pkg/server/middleware/secrets_test.go
+
+### BASELINE (unmodified branch)
+$ go test -count=1 -v -run '^(TestInvalidUserDoesNotExposeCredentials|TestMiddlewareSecretConstruction|TestMiddlewareSecretErrors)$' ./pkg/server/middleware ./pkg/middlewares/auth
+--- PASS: TestMiddlewareSecretConstruction (0.00s)
+--- PASS: TestMiddlewareSecretErrors (0.00s)
+    --- PASS: TestMiddlewareSecretErrors/plugin (0.00s)
+    --- PASS: TestMiddlewareSecretErrors/plugin_constructor (0.00s)
+    --- PASS: TestMiddlewareSecretErrors/basic (0.00s)
+    --- PASS: TestMiddlewareSecretErrors/digest (0.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/server/middleware	0.026s
+--- PASS: TestInvalidUserDoesNotExposeCredentials (0.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/middlewares/auth	0.027s
+
+### MUTATION R  (redactor appends the raw construction/decoding error after the URN list)
+-	return fmt.Errorf("cannot build middleware using secrets %s", refs)
++	return fmt.Errorf("cannot build middleware using secrets %s: %w", refs, err)
+
+### run under MUTATION R
+$ go test -count=1 -v -run '^(TestInvalidUserDoesNotExposeCredentials|TestMiddlewareSecretConstruction|TestMiddlewareSecretErrors)$' ./pkg/server/middleware ./pkg/middlewares/auth
+--- PASS: TestMiddlewareSecretConstruction (0.00s)
+    secrets_test.go:78:
+        	Error Trace:	/home/ubuntu/wt/6f1a5ee0/pkg/server/middleware/secrets_test.go:78
+        	Error:      	"cannot build middleware using secrets urn:k8s:secret:credentials:key: plugin: error decoding value \"error\"" should not contain "error"
+    secrets_test.go:78:
+        	Error Trace:	/home/ubuntu/wt/6f1a5ee0/pkg/server/middleware/secrets_test.go:78
+        	Error:      	"cannot build middleware using secrets urn:k8s:secret:credentials:key: error constructing plugin with \"error\"" should not contain "error"
+--- FAIL: TestMiddlewareSecretErrors (0.00s)
+    --- FAIL: TestMiddlewareSecretErrors/plugin (0.00s)
+    --- FAIL: TestMiddlewareSecretErrors/plugin_constructor (0.00s)
+    --- PASS: TestMiddlewareSecretErrors/basic (0.00s)
+    --- PASS: TestMiddlewareSecretErrors/digest (0.00s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/server/middleware	0.023s
+--- PASS: TestInvalidUserDoesNotExposeCredentials (0.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/middlewares/auth	0.024s
+FAIL
+
+### MUTATION U  (redactor drops the URN list)
+-	return fmt.Errorf("cannot build middleware using secrets %s", refs)
++	return fmt.Errorf("cannot build middleware using secrets%s", "")
+
+### run under MUTATION U
+$ go test -count=1 -v -run '^(TestInvalidUserDoesNotExposeCredentials|TestMiddlewareSecretConstruction|TestMiddlewareSecretErrors)$' ./pkg/server/middleware ./pkg/middlewares/auth
+--- PASS: TestMiddlewareSecretConstruction (0.00s)
+    secrets_test.go:77:
+        	Error Trace:	/home/ubuntu/wt/6f1a5ee0/pkg/server/middleware/secrets_test.go:77
+        	Error:      	"cannot build middleware using secrets" does not contain "urn:k8s:secret:credentials:key"
+    secrets_test.go:88:
+        	Error Trace:	/home/ubuntu/wt/6f1a5ee0/pkg/server/middleware/secrets_test.go:88
+        	Error:      	"{\"plugin\":{\"test\":{\"token\":\"urn:k8s:secret:credentials:key\"}},\"error\":[\"cannot build middleware using secrets\"],\"status\":\"disabled\"}" does not contain "\"error\":[\"cannot build middleware using secrets "
+    secrets_test.go:77:
+        	Error Trace:	/home/ubuntu/wt/6f1a5ee0/pkg/server/middleware/secrets_test.go:77
+        	Error:      	"cannot build middleware using secrets" does not contain "urn:k8s:secret:credentials:key"
+    secrets_test.go:88:
+        	Error Trace:	/home/ubuntu/wt/6f1a5ee0/pkg/server/middleware/secrets_test.go:88
+        	Error:      	"{\"plugin\":{\"test\":{\"token\":\"urn:k8s:secret:credentials:key\"}},\"error\":[\"cannot build middleware using secrets\"],\"status\":\"disabled\"}" does not contain "\"error\":[\"cannot build middleware using secrets "
+--- FAIL: TestMiddlewareSecretErrors (0.00s)
+    --- FAIL: TestMiddlewareSecretErrors/plugin (0.00s)
+    --- FAIL: TestMiddlewareSecretErrors/plugin_constructor (0.00s)
+    --- PASS: TestMiddlewareSecretErrors/basic (0.00s)
+    --- PASS: TestMiddlewareSecretErrors/digest (0.00s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/server/middleware	0.023s
+--- PASS: TestInvalidUserDoesNotExposeCredentials (0.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/middlewares/auth	0.021s
+FAIL
+
+### MUTATION V  (redactor keeps the URN list but appends only the resolved plugin configuration)
+-	return fmt.Errorf("cannot build middleware using secrets %s", refs)
++	return fmt.Errorf("cannot build middleware using secrets %s: %v", refs, config.Resolve().Plugin)
+
+### run under MUTATION V
+$ go test -count=1 -v -run '^(TestInvalidUserDoesNotExposeCredentials|TestMiddlewareSecretConstruction|TestMiddlewareSecretErrors)$' ./pkg/server/middleware ./pkg/middlewares/auth
+--- PASS: TestMiddlewareSecretConstruction (0.00s)
+    secrets_test.go:78:
+        	Error Trace:	/home/ubuntu/wt/6f1a5ee0/pkg/server/middleware/secrets_test.go:78
+        	Error:      	"cannot build middleware using secrets urn:k8s:secret:credentials:key: map[test:map[token:error]]" should not contain "error"
+    secrets_test.go:78:
+        	Error Trace:	/home/ubuntu/wt/6f1a5ee0/pkg/server/middleware/secrets_test.go:78
+        	Error:      	"cannot build middleware using secrets urn:k8s:secret:credentials:key: map[test:map[token:error]]" should not contain "error"
+--- FAIL: TestMiddlewareSecretErrors (0.00s)
+    --- FAIL: TestMiddlewareSecretErrors/plugin (0.00s)
+    --- FAIL: TestMiddlewareSecretErrors/plugin_constructor (0.00s)
+    --- PASS: TestMiddlewareSecretErrors/basic (0.00s)
+    --- PASS: TestMiddlewareSecretErrors/digest (0.00s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/server/middleware	0.023s
+--- PASS: TestInvalidUserDoesNotExposeCredentials (0.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/middlewares/auth	0.022s
+FAIL
+
+### MUTATION A  (auth parsers quote the malformed entry AND the redactor appends the raw auth error)
+-		return "", "", errors.New("error parsing BasicUser")
++		return "", "", errors.New("error parsing BasicUser: " + user)
+-		return "", "", errors.New("error parsing DigestUser")
++		return "", "", errors.New("error parsing DigestUser: " + user)
+-		return fmt.Errorf("invalid user entry %d in %s", userErr.Index, refs)
++		return fmt.Errorf("invalid user entry %d in %s: %w", userErr.Index, refs, err)
+
+### run under MUTATION A
+$ go test -count=1 -v -run '^(TestInvalidUserDoesNotExposeCredentials|TestMiddlewareSecretConstruction|TestMiddlewareSecretErrors)$' ./pkg/server/middleware ./pkg/middlewares/auth
+--- PASS: TestMiddlewareSecretConstruction (0.00s)
+--- PASS: TestMiddlewareSecretErrors (0.00s)
+    --- PASS: TestMiddlewareSecretErrors/plugin (0.00s)
+    --- PASS: TestMiddlewareSecretErrors/plugin_constructor (0.00s)
+    --- PASS: TestMiddlewareSecretErrors/basic (0.00s)
+    --- PASS: TestMiddlewareSecretErrors/digest (0.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/server/middleware	0.023s
+    secrets_test.go:15:
+        	Error Trace:	/home/ubuntu/wt/6f1a5ee0/pkg/middlewares/auth/secrets_test.go:15
+        	Error:      	"user entry 1: error parsing BasicUser: private-malformed-credential" should not contain "private-malformed-credential"
+    secrets_test.go:15:
+        	Error Trace:	/home/ubuntu/wt/6f1a5ee0/pkg/middlewares/auth/secrets_test.go:15
+        	Error:      	"user entry 1: error parsing DigestUser: private-malformed-credential" should not contain "private-malformed-credential"
+--- FAIL: TestInvalidUserDoesNotExposeCredentials (0.00s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/middlewares/auth	0.022s
+FAIL
+
+### MUTATION P  (auth parsers quote the malformed entry again, as on the base commit)
+-		return "", "", errors.New("error parsing BasicUser")
++		return "", "", errors.New("error parsing BasicUser: " + user)
+-		return "", "", errors.New("error parsing DigestUser")
++		return "", "", errors.New("error parsing DigestUser: " + user)
+
+### run under MUTATION P
+$ go test -count=1 -v -run '^(TestInvalidUserDoesNotExposeCredentials|TestMiddlewareSecretConstruction|TestMiddlewareSecretErrors)$' ./pkg/server/middleware ./pkg/middlewares/auth
+--- PASS: TestMiddlewareSecretConstruction (0.00s)
+--- PASS: TestMiddlewareSecretErrors (0.00s)
+    --- PASS: TestMiddlewareSecretErrors/plugin (0.00s)
+    --- PASS: TestMiddlewareSecretErrors/plugin_constructor (0.00s)
+    --- PASS: TestMiddlewareSecretErrors/basic (0.00s)
+    --- PASS: TestMiddlewareSecretErrors/digest (0.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/server/middleware	0.022s
+    secrets_test.go:15:
+        	Error Trace:	/home/ubuntu/wt/6f1a5ee0/pkg/middlewares/auth/secrets_test.go:15
+        	Error:      	"user entry 1: error parsing BasicUser: private-malformed-credential" should not contain "private-malformed-credential"
+    secrets_test.go:15:
+        	Error Trace:	/home/ubuntu/wt/6f1a5ee0/pkg/middlewares/auth/secrets_test.go:15
+        	Error:      	"user entry 1: error parsing DigestUser: private-malformed-credential" should not contain "private-malformed-credential"
+--- FAIL: TestInvalidUserDoesNotExposeCredentials (0.00s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/middlewares/auth	0.023s
+FAIL
+
+### changed files after: 0

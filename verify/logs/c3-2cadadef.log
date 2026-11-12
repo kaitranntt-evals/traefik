@@ -1,0 +1,186 @@
+### branch HEAD: acf97b5786d32ffe34791b77659bc5611a39f420
+### git status (must be clean before): 0 changed files
+
+### BASELINE (unmodified branch)
+$ go test -count=1 -v -run '^TestLoadIngressRoutes$/^Simple_Ingress_Route,_with_test_middleware_read_config_from_(secret|deep_secret|an_array_of_secret)(#[0-9]+)?$' ./pkg/provider/kubernetes/crd
+=== RUN   TestLoadIngressRoutes
+=== RUN   TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_secret
+=== RUN   TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_deep_secret
+=== RUN   TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_an_array_of_secret
+=== RUN   TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_an_array_of_secret#01
+--- PASS: TestLoadIngressRoutes (0.00s)
+    --- PASS: TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_an_array_of_secret (0.06s)
+    --- PASS: TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_deep_secret (0.06s)
+    --- PASS: TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_secret (0.06s)
+    --- PASS: TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_an_array_of_secret#01 (0.06s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd	0.074s
+
+### modified test hunk under audit:
+diff --git a/pkg/provider/kubernetes/crd/kubernetes_test.go b/pkg/provider/kubernetes/crd/kubernetes_test.go
+index d4dd19655..5105fd072 100644
+--- a/pkg/provider/kubernetes/crd/kubernetes_test.go
++++ b/pkg/provider/kubernetes/crd/kubernetes_test.go
+@@ -10212,6 +10212,9 @@ func TestLoadIngressRoutes(t *testing.T) {
+ 			require.NoError(t, p.Init())
+ 
+ 			conf := p.loadConfigurationFromCRD(t.Context(), client)
++			for name, middleware := range conf.HTTP.Middlewares {
++				conf.HTTP.Middlewares[name] = middleware.ResolveSecrets()
++			}
+ 			assert.Equal(t, test.expected, conf)
+ 		})
+ 	}
+@@ -14605,9 +14608,13 @@ func TestCreateBasicAuthCredentials(t *testing.T) {
+ 		<-eventCh
+
+### MUTATION F1 — fixture: literal sibling 'name: admin' -> 'name: admin-MUTATED-SIBLING' (does an assertion check the preserved content-bearing sibling of an indexed entry?)
+$ go test -count=1 -v -run '^TestLoadIngressRoutes$/^Simple_Ingress_Route,_with_test_middleware_read_config_from_(secret|deep_secret|an_array_of_secret)(#[0-9]+)?$' ./pkg/provider/kubernetes/crd
+=== RUN   TestLoadIngressRoutes
+=== RUN   TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_secret
+=== RUN   TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_deep_secret
+=== RUN   TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_an_array_of_secret
+=== RUN   TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_an_array_of_secret#01
+        	Error Trace:	/home/ubuntu/wt/2cadadef/pkg/provider/kubernetes/crd/kubernetes_test.go:10218
+        	Error:      	Not equal: 
+        	            	Diff:
+        	            	--- Expected
+        	            	-        (string) (len=4) "name": (string) (len=5) "admin",
+        	            	+        (string) (len=4) "name": (string) (len=21) "admin-MUTATED-SIBLING",
+        	            	         (string) (len=6) "secret": (string) (len=14) "admin_password"
+--- FAIL: TestLoadIngressRoutes (0.00s)
+    --- PASS: TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_deep_secret (0.26s)
+    --- PASS: TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_secret (0.26s)
+    --- PASS: TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_an_array_of_secret (0.26s)
+    --- FAIL: TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_an_array_of_secret#01 (0.30s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd	0.322s
+FAIL
+
+### MUTATION F2 — fixture: Secret key1 value -> 'MUTATED-VALUE' (does an assertion check the resolved value of indexed entry [0]?)
+$ go test -count=1 -v -run '^TestLoadIngressRoutes$/^Simple_Ingress_Route,_with_test_middleware_read_config_from_(secret|deep_secret|an_array_of_secret)(#[0-9]+)?$' ./pkg/provider/kubernetes/crd
+=== RUN   TestLoadIngressRoutes
+=== RUN   TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_secret
+=== RUN   TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_deep_secret
+=== RUN   TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_an_array_of_secret
+=== RUN   TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_an_array_of_secret#01
+        	Error Trace:	/home/ubuntu/wt/2cadadef/pkg/provider/kubernetes/crd/kubernetes_test.go:10218
+        	Error:      	Not equal: 
+        	            	Diff:
+        	            	--- Expected
+        	            	         (string) (len=4) "name": (string) (len=5) "admin",
+        	            	-        (string) (len=6) "secret": (string) (len=14) "admin_password"
+        	            	+        (string) (len=6) "secret": (string) (len=13) "MUTATED-VALUE"
+--- FAIL: TestLoadIngressRoutes (0.00s)
+    --- PASS: TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_deep_secret (0.05s)
+    --- PASS: TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_an_array_of_secret (0.05s)
+    --- FAIL: TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_an_array_of_secret#01 (0.05s)
+    --- PASS: TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_secret (0.05s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd	0.075s
+FAIL
+
+### MUTATION F3 — fixture: dashed plugin configuration-map key 'test-secret' -> 'test_secret' (does an assertion check the preserved special-character key above the resolved value?)
+$ go test -count=1 -v -run '^TestLoadIngressRoutes$/^Simple_Ingress_Route,_with_test_middleware_read_config_from_(secret|deep_secret|an_array_of_secret)(#[0-9]+)?$' ./pkg/provider/kubernetes/crd
+=== RUN   TestLoadIngressRoutes
+=== RUN   TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_secret
+=== RUN   TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_deep_secret
+=== RUN   TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_an_array_of_secret
+=== RUN   TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_an_array_of_secret#01
+        	Error Trace:	/home/ubuntu/wt/2cadadef/pkg/provider/kubernetes/crd/kubernetes_test.go:10218
+        	Error:      	Not equal: 
+        	            	Diff:
+        	            	--- Expected
+        	            	-     (string) (len=11) "test-secret": (dynamic.PluginConf) (len=1) {
+        	            	+     (string) (len=11) "test_secret": (dynamic.PluginConf) (len=1) {
+--- FAIL: TestLoadIngressRoutes (0.00s)
+    --- PASS: TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_secret (0.06s)
+    --- PASS: TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_an_array_of_secret (0.06s)
+    --- PASS: TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_deep_secret (0.06s)
+    --- FAIL: TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_an_array_of_secret#01 (0.06s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd	0.079s
+FAIL
+
+### MUTATION T1 — test: drop the added Resolve call before assert.Equal (is resolution on the asserted path?)
+$ go test -count=1 -v -run '^TestLoadIngressRoutes$/^Simple_Ingress_Route,_with_test_middleware_read_config_from_(secret|deep_secret|an_array_of_secret)(#[0-9]+)?$' ./pkg/provider/kubernetes/crd
+=== RUN   TestLoadIngressRoutes
+=== RUN   TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_secret
+=== RUN   TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_deep_secret
+=== RUN   TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_an_array_of_secret
+=== RUN   TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_an_array_of_secret#01
+        	Error Trace:	/home/ubuntu/wt/2cadadef/pkg/provider/kubernetes/crd/kubernetes_test.go:10218
+        	Error:      	Not equal: 
+        	            	Diff:
+        	            	--- Expected
+        	            	    (string) (len=19) "default-test-secret": (*dynamic.Middleware)({
+        	            	-    Secrets: (dynamic.Secrets) "",
+        	            	+    Secrets: (dynamic.Secrets) (len=72) "{\"urn:k8s:secret:name:key\":[\"dGhpc19pc190aGVfdmVyeV9kZWVwX3NlY3JldA==\"]}",
+        	            	-         (string) (len=6) "secret": (string) (len=28) "this_is_the_very_deep_secret",
+        	            	+         (string) (len=6) "secret": (string) (len=23) "urn:k8s:secret:name:key",
+        	            	          (string) (len=4) "user": (string) (len=5) "admin"
+        	Error Trace:	/home/ubuntu/wt/2cadadef/pkg/provider/kubernetes/crd/kubernetes_test.go:10218
+        	Error:      	Not equal: 
+        	            	Diff:
+        	            	--- Expected
+        	            	    (string) (len=19) "default-test-secret": (*dynamic.Middleware)({
+        	            	-    Secrets: (dynamic.Secrets) "",
+        	            	+    Secrets: (dynamic.Secrets) (len=97) "{\"urn:k8s:secret:name:key1\":[\"c2VjcmV0X2RhdGEx\"],\"urn:k8s:secret:name:key2\":[\"c2VjcmV0X2RhdGEy\"]}",
+        	            	-       (string) (len=12) "secret_data1",
+        	            	-       (string) (len=12) "secret_data2"
+        	            	+       (string) (len=24) "urn:k8s:secret:name:key1",
+        	            	+       (string) (len=24) "urn:k8s:secret:name:key2"
+        	Error Trace:	/home/ubuntu/wt/2cadadef/pkg/provider/kubernetes/crd/kubernetes_test.go:10218
+        	Error:      	Not equal: 
+        	            	Diff:
+        	            	--- Expected
+        	            	    (string) (len=19) "default-test-secret": (*dynamic.Middleware)({
+        	            	-    Secrets: (dynamic.Secrets) "",
+        	            	+    Secrets: (dynamic.Secrets) (len=56) "{\"urn:k8s:secret:name:key\":[\"dGhpc19pc190aGVfc2VjcmV0\"]}",
+        	            	      (string) (len=11) "test-secret": (dynamic.PluginConf) (len=2) {
+        	            	-      (string) (len=6) "secret": (string) (len=18) "this_is_the_secret",
+        	            	+      (string) (len=6) "secret": (string) (len=23) "urn:k8s:secret:name:key",
+        	            	       (string) (len=4) "user": (string) (len=5) "admin"
+        	Error Trace:	/home/ubuntu/wt/2cadadef/pkg/provider/kubernetes/crd/kubernetes_test.go:10218
+        	Error:      	Not equal: 
+        	            	Diff:
+
+### production mutation P1 diff:
+-		for i := range value.Len() {
++		for i := range 0 {
++			_ = value.Len()
+
+### MUTATION P1 — production: resolver skips list (indexed) entries
+$ go test -count=1 -v -run '^TestLoadIngressRoutes$/^Simple_Ingress_Route,_with_test_middleware_read_config_from_(secret|deep_secret|an_array_of_secret)(#[0-9]+)?$' ./pkg/provider/kubernetes/crd
+=== RUN   TestLoadIngressRoutes
+=== RUN   TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_secret
+=== RUN   TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_deep_secret
+=== RUN   TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_an_array_of_secret
+=== RUN   TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_an_array_of_secret#01
+        	Error Trace:	/home/ubuntu/wt/2cadadef/pkg/provider/kubernetes/crd/kubernetes_test.go:10218
+        	Error:      	Not equal: 
+        	            	Diff:
+        	            	--- Expected
+        	            	         (string) (len=4) "name": (string) (len=5) "admin",
+        	            	-        (string) (len=6) "secret": (string) (len=14) "admin_password"
+        	            	+        (string) (len=6) "secret": (string) (len=24) "urn:k8s:secret:name:key1"
+        	            	-        (string) (len=6) "secret": (string) (len=13) "user_password"
+        	            	+        (string) (len=6) "secret": (string) (len=24) "urn:k8s:secret:name:key2"
+        	Error Trace:	/home/ubuntu/wt/2cadadef/pkg/provider/kubernetes/crd/kubernetes_test.go:10218
+        	Error:      	Not equal: 
+        	            	Diff:
+        	            	--- Expected
+        	            	-       (string) (len=12) "secret_data1",
+        	            	-       (string) (len=12) "secret_data2"
+        	            	+       (string) (len=24) "urn:k8s:secret:name:key1",
+        	            	+       (string) (len=24) "urn:k8s:secret:name:key2"
+--- FAIL: TestLoadIngressRoutes (0.01s)
+    --- PASS: TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_secret (0.07s)
+    --- FAIL: TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_an_array_of_secret#01 (0.07s)
+    --- FAIL: TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_an_array_of_secret (0.07s)
+    --- PASS: TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_deep_secret (0.07s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd	0.095s
+FAIL
+
+### git status (must be clean after): 0 changed files

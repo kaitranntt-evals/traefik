@@ -1,0 +1,5 @@
+### HEAD: 84614aa0ce1af141b9fbdeae2980b79e1f53ba73
+$ go test -count=30 -v -run '^TestEval_IngressNGINX_AuthMapDeterministicOrderAndRotation$' ./pkg/provider/kubernetes/ingress-nginx   # provided fixture, 30 runs; result and assertion-message lines counted
+     30 --- PASS: TestEval_IngressNGINX_AuthMapDeterministicOrderAndRotation
+      1 PASS
+      1 ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/ingress-nginx	0.854s

@@ -1,0 +1,6 @@
+displayName: Verify Retaining Local Plugin
+type: middleware
+runtime: yaegi
+import: verifyretain
+basePkg: verifyretain
+summary: Audit-owned local plugin that keeps the configuration objects it was handed and writes to them after its callbacks returned (run v-63ba222f).

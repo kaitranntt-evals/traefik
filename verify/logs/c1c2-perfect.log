@@ -1,0 +1,133 @@
+### branch HEAD: 84614aa0ce1af141b9fbdeae2980b79e1f53ba73
+### fixtures (byte-exact): go test -count=1 -v -run '^TestEval_ProviderToBuilder_Plugin(SuccessExecution|TypedSecretField|NestedExecution|EscapedKeyExecution|InputMutationIsolation|BuildErrorRedaction|CachedErrorRedaction)$' ./pkg/provider/kubernetes/crd
+    eval_provider_to_builder_runtime_test.go:755: the decoding stage cannot reject an empty value
+--- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction (0.77s)
+    --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/decode_error (0.06s)
+    --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor_error (0.01s)
+    --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/decode (0.14s)
+        --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/decode/unrelated_baseline (0.02s)
+        --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/decode/type_label_collision_(string) (0.02s)
+        --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/decode/field_label_collision_(token) (0.03s)
+        --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/decode/escaped_payload (0.02s)
+        --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/decode/single-line_quote_and_backslash_escaping (0.02s)
+        --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/decode/whitespace-only_payload (0.02s)
+        --- SKIP: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/decode/empty_secret_value (0.00s)
+    --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor (0.17s)
+        --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/unrelated_baseline (0.03s)
+        --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/type_label_collision_(string) (0.02s)
+        --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/field_label_collision_(token) (0.02s)
+        --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/escaped_payload (0.02s)
+        --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/single-line_quote_and_backslash_escaping (0.03s)
+        --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/whitespace-only_payload (0.02s)
+        --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constructor/empty_secret_value (0.02s)
+    --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constant (0.17s)
+        --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constant/unrelated_baseline (0.02s)
+        --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constant/type_label_collision_(string) (0.03s)
+        --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constant/field_label_collision_(token) (0.02s)
+        --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constant/escaped_payload (0.02s)
+        --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constant/single-line_quote_and_backslash_escaping (0.02s)
+        --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constant/whitespace-only_payload (0.02s)
+        --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/constant/empty_secret_value (0.02s)
+    --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/reject_resolved_value (0.03s)
+    --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/wrapped_cause (0.05s)
+    --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/format_"plugin_rejected_value:_'%s'"/unrelated_baseline (0.03s)
+    --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/format_"plugin_rejected_value:_'%s'"/escaped_payload (0.02s)
+    --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/format_"plugin_rejected_value:_'%s'"/single-line_quote_and_backslash_escaping (0.02s)
+    --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/format_"plugin_rejected_value:_%s"/unrelated_baseline (0.02s)
+    --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/format_"plugin_rejected_value:_%s"/escaped_payload (0.02s)
+    --- PASS: TestEval_ProviderToBuilder_PluginBuildErrorRedaction/format_"plugin_rejected_value:_%s"/single-line_quote_and_backslash_escaping (0.02s)
+--- PASS: TestEval_ProviderToBuilder_PluginEscapedKeyExecution (0.77s)
+--- PASS: TestEval_ProviderToBuilder_PluginSuccessExecution (0.77s)
+--- PASS: TestEval_ProviderToBuilder_PluginTypedSecretField (0.80s)
+--- PASS: TestEval_ProviderToBuilder_PluginCachedErrorRedaction (0.93s)
+    --- PASS: TestEval_ProviderToBuilder_PluginCachedErrorRedaction/decode_error (0.05s)
+    --- PASS: TestEval_ProviderToBuilder_PluginCachedErrorRedaction/constructor_error (0.03s)
+    --- PASS: TestEval_ProviderToBuilder_PluginCachedErrorRedaction/wrapped_cause (0.05s)
+--- PASS: TestEval_ProviderToBuilder_PluginNestedExecution (0.77s)
+    --- PASS: TestEval_ProviderToBuilder_PluginNestedExecution/deep_map (0.00s)
+    --- PASS: TestEval_ProviderToBuilder_PluginNestedExecution/list_of_maps (0.15s)
+    --- PASS: TestEval_ProviderToBuilder_PluginNestedExecution/list (0.16s)
+--- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation (0.80s)
+    --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/deep_map/success (0.13s)
+    --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/payload_equals_reference/decode_error (0.13s)
+    --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/payload_equals_reference/constructor_error (0.14s)
+    --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/payload_equals_reference/success (0.14s)
+    --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/list_of_maps/decode_error (0.14s)
+    --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/list_of_maps/constructor_error (0.02s)
+    --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/list_of_maps/success (0.02s)
+    --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/list/decode_error (0.02s)
+    --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/list/constructor_error (0.02s)
+    --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/list/success (0.02s)
+    --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/deep_map/decode_error (0.02s)
+    --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/deep_map/constructor_error (0.02s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd	0.986s
+### probes: go test -tags verify -count=1 -v -run '^TestVerify_C[12]_' ./pkg/provider/kubernetes/crd
+    verify_c1_c2_plugin_probe_test.go:175: C1 execution: plugin served decoded config = {"port":8443,"enabled":false,"token":"tok-VALUE","public":"PUBLIC-LITERAL","deep":{"inner":{"token":"deep-VALUE","label":"literal-label"}},"users":[{"name":"admin","secret":"admin-VALUE"},{"name":"user","secret":"user-VALUE"}],"remain":{"/":"literal-slash","a":{"b":"literal-a-b"},"a/b":"slash-VALUE","m~n":"tilde-VALUE","x.y-z":["literal-0",{"keep":"literal-keep","~0":"listed-VALUE"}],"~1":"escaped-VALUE"}}
+    verify_c1_c2_plugin_probe_test.go:187: C1 execution: typed int field + nested + list + escaped keys resolved as expected = true
+    verify_c1_c2_plugin_probe_test.go:188: C1 execution: published config unchanged = true, runtime config unchanged = true, DeepEqual (incl. Secret side map) unchanged = true
+--- PASS: TestVerify_C1_Execution (0.06s)
+    verify_c1_c2_plugin_probe_test.go:224: C1 isolation: published unchanged = true, runtime unchanged = true, DeepEqual (incl. Secret side map) unchanged = true
+    verify_c1_c2_plugin_probe_test.go:218: C1 isolation: attempt 1 returned error = "plugin configuration using urn:k8s:secret:vsec:deep, urn:k8s:secret:vsec:escaped, urn:k8s:secret:vsec:listed, urn:k8s:secret:vsec:port, urn:k8s:secret:vsec:slash, urn:k8s:secret:vsec:tilde, urn:k8s:secret:vsec:token, urn:k8s:secret:vsec:u1, urn:k8s:secret:vsec:u2 is invalid: configuration decoding failed"
+    verify_c1_c2_plugin_probe_test.go:224: C1 isolation: published unchanged = true, runtime unchanged = true, DeepEqual (incl. Secret side map) unchanged = true
+    verify_c1_c2_plugin_probe_test.go:218: C1 isolation: attempt 1 returned error = "plugin configuration using urn:k8s:secret:vsec:deep, urn:k8s:secret:vsec:escaped, urn:k8s:secret:vsec:listed, urn:k8s:secret:vsec:slash, urn:k8s:secret:vsec:tilde, urn:k8s:secret:vsec:token, urn:k8s:secret:vsec:u1, urn:k8s:secret:vsec:u2 is invalid: configuration decoding failed"
+    verify_c1_c2_plugin_probe_test.go:224: C1 isolation: published unchanged = true, runtime unchanged = true, DeepEqual (incl. Secret side map) unchanged = true
+    verify_c1_c2_plugin_probe_test.go:218: C1 isolation: attempt 1 returned error = "plugin configuration using urn:k8s:secret:vsec:deep, urn:k8s:secret:vsec:escaped, urn:k8s:secret:vsec:listed, urn:k8s:secret:vsec:port, urn:k8s:secret:vsec:slash, urn:k8s:secret:vsec:tilde, urn:k8s:secret:vsec:token, urn:k8s:secret:vsec:u1, urn:k8s:secret:vsec:u2 is invalid: configuration decoding failed"
+    verify_c1_c2_plugin_probe_test.go:224: C1 isolation: published unchanged = true, runtime unchanged = true, DeepEqual (incl. Secret side map) unchanged = true
+    verify_c1_c2_plugin_probe_test.go:218: C1 isolation: attempt 1 returned error = "plugin configuration using urn:k8s:secret:vsec:deep, urn:k8s:secret:vsec:escaped, urn:k8s:secret:vsec:listed, urn:k8s:secret:vsec:port, urn:k8s:secret:vsec:slash, urn:k8s:secret:vsec:tilde, urn:k8s:secret:vsec:token, urn:k8s:secret:vsec:u1, urn:k8s:secret:vsec:u2 is invalid: configuration decoding failed"
+    verify_c1_c2_plugin_probe_test.go:224: C1 isolation: published unchanged = true, runtime unchanged = true, DeepEqual (incl. Secret side map) unchanged = true
+    verify_c1_c2_plugin_probe_test.go:257: C1 isolation control: published unchanged = false (expected false: the probe detects aliasing)
+--- PASS: TestVerify_C1_Isolation (0.01s)
+    --- PASS: TestVerify_C1_Isolation/success_(plugin_mutates_nested_maps_in_New) (0.00s)
+    --- PASS: TestVerify_C1_Isolation/decode_error_on_Secret-bound_int_field (0.00s)
+    --- PASS: TestVerify_C1_Isolation/decode_error_confined_to_unrelated_literal_field_(reference-only_replay) (0.00s)
+    --- PASS: TestVerify_C1_Isolation/literal-field_decode_error_next_to_a_Secret-bound_typed_field_(reference-only_replay) (0.00s)
+    --- PASS: TestVerify_C1_Isolation/constructor_error_after_plugin_mutates_nested_maps (0.00s)
+    --- PASS: TestVerify_C1_Isolation/control:_plugin_built_directly_on_the_published_map (0.00s)
+    verify_c1_c2_plugin_probe_test.go:302: C2 secret#1="qA7-distinct-SECRET-alpha" returned(1st)="plugin configuration using urn:k8s:secret:vsec:deep, urn:k8s:secret:vsec:escaped, urn:k8s:secret:vsec:listed, urn:k8s:secret:vsec:port, urn:k8s:secret:vsec:slash, urn:k8s:secret:vsec:tilde, urn:k8s:secret:vsec:token, urn:k8s:secret:vsec:u1, urn:k8s:secret:vsec:u2 is invalid: configuration decoding failed"
+    verify_c1_c2_plugin_probe_test.go:303: C2 secret#1 retry on the same builder returns the same text = true
+    verify_c1_c2_plugin_probe_test.go:304: C2 secret#1="qA7-distinct-SECRET-alpha" stored(MiddlewareInfo.Err)=["plugin configuration using urn:k8s:secret:vsec:deep, urn:k8s:secret:vsec:escaped, urn:k8s:secret:vsec:listed, urn:k8s:secret:vsec:port, urn:k8s:secret:vsec:slash, urn:k8s:secret:vsec:tilde, urn:k8s:secret:vsec:token, urn:k8s:secret:vsec:u1, urn:k8s:secret:vsec:u2 is invalid: configuration decoding failed"]
+    verify_c1_c2_plugin_probe_test.go:317: C2 secret#1: Secret-derived text in returned/retried/stored errors = false
+    verify_c1_c2_plugin_probe_test.go:302: C2 secret#2="rB8-other-\"SECRET\"\\beta 'x'" returned(1st)="plugin configuration using urn:k8s:secret:vsec:deep, urn:k8s:secret:vsec:escaped, urn:k8s:secret:vsec:listed, urn:k8s:secret:vsec:port, urn:k8s:secret:vsec:slash, urn:k8s:secret:vsec:tilde, urn:k8s:secret:vsec:token, urn:k8s:secret:vsec:u1, urn:k8s:secret:vsec:u2 is invalid: configuration decoding failed"
+    verify_c1_c2_plugin_probe_test.go:303: C2 secret#2 retry on the same builder returns the same text = true
+    verify_c1_c2_plugin_probe_test.go:304: C2 secret#2="rB8-other-\"SECRET\"\\beta 'x'" stored(MiddlewareInfo.Err)=["plugin configuration using urn:k8s:secret:vsec:deep, urn:k8s:secret:vsec:escaped, urn:k8s:secret:vsec:listed, urn:k8s:secret:vsec:port, urn:k8s:secret:vsec:slash, urn:k8s:secret:vsec:tilde, urn:k8s:secret:vsec:token, urn:k8s:secret:vsec:u1, urn:k8s:secret:vsec:u2 is invalid: configuration decoding failed"]
+    verify_c1_c2_plugin_probe_test.go:317: C2 secret#2: Secret-derived text in returned/retried/stored errors = false
+    verify_c1_c2_plugin_probe_test.go:321: C2 diagnostics identical for both Secret values (public literals fixed) = true
+    verify_c1_c2_plugin_probe_test.go:302: C2 secret#1="qA7-distinct-SECRET-alpha" returned(1st)="plugin configuration using urn:k8s:secret:vsec:deep, urn:k8s:secret:vsec:escaped, urn:k8s:secret:vsec:listed, urn:k8s:secret:vsec:port, urn:k8s:secret:vsec:slash, urn:k8s:secret:vsec:tilde, urn:k8s:secret:vsec:token, urn:k8s:secret:vsec:u1, urn:k8s:secret:vsec:u2 is invalid: configuration decoding failed"
+    verify_c1_c2_plugin_probe_test.go:303: C2 secret#1 retry on the same builder returns the same text = true
+    verify_c1_c2_plugin_probe_test.go:304: C2 secret#1="qA7-distinct-SECRET-alpha" stored(MiddlewareInfo.Err)=["plugin configuration using urn:k8s:secret:vsec:deep, urn:k8s:secret:vsec:escaped, urn:k8s:secret:vsec:listed, urn:k8s:secret:vsec:port, urn:k8s:secret:vsec:slash, urn:k8s:secret:vsec:tilde, urn:k8s:secret:vsec:token, urn:k8s:secret:vsec:u1, urn:k8s:secret:vsec:u2 is invalid: configuration decoding failed"]
+    verify_c1_c2_plugin_probe_test.go:317: C2 secret#1: Secret-derived text in returned/retried/stored errors = false
+    verify_c1_c2_plugin_probe_test.go:302: C2 secret#2="rB8-other-\"SECRET\"\\beta 'x'" returned(1st)="plugin configuration using urn:k8s:secret:vsec:deep, urn:k8s:secret:vsec:escaped, urn:k8s:secret:vsec:listed, urn:k8s:secret:vsec:port, urn:k8s:secret:vsec:slash, urn:k8s:secret:vsec:tilde, urn:k8s:secret:vsec:token, urn:k8s:secret:vsec:u1, urn:k8s:secret:vsec:u2 is invalid: configuration decoding failed"
+    verify_c1_c2_plugin_probe_test.go:303: C2 secret#2 retry on the same builder returns the same text = true
+    verify_c1_c2_plugin_probe_test.go:304: C2 secret#2="rB8-other-\"SECRET\"\\beta 'x'" stored(MiddlewareInfo.Err)=["plugin configuration using urn:k8s:secret:vsec:deep, urn:k8s:secret:vsec:escaped, urn:k8s:secret:vsec:listed, urn:k8s:secret:vsec:port, urn:k8s:secret:vsec:slash, urn:k8s:secret:vsec:tilde, urn:k8s:secret:vsec:token, urn:k8s:secret:vsec:u1, urn:k8s:secret:vsec:u2 is invalid: configuration decoding failed"]
+    verify_c1_c2_plugin_probe_test.go:317: C2 secret#2: Secret-derived text in returned/retried/stored errors = false
+    verify_c1_c2_plugin_probe_test.go:321: C2 diagnostics identical for both Secret values (public literals fixed) = true
+    verify_c1_c2_plugin_probe_test.go:302: C2 secret#1="qA7-distinct-SECRET-alpha" returned(1st)="plugin configuration using urn:k8s:secret:vsec:deep, urn:k8s:secret:vsec:escaped, urn:k8s:secret:vsec:listed, urn:k8s:secret:vsec:slash, urn:k8s:secret:vsec:tilde, urn:k8s:secret:vsec:token, urn:k8s:secret:vsec:u1, urn:k8s:secret:vsec:u2 is invalid: configuration decoding failed"
+    verify_c1_c2_plugin_probe_test.go:303: C2 secret#1 retry on the same builder returns the same text = true
+    verify_c1_c2_plugin_probe_test.go:304: C2 secret#1="qA7-distinct-SECRET-alpha" stored(MiddlewareInfo.Err)=["plugin configuration using urn:k8s:secret:vsec:deep, urn:k8s:secret:vsec:escaped, urn:k8s:secret:vsec:listed, urn:k8s:secret:vsec:slash, urn:k8s:secret:vsec:tilde, urn:k8s:secret:vsec:token, urn:k8s:secret:vsec:u1, urn:k8s:secret:vsec:u2 is invalid: configuration decoding failed"]
+    verify_c1_c2_plugin_probe_test.go:317: C2 secret#1: Secret-derived text in returned/retried/stored errors = false
+    verify_c1_c2_plugin_probe_test.go:302: C2 secret#2="rB8-other-\"SECRET\"\\beta 'x'" returned(1st)="plugin configuration using urn:k8s:secret:vsec:deep, urn:k8s:secret:vsec:escaped, urn:k8s:secret:vsec:listed, urn:k8s:secret:vsec:slash, urn:k8s:secret:vsec:tilde, urn:k8s:secret:vsec:token, urn:k8s:secret:vsec:u1, urn:k8s:secret:vsec:u2 is invalid: configuration decoding failed"
+    verify_c1_c2_plugin_probe_test.go:303: C2 secret#2 retry on the same builder returns the same text = true
+    verify_c1_c2_plugin_probe_test.go:304: C2 secret#2="rB8-other-\"SECRET\"\\beta 'x'" stored(MiddlewareInfo.Err)=["plugin configuration using urn:k8s:secret:vsec:deep, urn:k8s:secret:vsec:escaped, urn:k8s:secret:vsec:listed, urn:k8s:secret:vsec:slash, urn:k8s:secret:vsec:tilde, urn:k8s:secret:vsec:token, urn:k8s:secret:vsec:u1, urn:k8s:secret:vsec:u2 is invalid: configuration decoding failed"]
+    verify_c1_c2_plugin_probe_test.go:317: C2 secret#2: Secret-derived text in returned/retried/stored errors = false
+    verify_c1_c2_plugin_probe_test.go:321: C2 diagnostics identical for both Secret values (public literals fixed) = true
+    verify_c1_c2_plugin_probe_test.go:324: C2 quoted text "PUBLIC-NOT-A-BOOL" originates from the fixed public literal: present for both Secret values = false
+    verify_c1_c2_plugin_probe_test.go:302: C2 secret#1="qA7-distinct-SECRET-alpha" returned(1st)="plugin configuration using urn:k8s:secret:vsec:deep, urn:k8s:secret:vsec:escaped, urn:k8s:secret:vsec:listed, urn:k8s:secret:vsec:slash, urn:k8s:secret:vsec:tilde, urn:k8s:secret:vsec:token, urn:k8s:secret:vsec:u1, urn:k8s:secret:vsec:u2 is invalid: configuration decoding failed"
+    verify_c1_c2_plugin_probe_test.go:303: C2 secret#1 retry on the same builder returns the same text = true
+    verify_c1_c2_plugin_probe_test.go:304: C2 secret#1="qA7-distinct-SECRET-alpha" stored(MiddlewareInfo.Err)=["plugin configuration using urn:k8s:secret:vsec:deep, urn:k8s:secret:vsec:escaped, urn:k8s:secret:vsec:listed, urn:k8s:secret:vsec:slash, urn:k8s:secret:vsec:tilde, urn:k8s:secret:vsec:token, urn:k8s:secret:vsec:u1, urn:k8s:secret:vsec:u2 is invalid: configuration decoding failed"]
+    verify_c1_c2_plugin_probe_test.go:317: C2 secret#1: Secret-derived text in returned/retried/stored errors = false
+    verify_c1_c2_plugin_probe_test.go:302: C2 secret#2="rB8-other-\"SECRET\"\\beta 'x'" returned(1st)="plugin configuration using urn:k8s:secret:vsec:deep, urn:k8s:secret:vsec:escaped, urn:k8s:secret:vsec:listed, urn:k8s:secret:vsec:slash, urn:k8s:secret:vsec:tilde, urn:k8s:secret:vsec:token, urn:k8s:secret:vsec:u1, urn:k8s:secret:vsec:u2 is invalid: configuration decoding failed"
+    verify_c1_c2_plugin_probe_test.go:303: C2 secret#2 retry on the same builder returns the same text = true
+    verify_c1_c2_plugin_probe_test.go:304: C2 secret#2="rB8-other-\"SECRET\"\\beta 'x'" stored(MiddlewareInfo.Err)=["plugin configuration using urn:k8s:secret:vsec:deep, urn:k8s:secret:vsec:escaped, urn:k8s:secret:vsec:listed, urn:k8s:secret:vsec:slash, urn:k8s:secret:vsec:tilde, urn:k8s:secret:vsec:token, urn:k8s:secret:vsec:u1, urn:k8s:secret:vsec:u2 is invalid: configuration decoding failed"]
+    verify_c1_c2_plugin_probe_test.go:317: C2 secret#2: Secret-derived text in returned/retried/stored errors = false
+    verify_c1_c2_plugin_probe_test.go:321: C2 diagnostics identical for both Secret values (public literals fixed) = true
+    verify_c1_c2_plugin_probe_test.go:324: C2 quoted text "qA7-distinct-SECRET-alpha" originates from the fixed public literal: present for both Secret values = false
+    verify_c1_c2_plugin_probe_test.go:337: C2 control: raw decoder error = "failed to decode configuration: 1 error(s) decoding:\n\n* cannot parse 'port' as int: strconv.ParseInt: parsing \"qA7-distinct-SECRET-alpha\": invalid syntax"
+--- PASS: TestVerify_C2_ErrorConfidentiality (0.02s)
+    --- PASS: TestVerify_C2_ErrorConfidentiality/decode_error_on_Secret-bound_int_field_(port) (0.00s)
+    --- PASS: TestVerify_C2_ErrorConfidentiality/constructor_error_quoting_Secret-bound_token (0.00s)
+    --- PASS: TestVerify_C2_ErrorConfidentiality/decode_error_on_fixed_public_literal_field_(enabled) (0.01s)
+    --- PASS: TestVerify_C2_ErrorConfidentiality/fixture_shape:_fixed_public_literal_equal_to_Secret_value_A (0.00s)
+    --- PASS: TestVerify_C2_ErrorConfidentiality/control:_raw_plugins.Builder_error_for_the_resolved_configuration (0.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd	0.114s

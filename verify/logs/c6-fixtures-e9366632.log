@@ -1,0 +1,20 @@
+### branch HEAD: 49ebf053d3e6e8819d11983d0a390dde01285ee6
+$ go test -count=1 -v -run '^TestEval_' ./pkg/middlewares/auth   # provided auth fixtures (eval_auth_sanitation_test.go, byte-exact)
+--- PASS: TestEval_BasicAuthParser_OmitCredentialsFromError (0.00s)
+    --- PASS: TestEval_BasicAuthParser_OmitCredentialsFromError/extra_field_with_sensitive_hash (0.00s)
+    --- PASS: TestEval_BasicAuthParser_OmitCredentialsFromError/single_segment_without_colon (0.00s)
+    --- PASS: TestEval_BasicAuthParser_OmitCredentialsFromError/sensitive_prefix_in_first_segment (0.00s)
+--- PASS: TestEval_DigestAuthParser_OmitCredentialsFromError (0.00s)
+    --- PASS: TestEval_DigestAuthParser_OmitCredentialsFromError/sensitive_prefix_before_first_colon (0.00s)
+    --- PASS: TestEval_DigestAuthParser_OmitCredentialsFromError/credential_containing_embedded_URN_substring (0.00s)
+    --- PASS: TestEval_DigestAuthParser_OmitCredentialsFromError/missing_hash_segment (0.00s)
+    --- PASS: TestEval_DigestAuthParser_OmitCredentialsFromError/four_segments_with_sensitive_values_including_sensitive_first_field (0.00s)
+    --- PASS: TestEval_DigestAuthParser_OmitCredentialsFromError/single_segment_without_colon (0.00s)
+--- PASS: TestEval_GetUsers_DiagnosticsDistinguishSources (0.00s)
+--- PASS: TestEval_GetUsers_ErrorReportsPositionWithoutLeakingCredentials (0.00s)
+    --- PASS: TestEval_GetUsers_ErrorReportsPositionWithoutLeakingCredentials/file (0.00s)
+    --- PASS: TestEval_GetUsers_ErrorReportsPositionWithoutLeakingCredentials/inline (0.00s)
+    --- PASS: TestEval_GetUsers_ErrorReportsPositionWithoutLeakingCredentials/digest_file (0.00s)
+    --- PASS: TestEval_GetUsers_ErrorReportsPositionWithoutLeakingCredentials/digest_inline (0.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/middlewares/auth	0.024s

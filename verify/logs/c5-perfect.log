@@ -1,0 +1,106 @@
+### branch HEAD: 84614aa0ce1af141b9fbdeae2980b79e1f53ba73
+### provided typed-Secret probe (eval_local_plugin.go) and every eval_reject assignment in the provided tests
+44:	DecodeReject    int                    `mapstructure:"eval_reject"`
+94:	secretInt, convErr := strconv.Atoi(fmt.Sprint(config.Remain["secret"]))
+98:		SecretIsInt: convErr == nil,
+671:		observation := evalBuildPluginError(t, fixtureSecret, map[string]any{"eval_reject": fixtureSecret})
+700:		{name: "decode", keys: map[string]any{"eval_reject": "placeholder"}},
+751:					if _, decodes := keys["eval_reject"]; decodes {
+759:						keys["eval_reject"] = tc.secretVal
+864:		{name: "decode error", keys: map[string]any{"eval_reject": secretValue}},
+1034:					pluginConfig["eval_reject"] = "not-an-integer"
+### where the provided plugin writes to its configuration, and what it keeps (eval_local_plugin.go)
+56:func CreateConfig() *Config {
+57:	return &Config{}
+86:func New(ctx context.Context, next http.Handler, config *Config, name string) (http.Handler, error) {
+105:	evalMutateNested(config.Remain)
+117:		_, _ = rw.Write(body)
+### ownership assertions of the provided isolation test
+1087:					assert.JSONEq(t, string(expected), string(actualPublished), "plugin mutations and error retries must not alter published configuration")
+1092:					assert.JSONEq(t, string(expected), string(actualRuntime), "plugin mutations and error retries must not alter shared runtime configuration")
+
+### BASELINE (unmodified production)
+$ go test -count=1 -v -run '^TestEval_ProviderToBuilder_Plugin(TypedSecretField|SuccessExecution|NestedExecution|EscapedKeyExecution|InputMutationIsolation)$' ./pkg/provider/kubernetes/crd   # provided fixtures
+      1     --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/deep_map/constructor_error 
+      1     --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/deep_map/decode_error 
+      1     --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/deep_map/success 
+      1     --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/list/constructor_error 
+      1     --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/list/decode_error 
+      1     --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/list/success 
+      1     --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/list_of_maps/constructor_error 
+      1     --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/list_of_maps/decode_error 
+      1     --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/list_of_maps/success 
+      1     --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/payload_equals_reference/constructor_error 
+      1     --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/payload_equals_reference/decode_error 
+      1     --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/payload_equals_reference/success 
+      1     --- PASS: TestEval_ProviderToBuilder_PluginNestedExecution/deep_map 
+      1     --- PASS: TestEval_ProviderToBuilder_PluginNestedExecution/list 
+      1     --- PASS: TestEval_ProviderToBuilder_PluginNestedExecution/list_of_maps 
+      1 --- PASS: TestEval_ProviderToBuilder_PluginEscapedKeyExecution 
+      1 --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation 
+      1 --- PASS: TestEval_ProviderToBuilder_PluginNestedExecution 
+      1 --- PASS: TestEval_ProviderToBuilder_PluginSuccessExecution 
+      1 --- PASS: TestEval_ProviderToBuilder_PluginTypedSecretField 
+      1 PASS
+      1 ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd	0.146s
+$ go test -tags verify -count=1 -v -run '^TestVerify_(C1_Execution|Retain)' ./pkg/provider/kubernetes/crd   # audit probes
+      1     --- PASS: TestVerify_Retain_PostCallbackOwnership/constructor_error_with_literal_port_(reference-only_replay) 
+      1     --- PASS: TestVerify_Retain_PostCallbackOwnership/control:_published_map_handed_directly_to_the_plugin_builder 
+      1     --- PASS: TestVerify_Retain_PostCallbackOwnership/decode_error_on_Secret-bound_int_field_(reference-only_replay) 
+      1     --- PASS: TestVerify_Retain_PostCallbackOwnership/decode_error_on_unrelated_literal_field_(reference-only_replay) 
+      1     --- PASS: TestVerify_Retain_PostCallbackOwnership/success:_handler_writes_to_retained_config_after_New_returned 
+      1     verify_c1_c5_retain_probe_test.go:146: RESULT constructor error with literal port (reference-only replay): original published+runtime configuration unchanged after post-callback writes = true (plugin rewrote leaves: handler=0 fire=14)
+      1     verify_c1_c5_retain_probe_test.go:146: RESULT decode error on Secret-bound int field (reference-only replay): original published+runtime configuration unchanged after post-callback writes = true (plugin rewrote leaves: handler=0 fire=14)
+      1     verify_c1_c5_retain_probe_test.go:146: RESULT decode error on unrelated literal field (reference-only replay): original published+runtime configuration unchanged after post-callback writes = true (plugin rewrote leaves: handler=0 fire=14)
+      1     verify_c1_c5_retain_probe_test.go:146: RESULT success: handler writes to retained config after New returned: original published+runtime configuration unchanged after post-callback writes = true (plugin rewrote leaves: handler=7 fire=14)
+      1 --- PASS: TestVerify_C1_Execution 
+      1 --- PASS: TestVerify_Retain_PostCallbackOwnership 
+      1 PASS
+      1 ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd	0.094s
+
+### MUTATION M1 — production: pkg/plugins/middlewareyaegi.go 'WeaklyTypedInput: true' -> false (a resolved Secret string can no longer be decoded into an int field)
+-		WeaklyTypedInput: true,
++		WeaklyTypedInput: false,
+$ go test -count=1 -v -run '^TestEval_ProviderToBuilder_Plugin(TypedSecretField|SuccessExecution|NestedExecution|EscapedKeyExecution|InputMutationIsolation)$' ./pkg/provider/kubernetes/crd   # provided fixtures
+      1     --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/deep_map/constructor_error 
+      1     --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/deep_map/decode_error 
+      1     --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/deep_map/success 
+      1     --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/list/constructor_error 
+      1     --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/list/decode_error 
+      1     --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/list/success 
+      1     --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/list_of_maps/constructor_error 
+      1     --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/list_of_maps/decode_error 
+      1     --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/list_of_maps/success 
+      1     --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/payload_equals_reference/constructor_error 
+      1     --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/payload_equals_reference/decode_error 
+      1     --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/payload_equals_reference/success 
+      1     --- PASS: TestEval_ProviderToBuilder_PluginNestedExecution/deep_map 
+      1     --- PASS: TestEval_ProviderToBuilder_PluginNestedExecution/list 
+      1     --- PASS: TestEval_ProviderToBuilder_PluginNestedExecution/list_of_maps 
+      1 --- PASS: TestEval_ProviderToBuilder_PluginEscapedKeyExecution 
+      1 --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation 
+      1 --- PASS: TestEval_ProviderToBuilder_PluginNestedExecution 
+      1 --- PASS: TestEval_ProviderToBuilder_PluginSuccessExecution 
+      1 --- PASS: TestEval_ProviderToBuilder_PluginTypedSecretField 
+      1 PASS
+      1 ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd	0.151s
+$ go test -tags verify -count=1 -v -run '^TestVerify_(C1_Execution|Retain)' ./pkg/provider/kubernetes/crd   # audit probes
+      1         	Error Trace:	/home/ubuntu/wt/perfect/pkg/provider/kubernetes/crd/verify_c1_c2_plugin_probe_test.go:172
+      1         	Error Trace:	/home/ubuntu/wt/perfect/pkg/provider/kubernetes/crd/verify_c1_c5_retain_probe_test.go:100
+      1     --- FAIL: TestVerify_Retain_PostCallbackOwnership/success:_handler_writes_to_retained_config_after_New_returned 
+      1     --- PASS: TestVerify_Retain_PostCallbackOwnership/constructor_error_with_literal_port_(reference-only_replay) 
+      1     --- PASS: TestVerify_Retain_PostCallbackOwnership/control:_published_map_handed_directly_to_the_plugin_builder 
+      1     --- PASS: TestVerify_Retain_PostCallbackOwnership/decode_error_on_Secret-bound_int_field_(reference-only_replay) 
+      1     --- PASS: TestVerify_Retain_PostCallbackOwnership/decode_error_on_unrelated_literal_field_(reference-only_replay) 
+      1     verify_c1_c5_retain_probe_test.go:146: RESULT constructor error with literal port (reference-only replay): original published+runtime configuration unchanged after post-callback writes = true (plugin rewrote leaves: handler=0 fire=14)
+      1     verify_c1_c5_retain_probe_test.go:146: RESULT decode error on Secret-bound int field (reference-only replay): original published+runtime configuration unchanged after post-callback writes = true (plugin rewrote leaves: handler=0 fire=14)
+      1     verify_c1_c5_retain_probe_test.go:146: RESULT decode error on unrelated literal field (reference-only replay): original published+runtime configuration unchanged after post-callback writes = true (plugin rewrote leaves: handler=0 fire=14)
+      1 --- FAIL: TestVerify_C1_Execution 
+      1 --- FAIL: TestVerify_Retain_PostCallbackOwnership 
+      2 FAIL
+      1 FAIL	github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd	0.097s
+
+### every provided TestEval_ test of ./pkg/provider/kubernetes/crd: result lines at BASELINE vs under M1
+$ go test -count=1 -v -run '^TestEval_' ./pkg/provider/kubernetes/crd   # run at baseline and under M1, '--- PASS/FAIL' lines sorted and diffed
+baseline: 116 PASS, 0 FAIL; under M1: 116 PASS, 0 FAIL
+diff: IDENTICAL (no provided test changes result when production can no longer decode a string into an int field)

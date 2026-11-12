@@ -1,0 +1,10 @@
+### HEAD: 6e6f6614d8ed45c143f5814472c5e84267273b02
+$ go test -count=30 -v -run '^TestEval_IngressNGINX_AuthMapDeterministicOrderAndRotation$' ./pkg/provider/kubernetes/ingress-nginx   # provided fixture, 30 runs; result and assertion-message lines counted
+     55         	Messages:   	auth-map reload on unchanged secret must produce identical configuration hash
+     55         	Messages:   	auth-map reload on unchanged secret must produce identical slice order
+     21         	Messages:   	rotation must not change public Secret references
+     55         	Messages:   	unchanged reload must be deep-equal so the watcher skips it
+     29 --- FAIL: TestEval_IngressNGINX_AuthMapDeterministicOrderAndRotation
+      1 --- PASS: TestEval_IngressNGINX_AuthMapDeterministicOrderAndRotation
+      2 FAIL
+      1 FAIL	github.com/traefik/traefik/v3/pkg/provider/kubernetes/ingress-nginx	0.848s

@@ -1,0 +1,137 @@
+### branch HEAD: f9769c349063f114982c649140df84338a501dbb
+### changed files before: 0
+### added test files in scope: pkg/middlewares/auth/secret_error_test.go pkg/server/middleware/secrets_test.go
+
+### BASELINE (unmodified branch)
+$ go test -count=1 -v -run '^(TestSecretAuthErrorsDoNotExposeEntries|TestSecretMiddlewareAuthenticationAndRotation|TestSecretPluginErrorAndConfigurationIsolation|TestSecretMalformedAuthEntry|TestSecretTLSAndRedisResolution|TestSecretBasicAuthTypedCredentials|TestSecretNestedPluginResolution|TestSecretDigestErrorIdentifiesEntry)$' ./pkg/server/middleware ./pkg/middlewares/auth
+--- PASS: TestSecretMiddlewareAuthenticationAndRotation (0.00s)
+--- PASS: TestSecretPluginErrorAndConfigurationIsolation (0.00s)
+--- PASS: TestSecretMalformedAuthEntry (0.00s)
+--- PASS: TestSecretTLSAndRedisResolution (0.00s)
+--- PASS: TestSecretBasicAuthTypedCredentials (0.00s)
+--- PASS: TestSecretNestedPluginResolution (0.00s)
+--- PASS: TestSecretDigestErrorIdentifiesEntry (0.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/server/middleware	0.023s
+--- PASS: TestSecretAuthErrorsDoNotExposeEntries (0.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/middlewares/auth	0.023s
+
+### MUTATION R  (plugin Build error: redacted error wraps the raw decoder error)
+-				return nil, pluginSecretError(config.Secrets)
++				return nil, fmt.Errorf("%w: %w", pluginSecretError(config.Secrets), err)
+
+### run under MUTATION R
+$ go test -count=1 -v -run '^(TestSecretAuthErrorsDoNotExposeEntries|TestSecretMiddlewareAuthenticationAndRotation|TestSecretPluginErrorAndConfigurationIsolation|TestSecretMalformedAuthEntry|TestSecretTLSAndRedisResolution|TestSecretBasicAuthTypedCredentials|TestSecretNestedPluginResolution|TestSecretDigestErrorIdentifiesEntry)$' ./pkg/server/middleware ./pkg/middlewares/auth
+--- PASS: TestSecretMiddlewareAuthenticationAndRotation (0.00s)
+    secrets_test.go:66:
+        	Error Trace:	/home/ubuntu/wt/85523a87/pkg/server/middleware/secrets_test.go:66
+        	Error:      	"plugin configuration or initialization failed with secret references [\"urn:k8s:secret:name:token\"]: decoder rejected value: configuration" should not contain "decoder rejected value"
+--- FAIL: TestSecretPluginErrorAndConfigurationIsolation (0.00s)
+--- PASS: TestSecretMalformedAuthEntry (0.00s)
+--- PASS: TestSecretTLSAndRedisResolution (0.00s)
+--- PASS: TestSecretBasicAuthTypedCredentials (0.00s)
+--- PASS: TestSecretNestedPluginResolution (0.00s)
+--- PASS: TestSecretDigestErrorIdentifiesEntry (0.00s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/server/middleware	0.025s
+--- PASS: TestSecretAuthErrorsDoNotExposeEntries (0.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/middlewares/auth	0.024s
+FAIL
+
+### MUTATION U  (redactor drops the URN list)
+-	return fmt.Errorf("plugin configuration or initialization failed with secret references %q", secrets.References())
++	return fmt.Errorf("plugin configuration or initialization failed%s", "")
+
+### run under MUTATION U
+$ go test -count=1 -v -run '^(TestSecretAuthErrorsDoNotExposeEntries|TestSecretMiddlewareAuthenticationAndRotation|TestSecretPluginErrorAndConfigurationIsolation|TestSecretMalformedAuthEntry|TestSecretTLSAndRedisResolution|TestSecretBasicAuthTypedCredentials|TestSecretNestedPluginResolution|TestSecretDigestErrorIdentifiesEntry)$' ./pkg/server/middleware ./pkg/middlewares/auth
+--- PASS: TestSecretMiddlewareAuthenticationAndRotation (0.00s)
+    secrets_test.go:65:
+        	Error Trace:	/home/ubuntu/wt/85523a87/pkg/server/middleware/secrets_test.go:65
+        	Error:      	"plugin configuration or initialization failed" does not contain "urn:k8s:secret:name:token"
+--- FAIL: TestSecretPluginErrorAndConfigurationIsolation (0.00s)
+--- PASS: TestSecretMalformedAuthEntry (0.00s)
+--- PASS: TestSecretTLSAndRedisResolution (0.00s)
+--- PASS: TestSecretBasicAuthTypedCredentials (0.00s)
+--- PASS: TestSecretNestedPluginResolution (0.00s)
+--- PASS: TestSecretDigestErrorIdentifiesEntry (0.00s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/server/middleware	0.023s
+--- PASS: TestSecretAuthErrorsDoNotExposeEntries (0.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/middlewares/auth	0.022s
+FAIL
+
+### MUTATION V  (plugin Build error: redacted error keeps the URN list but appends only the resolved Secret value)
+-				return nil, pluginSecretError(config.Secrets)
++				return nil, fmt.Errorf("%w: %v", pluginSecretError(config.Secrets), rawPluginConfig["token"])
+
+### run under MUTATION V
+$ go test -count=1 -v -run '^(TestSecretAuthErrorsDoNotExposeEntries|TestSecretMiddlewareAuthenticationAndRotation|TestSecretPluginErrorAndConfigurationIsolation|TestSecretMalformedAuthEntry|TestSecretTLSAndRedisResolution|TestSecretBasicAuthTypedCredentials|TestSecretNestedPluginResolution|TestSecretDigestErrorIdentifiesEntry)$' ./pkg/server/middleware ./pkg/middlewares/auth
+--- PASS: TestSecretMiddlewareAuthenticationAndRotation (0.00s)
+--- PASS: TestSecretPluginErrorAndConfigurationIsolation (0.00s)
+--- PASS: TestSecretMalformedAuthEntry (0.00s)
+--- PASS: TestSecretTLSAndRedisResolution (0.00s)
+--- PASS: TestSecretBasicAuthTypedCredentials (0.00s)
+--- PASS: TestSecretNestedPluginResolution (0.00s)
+--- PASS: TestSecretDigestErrorIdentifiesEntry (0.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/server/middleware	0.024s
+--- PASS: TestSecretAuthErrorsDoNotExposeEntries (0.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/middlewares/auth	0.022s
+
+### MUTATION A  (Secret-backed auth entry error quotes the malformed entry)
+-				return nil, fmt.Errorf("error parsing %s: entry %d from %q", kind, i+1, refs)
++				return nil, fmt.Errorf("error parsing %s: entry %d from %q: %s", kind, i+1, refs, entry)
+
+### run under MUTATION A
+$ go test -count=1 -v -run '^(TestSecretAuthErrorsDoNotExposeEntries|TestSecretMiddlewareAuthenticationAndRotation|TestSecretPluginErrorAndConfigurationIsolation|TestSecretMalformedAuthEntry|TestSecretTLSAndRedisResolution|TestSecretBasicAuthTypedCredentials|TestSecretNestedPluginResolution|TestSecretDigestErrorIdentifiesEntry)$' ./pkg/server/middleware ./pkg/middlewares/auth
+--- PASS: TestSecretMiddlewareAuthenticationAndRotation (0.00s)
+--- PASS: TestSecretPluginErrorAndConfigurationIsolation (0.00s)
+    secrets_test.go:81:
+        	Error Trace:	/home/ubuntu/wt/85523a87/pkg/server/middleware/secrets_test.go:81
+        	Error:      	"error parsing BasicUser: entry 2 from \"urn:k8s:secret:auth:users\": private-invalid" should not contain "private-invalid"
+--- FAIL: TestSecretMalformedAuthEntry (0.00s)
+--- PASS: TestSecretTLSAndRedisResolution (0.00s)
+--- PASS: TestSecretBasicAuthTypedCredentials (0.00s)
+--- PASS: TestSecretNestedPluginResolution (0.00s)
+    secrets_test.go:148:
+        	Error Trace:	/home/ubuntu/wt/85523a87/pkg/server/middleware/secrets_test.go:148
+        	Error:      	"error parsing DigestUser: entry 2 from \"urn:k8s:secret:auth:users\": invalid:private" should not contain "invalid:private"
+--- FAIL: TestSecretDigestErrorIdentifiesEntry (0.00s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/server/middleware	0.023s
+--- PASS: TestSecretAuthErrorsDoNotExposeEntries (0.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/middlewares/auth	0.032s
+FAIL
+
+### MUTATION P  (getUsers quotes the malformed entry)
+-			return nil, fmt.Errorf("invalid user entry %d", i+1)
++			return nil, fmt.Errorf("invalid user entry %d: %s", i+1, user)
+
+### run under MUTATION P
+$ go test -count=1 -v -run '^(TestSecretAuthErrorsDoNotExposeEntries|TestSecretMiddlewareAuthenticationAndRotation|TestSecretPluginErrorAndConfigurationIsolation|TestSecretMalformedAuthEntry|TestSecretTLSAndRedisResolution|TestSecretBasicAuthTypedCredentials|TestSecretNestedPluginResolution|TestSecretDigestErrorIdentifiesEntry)$' ./pkg/server/middleware ./pkg/middlewares/auth
+--- PASS: TestSecretMiddlewareAuthenticationAndRotation (0.00s)
+--- PASS: TestSecretPluginErrorAndConfigurationIsolation (0.00s)
+--- PASS: TestSecretMalformedAuthEntry (0.00s)
+--- PASS: TestSecretTLSAndRedisResolution (0.00s)
+--- PASS: TestSecretBasicAuthTypedCredentials (0.00s)
+--- PASS: TestSecretNestedPluginResolution (0.00s)
+--- PASS: TestSecretDigestErrorIdentifiesEntry (0.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/server/middleware	0.023s
+    secret_error_test.go:15:
+        	Error Trace:	/home/ubuntu/wt/85523a87/pkg/middlewares/auth/secret_error_test.go:15
+        	Error:      	"invalid user entry 1: secret-invalid" should not contain "secret-invalid"
+    secret_error_test.go:15:
+        	Error Trace:	/home/ubuntu/wt/85523a87/pkg/middlewares/auth/secret_error_test.go:15
+        	Error:      	"invalid user entry 1: secret-invalid" should not contain "secret-invalid"
+--- FAIL: TestSecretAuthErrorsDoNotExposeEntries (0.00s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/middlewares/auth	0.023s
+FAIL
+
+### changed files after: 0

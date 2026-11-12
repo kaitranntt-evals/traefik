@@ -1,0 +1,21 @@
+### branch HEAD: 84614aa0ce1af141b9fbdeae2980b79e1f53ba73
+$ go test -tags verify -count=1 -v -run '^TestVerify_Retain' ./pkg/provider/kubernetes/crd
+    verify_c1_c5_retain_probe_test.go:129: CONTROL direct decode error "failed to decode configuration: 2 error(s) decoding:\n\n* cannot parse 'enabled' as bool: strconv.ParseBool: parsing \"not-a-bool\": invalid syntax\n* cannot parse 'port' as int: strconv.ParseInt: parsing \"urn:k8s:secret:vsec:port\": invalid syntax"; plugin rewrote 7 leaves after decode returned; published unchanged = false (expected false)
+    verify_c1_c5_retain_probe_test.go:146: RESULT success: handler writes to retained config after New returned: original published+runtime configuration unchanged after post-callback writes = true (plugin rewrote leaves: handler=7 fire=14)
+    verify_c1_c5_retain_probe_test.go:145:     returned error: "plugin configuration using urn:k8s:secret:vsec:deep, urn:k8s:secret:vsec:listed, urn:k8s:secret:vsec:port, urn:k8s:secret:vsec:u1 is invalid: configuration decoding failed"
+    verify_c1_c5_retain_probe_test.go:145:     returned error: "plugin configuration using urn:k8s:secret:vsec:deep, urn:k8s:secret:vsec:listed, urn:k8s:secret:vsec:port, urn:k8s:secret:vsec:u1 is invalid: configuration decoding failed"
+    verify_c1_c5_retain_probe_test.go:146: RESULT decode error on unrelated literal field (reference-only replay): original published+runtime configuration unchanged after post-callback writes = true (plugin rewrote leaves: handler=0 fire=14)
+    verify_c1_c5_retain_probe_test.go:145:     returned error: "plugin configuration using urn:k8s:secret:vsec:deep, urn:k8s:secret:vsec:listed, urn:k8s:secret:vsec:u1 is invalid: configuration decoding failed"
+    verify_c1_c5_retain_probe_test.go:145:     returned error: "plugin configuration using urn:k8s:secret:vsec:deep, urn:k8s:secret:vsec:listed, urn:k8s:secret:vsec:u1 is invalid: configuration decoding failed"
+    verify_c1_c5_retain_probe_test.go:146: RESULT constructor error with literal port (reference-only replay): original published+runtime configuration unchanged after post-callback writes = true (plugin rewrote leaves: handler=0 fire=14)
+    verify_c1_c5_retain_probe_test.go:145:     returned error: "plugin configuration using urn:k8s:secret:vsec:deep, urn:k8s:secret:vsec:listed, urn:k8s:secret:vsec:port, urn:k8s:secret:vsec:u1 is invalid: configuration decoding failed"
+    verify_c1_c5_retain_probe_test.go:145:     returned error: "plugin configuration using urn:k8s:secret:vsec:deep, urn:k8s:secret:vsec:listed, urn:k8s:secret:vsec:port, urn:k8s:secret:vsec:u1 is invalid: configuration decoding failed"
+    verify_c1_c5_retain_probe_test.go:146: RESULT decode error on Secret-bound int field (reference-only replay): original published+runtime configuration unchanged after post-callback writes = true (plugin rewrote leaves: handler=0 fire=14)
+--- PASS: TestVerify_Retain_PostCallbackOwnership (0.08s)
+    --- PASS: TestVerify_Retain_PostCallbackOwnership/control:_published_map_handed_directly_to_the_plugin_builder (0.07s)
+    --- PASS: TestVerify_Retain_PostCallbackOwnership/success:_handler_writes_to_retained_config_after_New_returned (0.01s)
+    --- PASS: TestVerify_Retain_PostCallbackOwnership/decode_error_on_unrelated_literal_field_(reference-only_replay) (0.00s)
+    --- PASS: TestVerify_Retain_PostCallbackOwnership/constructor_error_with_literal_port_(reference-only_replay) (0.00s)
+    --- PASS: TestVerify_Retain_PostCallbackOwnership/decode_error_on_Secret-bound_int_field_(reference-only_replay) (0.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd	0.114s

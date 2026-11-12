@@ -1,0 +1,69 @@
+### branch HEAD: 6e6f6614d8ed45c143f5814472c5e84267273b02
+### ordering-related lines of the added auth-map test (pkg/provider/kubernetes/ingress-nginx/build_test.go)
+70:			users, secrets, err := basicAuthUsers(secret, test.authSecretType)
+77:			slices.Sort(users)
+78:			assert.Equal(t, test.expectedUsers, users)
+79:			assert.Equal(t, test.expectedSecrets, secrets)
+98:			slices.Sort(expectedUsers)
+99:			assert.Equal(t, dynamic.Users(expectedUsers), resolved.BasicAuth.Users)
+### every auth-map mention in the package's test files
+pkg/provider/kubernetes/ingress-nginx/build_test.go:41:			desc:           "auth-map references the password of each user",
+pkg/provider/kubernetes/ingress-nginx/build_test.go:42:			authSecretType: "auth-map",
+pkg/provider/kubernetes/ingress-nginx/build_test.go:54:			desc:           "auth-map without users",
+pkg/provider/kubernetes/ingress-nginx/build_test.go:55:			authSecretType: "auth-map",
+pkg/provider/kubernetes/ingress-nginx/build_test.go:92:				if test.authSecretType == "auth-map" {
+
+### BASELINE (unmodified production)
+$ go test -count=5 -run '^(TestBasicAuthUsers|TestLoadIngresses)$' -v ./pkg/provider/kubernetes/ingress-nginx   # branch's own added/modified tests, eval fixtures excluded
+      5     --- PASS: TestBasicAuthUsers/auth-file_references_the_auth_key
+      5     --- PASS: TestBasicAuthUsers/auth-file_without_auth_key
+      5     --- PASS: TestBasicAuthUsers/auth-map_references_the_password_of_each_user
+      5     --- PASS: TestBasicAuthUsers/auth-map_without_users
+      5 --- PASS: TestBasicAuthUsers
+      5 --- PASS: TestLoadIngresses
+      1 PASS
+      1 ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/ingress-nginx	0.432s
+$ go test -count=1 ./pkg/provider/kubernetes/ingress-nginx   # whole package, branch's own tests + archived eval fixtures
+      1 --- FAIL: TestEval_IngressNGINX_AuthMapCredentialBoundaries (0.01s)
+      1 --- FAIL: TestEval_IngressNGINX_AuthMapDeterministicOrderAndRotation (0.03s)
+      2 FAIL
+      1 FAIL	github.com/traefik/traefik/v3/pkg/provider/kubernetes/ingress-nginx	0.394s
+$ go test -tags verify -count=1 -v -run '^TestVerify_C7' ./pkg/provider/kubernetes/ingress-nginx   # audit probe: order compared without sorting
+    verify_c7_order_probe_test.go:47: RESULT order seen 137/200: alice:urn:k8s:secret:basic-auth:alice | bob:urn:k8s:secret:basic-auth:bob | carol:urn:k8s:secret:basic-auth:carol
+    verify_c7_order_probe_test.go:47: RESULT order seen  36/200: bob:urn:k8s:secret:basic-auth:bob | carol:urn:k8s:secret:basic-auth:carol | alice:urn:k8s:secret:basic-auth:alice
+    verify_c7_order_probe_test.go:47: RESULT order seen  27/200: carol:urn:k8s:secret:basic-auth:carol | alice:urn:k8s:secret:basic-auth:alice | bob:urn:k8s:secret:basic-auth:bob
+    verify_c7_order_probe_test.go:49: RESULT distinct orders over 200 calls = 3; calls returning sorted order = 137/200
+        	Error:      	"map[alice:urn:k8s:secret:basic-auth:alice | bob:urn:k8s:secret:basic-auth:bob | carol:urn:k8s:secret:basic-auth:carol:137 bob:urn:k8s:secret:basic-auth:bob | carol:urn:k8s:secret:basic-auth:carol | alice:urn:k8s:secret:basic-auth:alice:36 carol:urn:k8s:secret:basic-auth:carol | alice:urn:k8s:secret:basic-auth:alice | bob:urn:k8s:secret:basic-auth:bob:27]" should have 1 item(s), but has 3
+        	Messages:   	the same Secret must always publish the same user order
+        	Error:      	Not equal: 
+        	Messages:   	the published user order must be the sorted one
+--- FAIL: TestVerify_C7_AuthMapOrder (0.00s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/provider/kubernetes/ingress-nginx	0.024s
+FAIL
+
+### MUTATION O1 — production: basicAuthUsers returns the auth-map entries in REVERSE-sorted order (same contents)
++		slices.Sort(users)
++		slices.Reverse(users)
+$ go test -count=5 -run '^(TestBasicAuthUsers|TestLoadIngresses)$' -v ./pkg/provider/kubernetes/ingress-nginx   # branch's own added/modified tests, eval fixtures excluded
+      5     --- PASS: TestBasicAuthUsers/auth-file_references_the_auth_key
+      5     --- PASS: TestBasicAuthUsers/auth-file_without_auth_key
+      5     --- PASS: TestBasicAuthUsers/auth-map_references_the_password_of_each_user
+      5     --- PASS: TestBasicAuthUsers/auth-map_without_users
+      5 --- PASS: TestBasicAuthUsers
+      5 --- PASS: TestLoadIngresses
+      1 PASS
+      1 ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/ingress-nginx	0.390s
+$ go test -count=1 ./pkg/provider/kubernetes/ingress-nginx   # whole package, branch's own tests + archived eval fixtures
+      1 --- FAIL: TestEval_IngressNGINX_AuthMapCredentialBoundaries (0.01s)
+      2 FAIL
+      1 FAIL	github.com/traefik/traefik/v3/pkg/provider/kubernetes/ingress-nginx	0.397s
+$ go test -tags verify -count=1 -v -run '^TestVerify_C7' ./pkg/provider/kubernetes/ingress-nginx   # audit probe: order compared without sorting
+    verify_c7_order_probe_test.go:47: RESULT order seen 200/200: carol:urn:k8s:secret:basic-auth:carol | bob:urn:k8s:secret:basic-auth:bob | alice:urn:k8s:secret:basic-auth:alice
+    verify_c7_order_probe_test.go:49: RESULT distinct orders over 200 calls = 1; calls returning sorted order = 0/200
+        	Error:      	Not equal: 
+        	Messages:   	the published user order must be the sorted one
+--- FAIL: TestVerify_C7_AuthMapOrder (0.00s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/provider/kubernetes/ingress-nginx	0.025s
+FAIL
