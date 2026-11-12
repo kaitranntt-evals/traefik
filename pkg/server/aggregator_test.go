@@ -1410,3 +1410,41 @@ func Test_resolveHTTPTLSOptions(t *testing.T) {
 		})
 	}
 }
+
+func Test_resolveHTTPTLSOptions_parentRefs(t *testing.T) {
+	routers := func() map[string]*dynamic.Router {
+		return map[string]*dynamic.Router{
+			"listener-ep-a@kubernetes": {
+				EntryPoints: []string{"ep-a"},
+				Rule:        "Host(`example.com`)",
+				TLS:         &dynamic.RouterTLSConfig{Options: "listener-ep-a"},
+			},
+			"app@kubernetes": {
+				Rule:       "Host(`example.com`) && Path(`/app`)",
+				ParentRefs: []string{"listener-ep-a@kubernetes"},
+				Service:    "app@kubernetes",
+			},
+			"other@file": {
+				EntryPoints: []string{"ep-a"},
+				Rule:        "Host(`example.com`)",
+				TLS:         &dynamic.RouterTLSConfig{Options: "default"},
+			},
+		}
+	}
+
+	t.Run("child follows its renamed parent", func(t *testing.T) {
+		got := resolveHTTPTLSOptions(routers(), false)
+
+		require.NotContains(t, got, "listener-ep-a@kubernetes")
+		require.Equal(t, []string{"ep-a-conflicted-listener-ep-a@kubernetes"}, got["app@kubernetes"].ParentRefs)
+	})
+
+	t.Run("unresolved parent reference is kept", func(t *testing.T) {
+		all := routers()
+		all["app@kubernetes"].ParentRefs = append(all["app@kubernetes"].ParentRefs, "missing@kubernetes")
+
+		got := resolveHTTPTLSOptions(all, false)
+
+		require.Equal(t, []string{"ep-a-conflicted-listener-ep-a@kubernetes", "missing@kubernetes"}, got["app@kubernetes"].ParentRefs)
+	})
+}
