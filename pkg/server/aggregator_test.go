@@ -1448,3 +1448,43 @@ func Test_resolveHTTPTLSOptions_parentRefs(t *testing.T) {
 		require.Equal(t, []string{"ep-a-conflicted-listener-ep-a@kubernetes", "missing@kubernetes"}, got["app@kubernetes"].ParentRefs)
 	})
 }
+
+func Test_resolveHTTPTLSOptions_childHostConflict(t *testing.T) {
+	routers := map[string]*dynamic.Router{
+		"listener-wildcard@kubernetes": {
+			EntryPoints: []string{"ep-a"},
+			Rule:        "Host(`**.example.com`)",
+			TLS:         &dynamic.RouterTLSConfig{Options: "listener-wildcard"},
+		},
+		"app@kubernetes": {
+			Rule:       "Host(`foo.example.com`) && Path(`/app`)",
+			ParentRefs: []string{"listener-wildcard@kubernetes"},
+			Service:    "app@kubernetes",
+		},
+		"listener-epb-exact@kubernetes": {
+			EntryPoints: []string{"ep-b"},
+			Rule:        "Host(`foo.example.com`)",
+			TLS:         &dynamic.RouterTLSConfig{Options: "listener-epb-exact"},
+		},
+		"app-epb@kubernetes": {
+			Rule:       "Host(`foo.example.com`) && Path(`/app`)",
+			ParentRefs: []string{"listener-epb-exact@kubernetes"},
+			Service:    "app@kubernetes",
+		},
+		"other@file": {
+			EntryPoints: []string{"ep-a"},
+			Rule:        "Host(`foo.example.com`) && Path(`/other`)",
+			TLS:         &dynamic.RouterTLSConfig{Options: "default"},
+		},
+	}
+
+	got := resolveHTTPTLSOptions(routers, false)
+
+	require.NotContains(t, got, "listener-wildcard@kubernetes")
+	require.Contains(t, got, "ep-a-conflicted-listener-wildcard@kubernetes")
+	require.Equal(t, "default", got["ep-a-conflicted-listener-wildcard@kubernetes"].TLS.ResolvedOptions)
+	require.Equal(t, []string{"ep-a-conflicted-listener-wildcard@kubernetes"}, got["app@kubernetes"].ParentRefs)
+	require.Contains(t, got, "listener-epb-exact@kubernetes")
+	require.Equal(t, "listener-epb-exact@kubernetes", got["listener-epb-exact@kubernetes"].TLS.ResolvedOptions)
+	require.Equal(t, []string{"listener-epb-exact@kubernetes"}, got["app-epb@kubernetes"].ParentRefs)
+}

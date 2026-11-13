@@ -223,7 +223,50 @@ func resolveHTTPTLSOptions(routers map[string]*dynamic.Router, strictTLSOptions 
 	// Resolve the TLS options independently for each entryPoint.
 	conflictingRouters := make(map[string][]string, len(routersByEntryPoint))
 	for ep, epRouters := range routersByEntryPoint {
-		conflictingRouters[ep] = findConflictingRouters(ep, epRouters, strictTLSOptions)
+		// A parent router on this entryPoint also serves, for SNI purposes, the hosts its child
+		// routers match, unless another parent router on the same entryPoint claims that host.
+		claimedBy := map[string][]string{}
+		for _, router := range routers {
+			for _, parentRef := range router.ParentRefs {
+				parent, ok := epRouters[parentRef]
+				if !ok {
+					continue
+				}
+				domains, err := httpmuxer.ParseDomains(parent.Rule)
+				if err != nil {
+					continue
+				}
+				for _, domain := range domains {
+					if !slices.Contains(claimedBy[domain], parentRef) {
+						claimedBy[domain] = append(claimedBy[domain], parentRef)
+					}
+				}
+			}
+		}
+
+		childDomains := map[string][]string{}
+		for _, router := range routers {
+			if len(router.ParentRefs) == 0 {
+				continue
+			}
+			domains, err := httpmuxer.ParseDomains(router.Rule)
+			if err != nil {
+				continue
+			}
+			for _, parentRef := range router.ParentRefs {
+				if _, ok := epRouters[parentRef]; !ok {
+					continue
+				}
+				for _, domain := range domains {
+					if slices.ContainsFunc(claimedBy[domain], func(other string) bool { return other != parentRef }) {
+						continue
+					}
+					childDomains[parentRef] = append(childDomains[parentRef], domain)
+				}
+			}
+		}
+
+		conflictingRouters[ep] = findConflictingRouters(ep, epRouters, childDomains, strictTLSOptions)
 	}
 
 	// A router conflicting on an entry point is copied under a new name, so the
@@ -300,7 +343,7 @@ func resolveHTTPTLSOptions(routers map[string]*dynamic.Router, strictTLSOptions 
 // single-entryPoint routers, that serve a host (SNI) also served by another router
 // with a different resolved TLS option. Such routers are arbitrated by falling back
 // to the default TLS options, or, when strictTLSOptions is enabled, by disabling them.
-func findConflictingRouters(ep string, routers map[string]*dynamic.Router, strictTLSOptions bool) []string {
+func findConflictingRouters(ep string, routers map[string]*dynamic.Router, childDomains map[string][]string, strictTLSOptions bool) []string {
 	var conflicting []string
 
 	// For each host (SNI, already lower-cased by the domain parsing), the routers
@@ -332,7 +375,7 @@ func findConflictingRouters(ep string, routers map[string]*dynamic.Router, stric
 			continue
 		}
 
-		for _, domain := range domains {
+		for _, domain := range slices.Compact(slices.Sorted(slices.Values(append(domains, childDomains[name]...)))) {
 			if routersByHostAndOption[domain] == nil {
 				routersByHostAndOption[domain] = map[string][]string{}
 			}
