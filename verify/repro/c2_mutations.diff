@@ -1,0 +1,37 @@
+diff --git a/pkg/provider/kubernetes/gateway/listener_isolation_server_test.go b/pkg/provider/kubernetes/gateway/listener_isolation_server_test.go
+index 6e6113d56..cc876addd 100644
+--- a/pkg/provider/kubernetes/gateway/listener_isolation_server_test.go
++++ b/pkg/provider/kubernetes/gateway/listener_isolation_server_test.go
+@@ -1,6 +1,7 @@
+ package gateway_test
+ 
+ import (
++	"os"
+ 	"strings"
+ 	"testing"
+ 
+@@ -56,7 +57,8 @@ func TestHTTPSListener_conflictWithAnotherProvider(t *testing.T) {
+ 	routinesPool := safe.NewPool(t.Context())
+ 	t.Cleanup(routinesPool.Stop)
+ 
+-	watcher := server.NewConfigurationWatcher(routinesPool, pvd, []string{}, "", false)
++	// Audit instrumentation: VERIFY_MUT=strict enables strict TLS options.
++	watcher := server.NewConfigurationWatcher(routinesPool, pvd, []string{}, "", os.Getenv("VERIFY_MUT") == "strict")
+ 
+ 	confCh := make(chan dynamic.Configuration, 10)
+ 	watcher.AddListener(func(conf dynamic.Configuration) {
+@@ -71,6 +73,14 @@ func TestHTTPSListener_conflictWithAnotherProvider(t *testing.T) {
+ 		}
+ 	}
+ 
++	for name, rt := range conf.HTTP.Routers {
++		t.Logf("VERIFY router %s rule=%s resolved=%s conflicting=%v parentRefs=%v", name, rt.Rule, rt.TLS.ResolvedOptions, rt.TLS.ConflictingOptions, rt.ParentRefs)
++		// Audit instrumentation: VERIFY_MUT=drop simulates loss of the Gateway route for the conflicting host.
++		if os.Getenv("VERIFY_MUT") == "drop" && strings.Contains(name, "httproute-default-example-com") {
++			delete(conf.HTTP.Routers, name)
++			t.Logf("VERIFY dropped %s", name)
++		}
++	}
+ 	assert.Contains(t, conf.TLS.Options, "websecure-example-com@kubernetesgateway")
+ 
+ 	resolvedOptions := make(map[string]string)

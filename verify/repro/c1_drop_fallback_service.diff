@@ -1,0 +1,62 @@
+diff --git a/pkg/provider/kubernetes/gateway/listener_test.go b/pkg/provider/kubernetes/gateway/listener_test.go
+index 8fd0bd23b..1ef05db0a 100644
+--- a/pkg/provider/kubernetes/gateway/listener_test.go
++++ b/pkg/provider/kubernetes/gateway/listener_test.go
+@@ -1,6 +1,8 @@
+ package gateway_test
+ 
+ import (
++	"os"
++	"sort"
+ 	"context"
+ 	"crypto/tls"
+ 	"fmt"
+@@ -34,6 +36,7 @@ func TestListenerIsolation(t *testing.T) {
+ 				t.Parallel()
+ 
+ 				conf := gateway.LoadListenerIsolationConfiguration(t, protocol, kind)
++				verifyDropService(t, conf, "ISO")
+ 				handler := listenerIsolationHandler(t, conf, protocol == gatev1.HTTPSProtocolType)
+ 				testCases := []struct {
+ 					host     string
+@@ -61,6 +64,7 @@ func TestListenerIsolation(t *testing.T) {
+ 					t.Run(test.host+"/"+test.route, func(t *testing.T) {
+ 						path := listenerIsolationPath(kind, test.route)
+ 						rec := listenerIsolationRequest(handler, test.host, test.host, path, protocol == gatev1.HTTPSProtocolType)
++						t.Logf("VERIFY RESP %s%s -> %d %q", test.host, path, rec.Code, strings.TrimSpace(rec.Body.String()))
+ 						if test.expected == "" {
+ 							assert.Equal(t, http.StatusNotFound, rec.Code)
+ 						} else {
+@@ -80,6 +84,7 @@ func TestHTTPSListenerMisdirectedRequests(t *testing.T) {
+ 			t.Parallel()
+ 
+ 			conf := gateway.LoadListenerIsolationConfiguration(t, gatev1.HTTPSProtocolType, kind)
++			verifyDropService(t, conf, "MIS")
+ 			handler := listenerIsolationHandler(t, conf, true)
+ 			testCases := []struct {
+ 				sni      string
+@@ -244,3 +249,24 @@ func (p listenerIsolationProvider) Provide(ch chan<- dynamic.Message, _ *safe.Po
+ 	}
+ 	return nil
+ }
++
++// verifyDropService (audit instrumentation) lists the generated services and, when
++// VERIFY_DROP=<scope>:<substring> matches, removes the matching services only.
++func verifyDropService(t *testing.T, conf *dynamic.Configuration, scope string) {
++	t.Helper()
++	var names []string
++	for name := range conf.HTTP.Services {
++		names = append(names, name)
++	}
++	sort.Strings(names)
++	scopeWant, sub, _ := strings.Cut(os.Getenv("VERIFY_DROP"), ":")
++	for _, name := range names {
++		if strings.Contains(name, "listener-fallback") {
++			t.Logf("VERIFY generated fallback service %s (router rule: %s)", name, conf.HTTP.Routers[name].Rule)
++		}
++		if sub != "" && scopeWant == scope && strings.Contains(name, sub) {
++			delete(conf.HTTP.Services, name)
++			t.Logf("VERIFY removed service %s", name)
++		}
++	}
++}
