@@ -1569,4 +1569,36 @@ func Test_resolveHTTPTLSOptions_childHostPropagationBoundaries(t *testing.T) {
 		require.Equal(t, "default", got["websecure-conflicted-listener-wildcard@kubernetesgateway"].TLS.ResolvedOptions)
 		require.Equal(t, []string{"websecure-conflicted-listener-wildcard@kubernetesgateway"}, got["gw-app@kubernetesgateway"].ParentRefs)
 	})
+
+	t.Run("overlapping external wildcard and child-only host fall back in non-strict mode", func(t *testing.T) {
+		for _, tc := range []struct {
+			name    string
+			routers map[string]*dynamic.Router
+		}{
+			{
+				name: "external single-label wildcard",
+				routers: map[string]*dynamic.Router{
+					"listener-wildcard@kubernetesgateway": {EntryPoints: []string{"websecure"}, Rule: "Host(`**.example.com`)", TLS: &dynamic.RouterTLSConfig{Options: "listener-wildcard"}},
+					"gw-app@kubernetesgateway":            {Rule: "Path(`/gw`)", ParentRefs: []string{"listener-wildcard@kubernetesgateway"}, Service: "gw-app@kubernetesgateway"},
+					"ext@file":                            {EntryPoints: []string{"websecure"}, Rule: "Host(`*.example.com`) && Path(`/other`)", TLS: &dynamic.RouterTLSConfig{}},
+				},
+			},
+			{
+				name: "external child-only host with custom parent options",
+				routers: map[string]*dynamic.Router{
+					"listener-wildcard@kubernetesgateway": {EntryPoints: []string{"websecure"}, Rule: "Host(`**.example.com`)", TLS: &dynamic.RouterTLSConfig{Options: "listener-wildcard"}},
+					"gw-app@kubernetesgateway":            {Rule: "Path(`/gw`)", ParentRefs: []string{"listener-wildcard@kubernetesgateway"}, Service: "gw-app@kubernetesgateway"},
+					"ext-parent@file":                     {EntryPoints: []string{"websecure"}, Rule: "PathPrefix(`/other`)", TLS: &dynamic.RouterTLSConfig{Options: "custom"}},
+					"ext-child@file":                      {Rule: "Host(`foo.example.com`)", ParentRefs: []string{"ext-parent@file"}, Service: "ext-svc@file"},
+				},
+			},
+		} {
+			t.Run(tc.name, func(t *testing.T) {
+				got := resolveHTTPTLSOptions(tc.routers, false)
+				require.Contains(t, got, "websecure-conflicted-listener-wildcard@kubernetesgateway")
+				require.Equal(t, "default", got["websecure-conflicted-listener-wildcard@kubernetesgateway"].TLS.ResolvedOptions)
+				require.Equal(t, []string{"websecure-conflicted-listener-wildcard@kubernetesgateway"}, got["gw-app@kubernetesgateway"].ParentRefs)
+			})
+		}
+	})
 }
