@@ -1,0 +1,6 @@
+displayName: Verify Error Plugin
+type: middleware
+runtime: yaegi
+import: verifyerr
+basePkg: verifyerr
+summary: Constructor fails with credential-bearing error shapes (claims C5/C6 probe).

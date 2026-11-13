@@ -1,0 +1,79 @@
+##### UNMODIFIED
+C8 distinct user orders over 200 loads: 1
+C8   200x [urn:k8s:secret:credentials:alice urn:k8s:secret:credentials:bob urn:k8s:secret:credentials:carol]
+--- PASS: TestVerifyC8 (0.10s)
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/ingress-nginx	0.113s
+--- committed auth tests: go test -race -count=1 -run 'TestAuthSecretReferences|TestLoadIngresses|Test_basicAuthUsers' -v ./pkg/provider/kubernetes/ingress-nginx/
+--- PASS: TestLoadIngresses (0.03s)
+--- PASS: TestAuthSecretReferences (0.06s)
+    --- PASS: TestAuthSecretReferences/auth-file/basic (0.01s)
+    --- PASS: TestAuthSecretReferences/auth-file/digest (0.02s)
+    --- PASS: TestAuthSecretReferences/auth-map/basic (0.02s)
+    --- PASS: TestAuthSecretReferences/auth-map/digest (0.02s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/ingress-nginx	2.326s
+--- whole package: go test -count=1 ./pkg/provider/kubernetes/ingress-nginx/...
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/ingress-nginx	0.512s
+diff --git a/pkg/provider/kubernetes/ingress-nginx/build.go b/pkg/provider/kubernetes/ingress-nginx/build.go
+index 7aa935f4c..47aa54aee 100644
+--- a/pkg/provider/kubernetes/ingress-nginx/build.go
++++ b/pkg/provider/kubernetes/ingress-nginx/build.go
+@@ -1084,6 +1084,7 @@ func (p *Provider) resolveBasicAuth(namespace string, cfg IngressConfig) (*dynam
+ 			keys = append(keys, key)
+ 		}
+ 		slices.Sort(keys)
++		slices.Reverse(keys)
+ 		for _, key := range keys {
+ 			value := string(secret.Data[key])
+ 			ref := secrets.Add(secretName, key, value)
+##### MUTATION 1: reversed order
+ pkg/provider/kubernetes/ingress-nginx/build.go | 1 +
+ 1 file changed, 1 insertion(+)
+C8 distinct user orders over 200 loads: 1
+C8   200x [urn:k8s:secret:credentials:carol urn:k8s:secret:credentials:bob urn:k8s:secret:credentials:alice]
+--- PASS: TestVerifyC8 (0.08s)
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/ingress-nginx	0.103s
+--- committed auth tests: go test -race -count=1 -run 'TestAuthSecretReferences|TestLoadIngresses|Test_basicAuthUsers' -v ./pkg/provider/kubernetes/ingress-nginx/
+--- PASS: TestLoadIngresses (0.06s)
+--- PASS: TestAuthSecretReferences (0.09s)
+    --- PASS: TestAuthSecretReferences/auth-file/basic (0.02s)
+    --- PASS: TestAuthSecretReferences/auth-file/digest (0.03s)
+    --- PASS: TestAuthSecretReferences/auth-map/basic (0.02s)
+    --- PASS: TestAuthSecretReferences/auth-map/digest (0.02s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/ingress-nginx	2.434s
+--- whole package: go test -count=1 ./pkg/provider/kubernetes/ingress-nginx/...
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/ingress-nginx	0.542s
+diff --git a/pkg/provider/kubernetes/ingress-nginx/build.go b/pkg/provider/kubernetes/ingress-nginx/build.go
+index 7aa935f4c..2ace2b676 100644
+--- a/pkg/provider/kubernetes/ingress-nginx/build.go
++++ b/pkg/provider/kubernetes/ingress-nginx/build.go
+@@ -1083,7 +1083,7 @@ func (p *Provider) resolveBasicAuth(namespace string, cfg IngressConfig) (*dynam
+ 		for key := range secret.Data {
+ 			keys = append(keys, key)
+ 		}
+-		slices.Sort(keys)
++		_ = slices.Sort[[]string]
+ 		for _, key := range keys {
+ 			value := string(secret.Data[key])
+ 			ref := secrets.Add(secretName, key, value)
+##### MUTATION 2: unsorted (map iteration order, changes between loads)
+ pkg/provider/kubernetes/ingress-nginx/build.go | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+C8 distinct user orders over 200 loads: 3
+C8    28x [urn:k8s:secret:credentials:bob urn:k8s:secret:credentials:carol urn:k8s:secret:credentials:alice]
+C8    23x [urn:k8s:secret:credentials:alice urn:k8s:secret:credentials:bob urn:k8s:secret:credentials:carol]
+C8   149x [urn:k8s:secret:credentials:carol urn:k8s:secret:credentials:alice urn:k8s:secret:credentials:bob]
+--- PASS: TestVerifyC8 (0.09s)
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/ingress-nginx	0.106s
+--- committed auth tests: go test -race -count=1 -run 'TestAuthSecretReferences|TestLoadIngresses|Test_basicAuthUsers' -v ./pkg/provider/kubernetes/ingress-nginx/
+--- PASS: TestLoadIngresses (0.03s)
+--- PASS: TestAuthSecretReferences (0.06s)
+    --- PASS: TestAuthSecretReferences/auth-file/basic (0.01s)
+    --- PASS: TestAuthSecretReferences/auth-file/digest (0.02s)
+    --- PASS: TestAuthSecretReferences/auth-map/basic (0.02s)
+    --- PASS: TestAuthSecretReferences/auth-map/digest (0.02s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/ingress-nginx	2.259s
+--- whole package: go test -count=1 ./pkg/provider/kubernetes/ingress-nginx/...
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/ingress-nginx	0.534s

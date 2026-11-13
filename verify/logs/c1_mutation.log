@@ -1,0 +1,33 @@
+--- bound values, unmodified branch ---
+BOUND with_plugin_read_secret.yml default-test-secret urn:k8s:secret:name:key = "this_is_the_secret"
+BOUND with_plugin_deep_read_secret.yml default-test-secret urn:k8s:secret:name:key = "this_is_the_very_deep_secret"
+BOUND with_plugin_read_array_of_secret.yml default-test-secret urn:k8s:secret:name:key1 = "secret_data1"
+BOUND with_plugin_read_array_of_secret.yml default-test-secret urn:k8s:secret:name:key2 = "secret_data2"
+BOUND with_plugin_read_array_of_map_contain_secret.yml default-test-secret urn:k8s:secret:name:key1 = "admin_password"
+BOUND with_plugin_read_array_of_map_contain_secret.yml default-test-secret urn:k8s:secret:name:key2 = "user_password"
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd	0.076s
+ pkg/provider/kubernetes/crd/kubernetes.go | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+--- bound values, mutated ---
+BOUND with_plugin_read_secret.yml default-test-secret urn:k8s:secret:name:key = "this_is_the_secret"
+BOUND with_plugin_deep_read_secret.yml default-test-secret urn:k8s:secret:name:key = "CORRUPTED-BY-VERIFY"
+BOUND with_plugin_read_array_of_secret.yml default-test-secret urn:k8s:secret:name:key1 = "CORRUPTED-BY-VERIFY"
+BOUND with_plugin_read_array_of_secret.yml default-test-secret urn:k8s:secret:name:key2 = "CORRUPTED-BY-VERIFY"
+BOUND with_plugin_read_array_of_map_contain_secret.yml default-test-secret urn:k8s:secret:name:key1 = "CORRUPTED-BY-VERIFY"
+BOUND with_plugin_read_array_of_map_contain_secret.yml default-test-secret urn:k8s:secret:name:key2 = "CORRUPTED-BY-VERIFY"
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd	0.091s
+--- committed tests, mutated ---
+ok  	github.com/traefik/traefik/v3/pkg/config/dynamic	0.015s
+ok  	github.com/traefik/traefik/v3/pkg/server/middleware	0.030s
+?   	github.com/traefik/traefik/v3/pkg/server/middleware/tcp	[no test files]
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd	0.439s
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/ingress-nginx	0.475s
+--- targeted (mutated) ---
+    --- PASS: TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_secret (0.06s)
+    --- PASS: TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_deep_secret (0.06s)
+    --- PASS: TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_secret_that_not_found (0.06s)
+    --- PASS: TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_an_array_of_secret#01 (0.06s)
+    --- PASS: TestLoadIngressRoutes/Simple_Ingress_Route,_with_test_middleware_read_config_from_an_array_of_secret (0.06s)
+--- PASS: TestKubernetesSecretReferencesAndReload (0.01s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd	0.083s

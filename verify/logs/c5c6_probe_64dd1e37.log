@@ -1,0 +1,71 @@
+=== mode=interpreted-unwrap
+  original error: top="verifyerr: internal error"
+    host chain[0] interp._error: "verifyerr: internal error"
+  original: credentialInTopMessage=false credentialReachableViaHostUnwrap=false
+  production build#1 returned="verifyerr: internal error"
+    host chain[0] interp._error: "verifyerr: internal error"
+    stored MiddlewareInfo.Err=["verifyerr: internal error"]
+    LEAK returnedMessage=false reachableCause=false storedDiagnostic=false
+  production build#2 returned="verifyerr: internal error"
+    host chain[0] interp._error: "verifyerr: internal error"
+    stored MiddlewareInfo.Err=["verifyerr: internal error"]
+    LEAK returnedMessage=false reachableCause=false storedDiagnostic=false
+=== mode=native-wrap
+  original error: top="verifyerr: internal error"
+    host chain[0] *fmt.wrapError: "verifyerr: internal error"
+    host chain[1] *errors.errorString: "underlying failure with secret: verify_s3cret_VALUE_zq7"
+  original: credentialInTopMessage=false credentialReachableViaHostUnwrap=true
+  production build#1 returned="verifyerr: internal error"
+    host chain[0] *fmt.wrapError: "verifyerr: internal error"
+    host chain[1] *errors.errorString: "underlying failure with secret: urn:k8s:secret:name:key"
+    stored MiddlewareInfo.Err=["verifyerr: internal error"]
+    LEAK returnedMessage=false reachableCause=false storedDiagnostic=false
+  production build#2 returned="verifyerr: internal error"
+    host chain[0] *fmt.wrapError: "verifyerr: internal error"
+    host chain[1] *errors.errorString: "underlying failure with secret: urn:k8s:secret:name:key"
+    stored MiddlewareInfo.Err=["verifyerr: internal error"]
+    LEAK returnedMessage=false reachableCause=false storedDiagnostic=false
+=== mode=native-join
+  original error: top="verifyerr: internal error\nunderlying failure with secret: verify_s3cret_VALUE_zq7"
+    host chain[0] *errors.joinError: "verifyerr: internal error\nunderlying failure with secret: verify_s3cret_VALUE_zq7"
+    host chain[1] *errors.errorString: "verifyerr: internal error"
+    host chain[2] *errors.errorString: "underlying failure with secret: verify_s3cret_VALUE_zq7"
+  original: credentialInTopMessage=true credentialReachableViaHostUnwrap=true
+  production build#1 returned="verifyerr: internal error\nunderlying failure with secret: urn:k8s:secret:name:key"
+    host chain[0] *errors.joinError: "verifyerr: internal error\nunderlying failure with secret: urn:k8s:secret:name:key"
+    host chain[1] *errors.errorString: "verifyerr: internal error"
+    host chain[2] *errors.errorString: "underlying failure with secret: urn:k8s:secret:name:key"
+    stored MiddlewareInfo.Err=["verifyerr: internal error\nunderlying failure with secret: urn:k8s:secret:name:key"]
+    LEAK returnedMessage=false reachableCause=false storedDiagnostic=false
+  production build#2 returned="verifyerr: internal error\nunderlying failure with secret: urn:k8s:secret:name:key"
+    host chain[0] *errors.joinError: "verifyerr: internal error\nunderlying failure with secret: urn:k8s:secret:name:key"
+    host chain[1] *errors.errorString: "verifyerr: internal error"
+    host chain[2] *errors.errorString: "underlying failure with secret: urn:k8s:secret:name:key"
+    stored MiddlewareInfo.Err=["verifyerr: internal error\nunderlying failure with secret: urn:k8s:secret:name:key"]
+    LEAK returnedMessage=false reachableCause=false storedDiagnostic=false
+=== mode=cached
+  original error: top="verifyerr: rejected credential \"verify_s3cret_VALUE_zq7\""
+    host chain[0] *errors.errorString: "verifyerr: rejected credential \"verify_s3cret_VALUE_zq7\""
+  original: credentialInTopMessage=true credentialReachableViaHostUnwrap=false
+  production build#1 returned="verifyerr: rejected credential \"verify_s3cret_VALUE_zq7\""
+    host chain[0] *errors.errorString: "verifyerr: rejected credential \"verify_s3cret_VALUE_zq7\""
+    stored MiddlewareInfo.Err=["verifyerr: rejected credential \"verify_s3cret_VALUE_zq7\""]
+    LEAK returnedMessage=true reachableCause=false storedDiagnostic=true
+  production build#2 returned="verifyerr: rejected credential \"verify_s3cret_VALUE_zq7\""
+    host chain[0] *errors.errorString: "verifyerr: rejected credential \"verify_s3cret_VALUE_zq7\""
+    stored MiddlewareInfo.Err=["verifyerr: rejected credential \"verify_s3cret_VALUE_zq7\""]
+    LEAK returnedMessage=true reachableCause=false storedDiagnostic=true
+=== mode=cached-always
+  original error: top="verifyerr: rejected credential \"verify_s3cret_VALUE_zq7\""
+    host chain[0] *errors.errorString: "verifyerr: rejected credential \"verify_s3cret_VALUE_zq7\""
+  original: credentialInTopMessage=true credentialReachableViaHostUnwrap=false
+  production build#1 returned="verifyerr: rejected credential \"verify_s3cret_VALUE_zq7\""
+    host chain[0] *errors.errorString: "verifyerr: rejected credential \"verify_s3cret_VALUE_zq7\""
+    stored MiddlewareInfo.Err=["verifyerr: rejected credential \"verify_s3cret_VALUE_zq7\""]
+    LEAK returnedMessage=true reachableCause=false storedDiagnostic=true
+  production build#2 returned="verifyerr: rejected credential \"verify_s3cret_VALUE_zq7\""
+    host chain[0] *errors.errorString: "verifyerr: rejected credential \"verify_s3cret_VALUE_zq7\""
+    stored MiddlewareInfo.Err=["verifyerr: rejected credential \"verify_s3cret_VALUE_zq7\""]
+    LEAK returnedMessage=true reachableCause=false storedDiagnostic=true
+--- PASS: TestVerifyPluginErrors (0.09s)
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd	0.119s

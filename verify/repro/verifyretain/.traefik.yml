@@ -1,0 +1,6 @@
+displayName: Verify Retain Plugin
+type: middleware
+runtime: yaegi
+import: verifyretain
+basePkg: verifyretain
+summary: Retains CreateConfig results and mutates them later (claim C4 probe).

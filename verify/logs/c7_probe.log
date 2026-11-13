@@ -1,0 +1,19 @@
+C7 === secret-backed equivalent pair (same users in both Secrets)
+C7   loaded alone: a-b/c -> id a-b-c basicAuth=&{Users:[urn:k8s:secret:authsecret:users] UsersFile: Realm: RemoveHeader:false HeaderField:} addPrefix=<nil> bindings=1
+C7   loaded alone: a/b-c -> id a-b-c basicAuth=&{Users:[urn:k8s:secret:authsecret:users] UsersFile: Realm: RemoveHeader:false HeaderField:} addPrefix=<nil> bindings=1
+C7   complete objects DeepEqual=true
+C7   loaded together: middlewares=1 collisionWarnings=1
+C7   LOG {"level":"warn","middlewareName":"a-b-c","message":"Name collision: middleware \"a-b-c\" is defined more than once, the previous definition will be overridden"}
+C7 === CONTROL equivalent pair without Secret
+C7   loaded alone: a-b/c -> id a-b-c basicAuth=<nil> addPrefix=&{Prefix:/x} bindings=0
+C7   loaded alone: a/b-c -> id a-b-c basicAuth=<nil> addPrefix=&{Prefix:/x} bindings=0
+C7   complete objects DeepEqual=true
+C7   loaded together: middlewares=1 collisionWarnings=0
+C7 === CONTROL secret-backed pair with different Secret values
+C7   loaded alone: a-b/c -> id a-b-c basicAuth=&{Users:[urn:k8s:secret:authsecret:users] UsersFile: Realm: RemoveHeader:false HeaderField:} addPrefix=<nil> bindings=1
+C7   loaded alone: a/b-c -> id a-b-c basicAuth=&{Users:[urn:k8s:secret:authsecret:users] UsersFile: Realm: RemoveHeader:false HeaderField:} addPrefix=<nil> bindings=1
+C7   complete objects DeepEqual=false
+C7   loaded together: middlewares=1 collisionWarnings=1
+C7   LOG {"level":"warn","middlewareName":"a-b-c","message":"Name collision: middleware \"a-b-c\" is defined more than once, the previous definition will be overridden"}
+--- PASS: TestVerifyC7 (0.08s)
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd	0.102s

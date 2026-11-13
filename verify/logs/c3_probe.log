@@ -1,0 +1,14 @@
+C3 rotationAfterRead=0 reads=[tlssecret#1=B redissecret#1=B redissecret#2=B redissecret#3=B tlssecret#2=B tlssecret#3=B]
+C3   published urn:k8s:secret:redissecret:username="user-B" urn:k8s:secret:redissecret:password="password-B"
+C3   published urn:k8s:secret:tlssecret:tls.crt="-----BEGIN CERTIFICATE-----\nB\n-----END CERTIFICATE-----" urn:k8s:secret:tlssecret:tls.key="-----BEGIN PRIVATE KEY-----\nB\n-----END PRIVATE KEY-----"
+C3 rotationAfterRead=1 reads=[tlssecret#1=A redissecret#1=A redissecret#2=B redissecret#3=B tlssecret#2=B tlssecret#3=B]
+C3   published urn:k8s:secret:redissecret:username="user-B" urn:k8s:secret:redissecret:password="password-B"
+C3   published urn:k8s:secret:tlssecret:tls.crt="-----BEGIN CERTIFICATE-----\nB\n-----END CERTIFICATE-----" urn:k8s:secret:tlssecret:tls.key="-----BEGIN PRIVATE KEY-----\nB\n-----END PRIVATE KEY-----"
+C3 rotationAfterRead=2 reads=[tlssecret#1=A redissecret#1=A redissecret#2=A redissecret#3=B tlssecret#2=A tlssecret#3=B]
+C3   published urn:k8s:secret:redissecret:username="user" urn:k8s:secret:redissecret:password="password-B"
+C3   published urn:k8s:secret:tlssecret:tls.crt="-----BEGIN CERTIFICATE-----\n-----END CERTIFICATE-----" urn:k8s:secret:tlssecret:tls.key="-----BEGIN PRIVATE KEY-----\nB\n-----END PRIVATE KEY-----"
+C3 rotationAfterRead=3 reads=[tlssecret#1=A redissecret#1=A redissecret#2=A redissecret#3=A tlssecret#2=A tlssecret#3=A]
+C3   published urn:k8s:secret:redissecret:username="user" urn:k8s:secret:redissecret:password="password"
+C3   published urn:k8s:secret:tlssecret:tls.crt="-----BEGIN CERTIFICATE-----\n-----END CERTIFICATE-----" urn:k8s:secret:tlssecret:tls.key="-----BEGIN PRIVATE KEY-----\n-----END PRIVATE KEY-----"
+--- PASS: TestVerifyC3 (0.06s)
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd	0.084s

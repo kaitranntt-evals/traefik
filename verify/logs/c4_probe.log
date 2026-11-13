@@ -1,0 +1,42 @@
+C4 [failed decoding, deep map]
+C4   published before : {"test-secret":{"eval_reject":"not-an-integer","secret_0":{"secret_1":{"secret_2":{"secret":"urn:k8s:secret:name:key","user":"admin"}}}}}
+C4   build#1 err=plugin: failed to decode configuration: 1 error(s) decoding:
+C4   published after  : {"test-secret":{"eval_reject":"not-an-integer","secret_0":{"secret_1":{"secret_2":{"secret":"urn:k8s:secret:name:key","user":"admin"}}}}}
+C4   runtime (API)     : {"test-secret":{"eval_reject":"not-an-integer","secret_0":{"secret_1":{"secret_2":{"secret":"urn:k8s:secret:name:key","user":"admin"}}}}}
+C4   unchanged=true
+C4   build#2 err=plugin: failed to decode configuration: 1 error(s) decoding:
+C4   published after  : {"test-secret":{"eval_reject":"not-an-integer","secret_0":{"secret_1":{"secret_2":{"secret":"MUTATED-BY-RETAINED-CONFIG","user":"MUTATED-BY-RETAINED-CONFIG","verify_added":"MUTATED-BY-RETAINED-CONFIG"},"verify_added":"MUTATED-BY-RETAINED-CONFIG"},"verify_added":"MUTATED-BY-RETAINED-CONFIG"}}}
+C4   runtime (API)     : {"test-secret":{"eval_reject":"not-an-integer","secret_0":{"secret_1":{"secret_2":{"secret":"MUTATED-BY-RETAINED-CONFIG","user":"MUTATED-BY-RETAINED-CONFIG","verify_added":"MUTATED-BY-RETAINED-CONFIG"},"verify_added":"MUTATED-BY-RETAINED-CONFIG"},"verify_added":"MUTATED-BY-RETAINED-CONFIG"}}}
+C4   unchanged=false
+C4 [failed decoding, list of maps]
+C4   published before : {"test-secret":{"eval_reject":"not-an-integer","users":[{"name":"admin","secret":"urn:k8s:secret:name:key1"},{"name":"user","secret":"urn:k8s:secret:name:key2"}]}}
+C4   build#1 err=plugin: failed to decode configuration: 1 error(s) decoding:
+C4   published after  : {"test-secret":{"eval_reject":"not-an-integer","users":[{"name":"admin","secret":"urn:k8s:secret:name:key1"},{"name":"user","secret":"urn:k8s:secret:name:key2"}]}}
+C4   runtime (API)     : {"test-secret":{"eval_reject":"not-an-integer","users":[{"name":"admin","secret":"urn:k8s:secret:name:key1"},{"name":"user","secret":"urn:k8s:secret:name:key2"}]}}
+C4   unchanged=true
+C4   build#2 err=plugin: failed to decode configuration: 1 error(s) decoding:
+C4   published after  : {"test-secret":{"eval_reject":"not-an-integer","users":[{"name":"MUTATED-BY-RETAINED-CONFIG","secret":"MUTATED-BY-RETAINED-CONFIG","verify_added":"MUTATED-BY-RETAINED-CONFIG"},{"name":"MUTATED-BY-RETAINED-CONFIG","secret":"MUTATED-BY-RETAINED-CONFIG","verify_added":"MUTATED-BY-RETAINED-CONFIG"}]}}
+C4   runtime (API)     : {"test-secret":{"eval_reject":"not-an-integer","users":[{"name":"MUTATED-BY-RETAINED-CONFIG","secret":"MUTATED-BY-RETAINED-CONFIG","verify_added":"MUTATED-BY-RETAINED-CONFIG"},{"name":"MUTATED-BY-RETAINED-CONFIG","secret":"MUTATED-BY-RETAINED-CONFIG","verify_added":"MUTATED-BY-RETAINED-CONFIG"}]}}
+C4   unchanged=false
+C4 [failed decoding, list]
+C4   published before : {"test-secret":{"eval_reject":"not-an-integer","secret":["urn:k8s:secret:name:key1","urn:k8s:secret:name:key2"]}}
+C4   build#1 err=plugin: failed to decode configuration: 1 error(s) decoding:
+C4   published after  : {"test-secret":{"eval_reject":"not-an-integer","secret":["urn:k8s:secret:name:key1","urn:k8s:secret:name:key2"]}}
+C4   runtime (API)     : {"test-secret":{"eval_reject":"not-an-integer","secret":["urn:k8s:secret:name:key1","urn:k8s:secret:name:key2"]}}
+C4   unchanged=true
+C4   build#2 err=plugin: failed to decode configuration: 1 error(s) decoding:
+C4   published after  : {"test-secret":{"eval_reject":"not-an-integer","secret":["MUTATED-BY-RETAINED-CONFIG","MUTATED-BY-RETAINED-CONFIG"]}}
+C4   runtime (API)     : {"test-secret":{"eval_reject":"not-an-integer","secret":["MUTATED-BY-RETAINED-CONFIG","MUTATED-BY-RETAINED-CONFIG"]}}
+C4   unchanged=false
+C4 [CONTROL successful decoding, deep map]
+C4   published before : {"test-secret":{"secret_0":{"secret_1":{"secret_2":{"secret":"urn:k8s:secret:name:key","user":"admin"}}}}}
+C4   build#1 err=<nil>
+C4   published after  : {"test-secret":{"secret_0":{"secret_1":{"secret_2":{"secret":"urn:k8s:secret:name:key","user":"admin"}}}}}
+C4   runtime (API)     : {"test-secret":{"secret_0":{"secret_1":{"secret_2":{"secret":"urn:k8s:secret:name:key","user":"admin"}}}}}
+C4   unchanged=true
+C4   build#2 err=<nil>
+C4   published after  : {"test-secret":{"secret_0":{"secret_1":{"secret_2":{"secret":"urn:k8s:secret:name:key","user":"admin"}}}}}
+C4   runtime (API)     : {"test-secret":{"secret_0":{"secret_1":{"secret_2":{"secret":"urn:k8s:secret:name:key","user":"admin"}}}}}
+C4   unchanged=true
+--- PASS: TestVerifyC4 (0.07s)
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd	0.101s
