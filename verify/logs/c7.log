@@ -1,0 +1,48 @@
+=== RUN   TestVerify_MultiHostFallback
+=== RUN   TestVerify_MultiHostFallback/fileRouter=false/fileOptions=default
+ROUTER ext@file configured="" resolved="default" status=enabled err=[] rule=Host(`unrelated.test`) && Path(`/other`)
+ROUTER httproute-default-http-app-baronly-gw-default-verify-gw-ep-websecure-0-3dc7dae862a9bf2fbc5f@kubernetesgateway configured="listener-example-com-47287a8f16ec75e6073f" resolved="listener-example-com-47287a8f16ec75e6073f@kubernetesgateway" status=enabled err=[] rule=Host("bar.example.com") && Path("/baronly")
+ROUTER httproute-default-http-app-mixed-gw-default-verify-gw-ep-websecure-0-15dd97ffca440d89148e@kubernetesgateway configured="listener-example-com-47287a8f16ec75e6073f" resolved="listener-example-com-47287a8f16ec75e6073f@kubernetesgateway" status=enabled err=[] rule=(Host("foo.example.com") || Host("bar.example.com")) && Path("/mixed")
+SNI foo.example.com -> options="listener-example-com-47287a8f16ec75e6073f@kubernetesgateway" minVersion=0x304 err=<nil>
+SNI bar.example.com -> options="listener-example-com-47287a8f16ec75e6073f@kubernetesgateway" minVersion=0x304 err=<nil>
+SNI baz.example.com -> options="listener-example-com-47287a8f16ec75e6073f@kubernetesgateway" minVersion=0x304 err=<nil>
+RESULT fileRouter=false/fileOptions=default GET https://foo.example.com/mixed -> 200 (10.10.1.1)
+RESULT fileRouter=false/fileOptions=default GET https://foo.example.com/other -> 404 ()
+RESULT fileRouter=false/fileOptions=default GET https://bar.example.com/mixed -> 200 (10.10.1.1)
+RESULT fileRouter=false/fileOptions=default GET https://bar.example.com/baronly -> 200 (10.10.2.1)
+=== RUN   TestVerify_MultiHostFallback/fileRouter=true/fileOptions=default
+ROUTER ext@file configured="" resolved="default" status=enabled err=[] rule=Host(`foo.example.com`) && Path(`/other`)
+ROUTER httproute-default-http-app-baronly-gw-default-verify-gw-ep-websecure-0-3dc7dae862a9bf2fbc5f@kubernetesgateway configured="listener-example-com-47287a8f16ec75e6073f" resolved="listener-example-com-47287a8f16ec75e6073f@kubernetesgateway" status=enabled err=[] rule=Host("bar.example.com") && Path("/baronly")
+ROUTER websecure-conflicted-httproute-default-http-app-mixed-gw-default-verify-gw-ep-websecure-0-15dd97ffca440d89148e@kubernetesgateway configured="listener-example-com-47287a8f16ec75e6073f" resolved="default" status=warning err=[router's TLSOptions configuration is conflicting with other routers on the same entrypoint and host, default TLS options will be used instead] rule=(Host("foo.example.com") || Host("bar.example.com")) && Path("/mixed")
+SNI foo.example.com -> options="default" minVersion=0x304 err=<nil>
+SNI bar.example.com -> options="listener-example-com-47287a8f16ec75e6073f@kubernetesgateway" minVersion=0x304 err=<nil>
+SNI baz.example.com -> options="listener-example-com-47287a8f16ec75e6073f@kubernetesgateway" minVersion=0x304 err=<nil>
+RESULT fileRouter=true/fileOptions=default GET https://foo.example.com/mixed -> 200 (10.10.1.1)
+RESULT fileRouter=true/fileOptions=default GET https://foo.example.com/other -> 200 (aeval-file-backend)
+RESULT fileRouter=true/fileOptions=default GET https://bar.example.com/mixed -> 421 (Misdirected Request)
+RESULT fileRouter=true/fileOptions=default GET https://bar.example.com/baronly -> 200 (10.10.2.1)
+=== RUN   TestVerify_MultiHostFallback/fileRouter=false/fileOptions=custom
+ROUTER ext@file configured="custom" resolved="custom@file" status=enabled err=[] rule=Host(`unrelated.test`) && Path(`/other`)
+ROUTER httproute-default-http-app-baronly-gw-default-verify-gw-ep-websecure-0-3dc7dae862a9bf2fbc5f@kubernetesgateway configured="listener-example-com-47287a8f16ec75e6073f" resolved="listener-example-com-47287a8f16ec75e6073f@kubernetesgateway" status=enabled err=[] rule=Host("bar.example.com") && Path("/baronly")
+ROUTER httproute-default-http-app-mixed-gw-default-verify-gw-ep-websecure-0-15dd97ffca440d89148e@kubernetesgateway configured="listener-example-com-47287a8f16ec75e6073f" resolved="listener-example-com-47287a8f16ec75e6073f@kubernetesgateway" status=enabled err=[] rule=(Host("foo.example.com") || Host("bar.example.com")) && Path("/mixed")
+SNI foo.example.com -> options="listener-example-com-47287a8f16ec75e6073f@kubernetesgateway" minVersion=0x304 err=<nil>
+SNI bar.example.com -> options="listener-example-com-47287a8f16ec75e6073f@kubernetesgateway" minVersion=0x304 err=<nil>
+SNI baz.example.com -> options="listener-example-com-47287a8f16ec75e6073f@kubernetesgateway" minVersion=0x304 err=<nil>
+RESULT fileRouter=false/fileOptions=custom GET https://foo.example.com/mixed -> 200 (10.10.1.1)
+RESULT fileRouter=false/fileOptions=custom GET https://foo.example.com/other -> 404 ()
+RESULT fileRouter=false/fileOptions=custom GET https://bar.example.com/mixed -> 200 (10.10.1.1)
+RESULT fileRouter=false/fileOptions=custom GET https://bar.example.com/baronly -> 200 (10.10.2.1)
+=== RUN   TestVerify_MultiHostFallback/fileRouter=true/fileOptions=custom
+ROUTER httproute-default-http-app-baronly-gw-default-verify-gw-ep-websecure-0-3dc7dae862a9bf2fbc5f@kubernetesgateway configured="listener-example-com-47287a8f16ec75e6073f" resolved="listener-example-com-47287a8f16ec75e6073f@kubernetesgateway" status=enabled err=[] rule=Host("bar.example.com") && Path("/baronly")
+ROUTER websecure-conflicted-ext@file configured="custom" resolved="default" status=warning err=[router's TLSOptions configuration is conflicting with other routers on the same entrypoint and host, default TLS options will be used instead] rule=Host(`foo.example.com`) && Path(`/other`)
+ROUTER websecure-conflicted-httproute-default-http-app-mixed-gw-default-verify-gw-ep-websecure-0-15dd97ffca440d89148e@kubernetesgateway configured="listener-example-com-47287a8f16ec75e6073f" resolved="default" status=warning err=[router's TLSOptions configuration is conflicting with other routers on the same entrypoint and host, default TLS options will be used instead] rule=(Host("foo.example.com") || Host("bar.example.com")) && Path("/mixed")
+SNI foo.example.com -> options="default" minVersion=0x304 err=<nil>
+SNI bar.example.com -> options="default" minVersion=0x304 err=<nil>
+SNI baz.example.com -> options="listener-example-com-47287a8f16ec75e6073f@kubernetesgateway" minVersion=0x304 err=<nil>
+RESULT fileRouter=true/fileOptions=custom GET https://foo.example.com/mixed -> 200 (10.10.1.1)
+RESULT fileRouter=true/fileOptions=custom GET https://foo.example.com/other -> 200 (aeval-file-backend)
+RESULT fileRouter=true/fileOptions=custom GET https://bar.example.com/mixed -> 200 (10.10.1.1)
+RESULT fileRouter=true/fileOptions=custom GET https://bar.example.com/baronly -> 421 (Misdirected Request)
+--- PASS: TestVerify_MultiHostFallback (0.21s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/gateway	0.236s

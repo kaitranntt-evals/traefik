@@ -1,0 +1,122 @@
+### VERIFY_DROP= go test -count=1 -v -run '^TestListenerIsolation$/HTTPS' ./pkg/provider/kubernetes/gateway
+    listener_test.go:39: VERIFY generated fallback service default-foreign-exact-listener-fallback (router rule: Host("foreign.example.com"))
+    listener_test.go:39: VERIFY generated fallback service default-gateway-catchall-listener-fallback (router rule: PathPrefix("/") && !((HostRegexp("^[a-z0-9-\\.]+\\.example\\.com$") || HostRegexp("^[a-z0-9-\\.]+\\.foo\\.example\\.com$") || Host("bar.foo.example.com") || Host("reserved.example.com"))))
+    listener_test.go:39: VERIFY generated fallback service default-gateway-exact-listener-fallback (router rule: Host("bar.foo.example.com"))
+    listener_test.go:39: VERIFY generated fallback service default-gateway-nested-listener-fallback (router rule: HostRegexp("^[a-z0-9-\\.]+\\.foo\\.example\\.com$") && !(Host("bar.foo.example.com")))
+    listener_test.go:39: VERIFY generated fallback service default-gateway-port-listener-fallback (router rule: Host("port.example.com"))
+    listener_test.go:39: VERIFY generated fallback service default-gateway-reserved-listener-fallback (router rule: Host("reserved.example.com"))
+    listener_test.go:39: VERIFY generated fallback service default-gateway-wildcard-listener-fallback (router rule: HostRegexp("^[a-z0-9-\\.]+\\.example\\.com$") && !((HostRegexp("^[a-z0-9-\\.]+\\.foo\\.example\\.com$") || Host("bar.foo.example.com") || Host("reserved.example.com"))))
+    listener_test.go:39: VERIFY generated fallback service default-foreign-exact-listener-fallback (router rule: Host("foreign.example.com"))
+    listener_test.go:39: VERIFY generated fallback service default-gateway-catchall-listener-fallback (router rule: PathPrefix("/") && !((HostRegexp("^[a-z0-9-\\.]+\\.example\\.com$") || HostRegexp("^[a-z0-9-\\.]+\\.foo\\.example\\.com$") || Host("bar.foo.example.com") || Host("reserved.example.com"))))
+    listener_test.go:39: VERIFY generated fallback service default-gateway-exact-listener-fallback (router rule: Host("bar.foo.example.com"))
+    listener_test.go:39: VERIFY generated fallback service default-gateway-nested-listener-fallback (router rule: HostRegexp("^[a-z0-9-\\.]+\\.foo\\.example\\.com$") && !(Host("bar.foo.example.com")))
+    listener_test.go:39: VERIFY generated fallback service default-gateway-port-listener-fallback (router rule: Host("port.example.com"))
+    listener_test.go:39: VERIFY generated fallback service default-gateway-reserved-listener-fallback (router rule: Host("reserved.example.com"))
+    listener_test.go:39: VERIFY generated fallback service default-gateway-wildcard-listener-fallback (router rule: HostRegexp("^[a-z0-9-\\.]+\\.example\\.com$") && !((HostRegexp("^[a-z0-9-\\.]+\\.foo\\.example\\.com$") || Host("bar.foo.example.com") || Host("reserved.example.com"))))
+    listener_test.go:67: VERIFY RESP unknown.test/catchall -> 200 "httproute-default-catchall-gw-default-gateway-ep-web-0-021ab09128268b8c3eb9-wrr"
+    listener_test.go:67: VERIFY RESP example.com/catchall -> 200 "httproute-default-catchall-gw-default-gateway-ep-web-0-021ab09128268b8c3eb9-wrr"
+    listener_test.go:67: VERIFY RESP a.example.com/wildcard -> 200 "httproute-default-wildcard-gw-default-gateway-ep-web-0-c7ecee2030accb5fa224-wrr"
+    listener_test.go:67: VERIFY RESP a.example.com/catchall -> 404 "default-gateway-wildcard-listener-fallback"
+    listener_test.go:67: VERIFY RESP a.foo.example.com/nested -> 200 "httproute-default-nested-gw-default-gateway-ep-web-0-1a2a90e2d4448a83133e-wrr"
+    listener_test.go:67: VERIFY RESP a.b.foo.example.com/nested -> 200 "httproute-default-nested-gw-default-gateway-ep-web-0-1a2a90e2d4448a83133e-wrr"
+    listener_test.go:67: VERIFY RESP a.foo.example.com/wildcard -> 404 "default-gateway-nested-listener-fallback"
+    listener_test.go:67: VERIFY RESP bar.foo.example.com/exact -> 200 "httproute-default-exact-gw-default-gateway-ep-web-0-bff43fc833c036db4f3e-wrr"
+    listener_test.go:67: VERIFY RESP bar.foo.example.com/nested -> 404 "default-gateway-exact-listener-fallback"
+    listener_test.go:67: VERIFY RESP bar.foo.example.com/catchall -> 404 "default-gateway-exact-listener-fallback"
+    listener_test.go:67: VERIFY RESP reserved.example.com/wildcard -> 404 "default-gateway-reserved-listener-fallback"
+    listener_test.go:67: VERIFY RESP reserved.example.com/catchall -> 404 "default-gateway-reserved-listener-fallback"
+    listener_test.go:67: VERIFY RESP port.example.com/wildcard -> 200 "httproute-default-wildcard-gw-default-gateway-ep-web-0-c7ecee2030accb5fa224-wrr"
+    listener_test.go:67: VERIFY RESP protocol.example.com/wildcard -> 200 "httproute-default-wildcard-gw-default-gateway-ep-web-0-c7ecee2030accb5fa224-wrr"
+    listener_test.go:67: VERIFY RESP foreign.example.com/wildcard -> 200 "httproute-default-wildcard-gw-default-gateway-ep-web-0-c7ecee2030accb5fa224-wrr"
+    listener_test.go:67: VERIFY RESP invalid.example.com/wildcard -> 200 "httproute-default-wildcard-gw-default-gateway-ep-web-0-c7ecee2030accb5fa224-wrr"
+    listener_test.go:67: VERIFY RESP unknown.test/catchall/Call -> 200 "grpcroute-default-catchall-gw-default-gateway-ep-web-0-ee31c7cedbb4258f093c-wrr"
+    listener_test.go:67: VERIFY RESP example.com/catchall/Call -> 200 "grpcroute-default-catchall-gw-default-gateway-ep-web-0-ee31c7cedbb4258f093c-wrr"
+    listener_test.go:67: VERIFY RESP a.example.com/wildcard/Call -> 200 "grpcroute-default-wildcard-gw-default-gateway-ep-web-0-a1cb26865c1f2883000e-wrr"
+    listener_test.go:67: VERIFY RESP a.example.com/catchall/Call -> 404 "default-gateway-wildcard-listener-fallback"
+    listener_test.go:67: VERIFY RESP a.foo.example.com/nested/Call -> 200 "grpcroute-default-nested-gw-default-gateway-ep-web-0-965bad690436f9692d2f-wrr"
+    listener_test.go:67: VERIFY RESP a.b.foo.example.com/nested/Call -> 200 "grpcroute-default-nested-gw-default-gateway-ep-web-0-965bad690436f9692d2f-wrr"
+    listener_test.go:67: VERIFY RESP a.foo.example.com/wildcard/Call -> 404 "default-gateway-nested-listener-fallback"
+    listener_test.go:67: VERIFY RESP bar.foo.example.com/exact/Call -> 200 "grpcroute-default-exact-gw-default-gateway-ep-web-0-0f7bbbab96bee17eae91-wrr"
+    listener_test.go:67: VERIFY RESP bar.foo.example.com/nested/Call -> 404 "default-gateway-exact-listener-fallback"
+    listener_test.go:67: VERIFY RESP bar.foo.example.com/catchall/Call -> 404 "default-gateway-exact-listener-fallback"
+    listener_test.go:67: VERIFY RESP reserved.example.com/wildcard/Call -> 404 "default-gateway-reserved-listener-fallback"
+    listener_test.go:67: VERIFY RESP reserved.example.com/catchall/Call -> 404 "default-gateway-reserved-listener-fallback"
+    listener_test.go:67: VERIFY RESP port.example.com/wildcard/Call -> 200 "grpcroute-default-wildcard-gw-default-gateway-ep-web-0-a1cb26865c1f2883000e-wrr"
+    listener_test.go:67: VERIFY RESP protocol.example.com/wildcard/Call -> 200 "grpcroute-default-wildcard-gw-default-gateway-ep-web-0-a1cb26865c1f2883000e-wrr"
+    listener_test.go:67: VERIFY RESP foreign.example.com/wildcard/Call -> 200 "grpcroute-default-wildcard-gw-default-gateway-ep-web-0-a1cb26865c1f2883000e-wrr"
+    listener_test.go:67: VERIFY RESP invalid.example.com/wildcard/Call -> 200 "grpcroute-default-wildcard-gw-default-gateway-ep-web-0-a1cb26865c1f2883000e-wrr"
+--- PASS: TestListenerIsolation (0.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/gateway	0.141s
+### VERIFY_DROP=ISO:wildcard-listener-fallback go test -count=1 -v -run '^TestListenerIsolation$/HTTPS' ./pkg/provider/kubernetes/gateway
+    listener_test.go:39: VERIFY generated fallback service default-foreign-exact-listener-fallback (router rule: Host("foreign.example.com"))
+    listener_test.go:39: VERIFY generated fallback service default-gateway-catchall-listener-fallback (router rule: PathPrefix("/") && !((HostRegexp("^[a-z0-9-\\.]+\\.example\\.com$") || HostRegexp("^[a-z0-9-\\.]+\\.foo\\.example\\.com$") || Host("bar.foo.example.com") || Host("reserved.example.com"))))
+    listener_test.go:39: VERIFY generated fallback service default-gateway-exact-listener-fallback (router rule: Host("bar.foo.example.com"))
+    listener_test.go:39: VERIFY generated fallback service default-gateway-nested-listener-fallback (router rule: HostRegexp("^[a-z0-9-\\.]+\\.foo\\.example\\.com$") && !(Host("bar.foo.example.com")))
+    listener_test.go:39: VERIFY generated fallback service default-gateway-port-listener-fallback (router rule: Host("port.example.com"))
+    listener_test.go:39: VERIFY generated fallback service default-gateway-reserved-listener-fallback (router rule: Host("reserved.example.com"))
+    listener_test.go:39: VERIFY generated fallback service default-gateway-wildcard-listener-fallback (router rule: HostRegexp("^[a-z0-9-\\.]+\\.example\\.com$") && !((HostRegexp("^[a-z0-9-\\.]+\\.foo\\.example\\.com$") || Host("bar.foo.example.com") || Host("reserved.example.com"))))
+    listener_test.go:39: VERIFY removed service default-gateway-wildcard-listener-fallback
+    listener_test.go:39: VERIFY generated fallback service default-foreign-exact-listener-fallback (router rule: Host("foreign.example.com"))
+    listener_test.go:39: VERIFY generated fallback service default-gateway-catchall-listener-fallback (router rule: PathPrefix("/") && !((HostRegexp("^[a-z0-9-\\.]+\\.example\\.com$") || HostRegexp("^[a-z0-9-\\.]+\\.foo\\.example\\.com$") || Host("bar.foo.example.com") || Host("reserved.example.com"))))
+    listener_test.go:39: VERIFY generated fallback service default-gateway-exact-listener-fallback (router rule: Host("bar.foo.example.com"))
+    listener_test.go:39: VERIFY generated fallback service default-gateway-nested-listener-fallback (router rule: HostRegexp("^[a-z0-9-\\.]+\\.foo\\.example\\.com$") && !(Host("bar.foo.example.com")))
+    listener_test.go:39: VERIFY generated fallback service default-gateway-port-listener-fallback (router rule: Host("port.example.com"))
+    listener_test.go:39: VERIFY generated fallback service default-gateway-reserved-listener-fallback (router rule: Host("reserved.example.com"))
+    listener_test.go:39: VERIFY generated fallback service default-gateway-wildcard-listener-fallback (router rule: HostRegexp("^[a-z0-9-\\.]+\\.example\\.com$") && !((HostRegexp("^[a-z0-9-\\.]+\\.foo\\.example\\.com$") || Host("bar.foo.example.com") || Host("reserved.example.com"))))
+    listener_test.go:39: VERIFY removed service default-gateway-wildcard-listener-fallback
+    listener_test.go:67: VERIFY RESP unknown.test/catchall -> 200 "httproute-default-catchall-gw-default-gateway-ep-web-0-021ab09128268b8c3eb9-wrr"
+    listener_test.go:67: VERIFY RESP example.com/catchall -> 200 "httproute-default-catchall-gw-default-gateway-ep-web-0-021ab09128268b8c3eb9-wrr"
+    listener_test.go:67: VERIFY RESP a.example.com/wildcard -> 200 "httproute-default-wildcard-gw-default-gateway-ep-web-0-c7ecee2030accb5fa224-wrr"
+    listener_test.go:67: VERIFY RESP a.example.com/catchall -> 404 "404 page not found"
+    listener_test.go:67: VERIFY RESP a.foo.example.com/nested -> 200 "httproute-default-nested-gw-default-gateway-ep-web-0-1a2a90e2d4448a83133e-wrr"
+    listener_test.go:67: VERIFY RESP a.b.foo.example.com/nested -> 200 "httproute-default-nested-gw-default-gateway-ep-web-0-1a2a90e2d4448a83133e-wrr"
+    listener_test.go:67: VERIFY RESP a.foo.example.com/wildcard -> 404 "default-gateway-nested-listener-fallback"
+    listener_test.go:67: VERIFY RESP bar.foo.example.com/exact -> 200 "httproute-default-exact-gw-default-gateway-ep-web-0-bff43fc833c036db4f3e-wrr"
+    listener_test.go:67: VERIFY RESP bar.foo.example.com/nested -> 404 "default-gateway-exact-listener-fallback"
+    listener_test.go:67: VERIFY RESP bar.foo.example.com/catchall -> 404 "default-gateway-exact-listener-fallback"
+    listener_test.go:67: VERIFY RESP reserved.example.com/wildcard -> 404 "default-gateway-reserved-listener-fallback"
+    listener_test.go:67: VERIFY RESP reserved.example.com/catchall -> 404 "default-gateway-reserved-listener-fallback"
+    listener_test.go:67: VERIFY RESP port.example.com/wildcard -> 200 "httproute-default-wildcard-gw-default-gateway-ep-web-0-c7ecee2030accb5fa224-wrr"
+    listener_test.go:67: VERIFY RESP protocol.example.com/wildcard -> 200 "httproute-default-wildcard-gw-default-gateway-ep-web-0-c7ecee2030accb5fa224-wrr"
+    listener_test.go:67: VERIFY RESP foreign.example.com/wildcard -> 200 "httproute-default-wildcard-gw-default-gateway-ep-web-0-c7ecee2030accb5fa224-wrr"
+    listener_test.go:67: VERIFY RESP invalid.example.com/wildcard -> 200 "httproute-default-wildcard-gw-default-gateway-ep-web-0-c7ecee2030accb5fa224-wrr"
+    listener_test.go:67: VERIFY RESP unknown.test/catchall/Call -> 200 "grpcroute-default-catchall-gw-default-gateway-ep-web-0-ee31c7cedbb4258f093c-wrr"
+    listener_test.go:67: VERIFY RESP example.com/catchall/Call -> 200 "grpcroute-default-catchall-gw-default-gateway-ep-web-0-ee31c7cedbb4258f093c-wrr"
+    listener_test.go:67: VERIFY RESP a.example.com/wildcard/Call -> 200 "grpcroute-default-wildcard-gw-default-gateway-ep-web-0-a1cb26865c1f2883000e-wrr"
+    listener_test.go:67: VERIFY RESP a.example.com/catchall/Call -> 404 "404 page not found"
+    listener_test.go:67: VERIFY RESP a.foo.example.com/nested/Call -> 200 "grpcroute-default-nested-gw-default-gateway-ep-web-0-965bad690436f9692d2f-wrr"
+    listener_test.go:67: VERIFY RESP a.b.foo.example.com/nested/Call -> 200 "grpcroute-default-nested-gw-default-gateway-ep-web-0-965bad690436f9692d2f-wrr"
+    listener_test.go:67: VERIFY RESP a.foo.example.com/wildcard/Call -> 404 "default-gateway-nested-listener-fallback"
+    listener_test.go:67: VERIFY RESP bar.foo.example.com/exact/Call -> 200 "grpcroute-default-exact-gw-default-gateway-ep-web-0-0f7bbbab96bee17eae91-wrr"
+    listener_test.go:67: VERIFY RESP bar.foo.example.com/nested/Call -> 404 "default-gateway-exact-listener-fallback"
+    listener_test.go:67: VERIFY RESP bar.foo.example.com/catchall/Call -> 404 "default-gateway-exact-listener-fallback"
+    listener_test.go:67: VERIFY RESP reserved.example.com/wildcard/Call -> 404 "default-gateway-reserved-listener-fallback"
+    listener_test.go:67: VERIFY RESP reserved.example.com/catchall/Call -> 404 "default-gateway-reserved-listener-fallback"
+    listener_test.go:67: VERIFY RESP port.example.com/wildcard/Call -> 200 "grpcroute-default-wildcard-gw-default-gateway-ep-web-0-a1cb26865c1f2883000e-wrr"
+    listener_test.go:67: VERIFY RESP protocol.example.com/wildcard/Call -> 200 "grpcroute-default-wildcard-gw-default-gateway-ep-web-0-a1cb26865c1f2883000e-wrr"
+    listener_test.go:67: VERIFY RESP foreign.example.com/wildcard/Call -> 200 "grpcroute-default-wildcard-gw-default-gateway-ep-web-0-a1cb26865c1f2883000e-wrr"
+    listener_test.go:67: VERIFY RESP invalid.example.com/wildcard/Call -> 200 "grpcroute-default-wildcard-gw-default-gateway-ep-web-0-a1cb26865c1f2883000e-wrr"
+--- PASS: TestListenerIsolation (0.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/gateway	0.120s
+### VERIFY_DROP=MIS:wildcard-listener-fallback go test -count=1 -v -run '^TestHTTPSListenerMisdirectedRequests$' ./pkg/provider/kubernetes/gateway
+    listener_test.go:87: VERIFY generated fallback service default-foreign-exact-listener-fallback (router rule: Host("foreign.example.com"))
+    listener_test.go:87: VERIFY generated fallback service default-gateway-catchall-listener-fallback (router rule: PathPrefix("/") && !((HostRegexp("^[a-z0-9-\\.]+\\.example\\.com$") || HostRegexp("^[a-z0-9-\\.]+\\.foo\\.example\\.com$") || Host("bar.foo.example.com") || Host("reserved.example.com"))))
+    listener_test.go:87: VERIFY generated fallback service default-gateway-exact-listener-fallback (router rule: Host("bar.foo.example.com"))
+    listener_test.go:87: VERIFY generated fallback service default-gateway-nested-listener-fallback (router rule: HostRegexp("^[a-z0-9-\\.]+\\.foo\\.example\\.com$") && !(Host("bar.foo.example.com")))
+    listener_test.go:87: VERIFY generated fallback service default-gateway-port-listener-fallback (router rule: Host("port.example.com"))
+    listener_test.go:87: VERIFY generated fallback service default-gateway-reserved-listener-fallback (router rule: Host("reserved.example.com"))
+    listener_test.go:87: VERIFY generated fallback service default-gateway-wildcard-listener-fallback (router rule: HostRegexp("^[a-z0-9-\\.]+\\.example\\.com$") && !((HostRegexp("^[a-z0-9-\\.]+\\.foo\\.example\\.com$") || Host("bar.foo.example.com") || Host("reserved.example.com"))))
+    listener_test.go:87: VERIFY removed service default-gateway-wildcard-listener-fallback
+    listener_test.go:87: VERIFY generated fallback service default-foreign-exact-listener-fallback (router rule: Host("foreign.example.com"))
+    listener_test.go:87: VERIFY generated fallback service default-gateway-catchall-listener-fallback (router rule: PathPrefix("/") && !((HostRegexp("^[a-z0-9-\\.]+\\.example\\.com$") || HostRegexp("^[a-z0-9-\\.]+\\.foo\\.example\\.com$") || Host("bar.foo.example.com") || Host("reserved.example.com"))))
+    listener_test.go:87: VERIFY generated fallback service default-gateway-exact-listener-fallback (router rule: Host("bar.foo.example.com"))
+    listener_test.go:87: VERIFY generated fallback service default-gateway-nested-listener-fallback (router rule: HostRegexp("^[a-z0-9-\\.]+\\.foo\\.example\\.com$") && !(Host("bar.foo.example.com")))
+    listener_test.go:87: VERIFY generated fallback service default-gateway-port-listener-fallback (router rule: Host("port.example.com"))
+    listener_test.go:87: VERIFY generated fallback service default-gateway-reserved-listener-fallback (router rule: Host("reserved.example.com"))
+    listener_test.go:87: VERIFY generated fallback service default-gateway-wildcard-listener-fallback (router rule: HostRegexp("^[a-z0-9-\\.]+\\.example\\.com$") && !((HostRegexp("^[a-z0-9-\\.]+\\.foo\\.example\\.com$") || Host("bar.foo.example.com") || Host("reserved.example.com"))))
+    listener_test.go:87: VERIFY removed service default-gateway-wildcard-listener-fallback
+--- PASS: TestHTTPSListenerMisdirectedRequests (0.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/gateway	0.130s

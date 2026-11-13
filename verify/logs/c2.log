@@ -1,0 +1,68 @@
+### VERIFY_MUT= go test -count=1 -v -run '^TestHTTPSListener_conflictWithAnotherProvider$' ./pkg/provider/kubernetes/gateway
+=== RUN   TestHTTPSListener_conflictWithAnotherProvider
+    listener_isolation_server_test.go:77: VERIFY router websecure-conflicted-httproute-default-example-com-gw-default-my-gateway-ep-websecure-0-2009d9cf3d9c53f3246a@kubernetesgateway rule=Host("example.com") && (Path("/example-com") || PathPrefix("/example-com/")) resolved=default conflicting=false parentRefs=[]
+    listener_isolation_server_test.go:77: VERIFY router httproute-default-foo-example-com-gw-default-my-gateway-ep-websecure-0-f2b7d949ea84aa206d9f@kubernetesgateway rule=Host("foo.example.com") && (Path("/foo-example-com") || PathPrefix("/foo-example-com/")) resolved=websecure-foo-example-com@kubernetesgateway conflicting=false parentRefs=[]
+    listener_isolation_server_test.go:77: VERIFY router httproute-default-wildcard-example-com-gw-default-my-gateway-ep-websecure-0-520f64a0db3a03a23922@kubernetesgateway rule=HostRegexp("^[a-z0-9-\\.]+\\.example\\.com$") && (Path("/wildcard-example-com") || PathPrefix("/wildcard-example-com/")) && !Host("foo.example.com") resolved=default conflicting=false parentRefs=[]
+    listener_isolation_server_test.go:77: VERIFY router websecure-conflicted-other@file rule=Host("example.com") && PathPrefix("/other") resolved=default conflicting=false parentRefs=[]
+--- PASS: TestHTTPSListener_conflictWithAnotherProvider (0.06s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/gateway	0.083s
+### VERIFY_MUT=drop go test -count=1 -v -run '^TestHTTPSListener_conflictWithAnotherProvider$' ./pkg/provider/kubernetes/gateway
+=== RUN   TestHTTPSListener_conflictWithAnotherProvider
+    listener_isolation_server_test.go:77: VERIFY router httproute-default-wildcard-example-com-gw-default-my-gateway-ep-websecure-0-520f64a0db3a03a23922@kubernetesgateway rule=HostRegexp("^[a-z0-9-\\.]+\\.example\\.com$") && (Path("/wildcard-example-com") || PathPrefix("/wildcard-example-com/")) && !Host("foo.example.com") resolved=default conflicting=false parentRefs=[]
+    listener_isolation_server_test.go:77: VERIFY router websecure-conflicted-other@file rule=Host("example.com") && PathPrefix("/other") resolved=default conflicting=false parentRefs=[]
+    listener_isolation_server_test.go:77: VERIFY router websecure-conflicted-httproute-default-example-com-gw-default-my-gateway-ep-websecure-0-2009d9cf3d9c53f3246a@kubernetesgateway rule=Host("example.com") && (Path("/example-com") || PathPrefix("/example-com/")) resolved=default conflicting=false parentRefs=[]
+    listener_isolation_server_test.go:81: VERIFY dropped websecure-conflicted-httproute-default-example-com-gw-default-my-gateway-ep-websecure-0-2009d9cf3d9c53f3246a@kubernetesgateway
+    listener_isolation_server_test.go:77: VERIFY router httproute-default-foo-example-com-gw-default-my-gateway-ep-websecure-0-f2b7d949ea84aa206d9f@kubernetesgateway rule=Host("foo.example.com") && (Path("/foo-example-com") || PathPrefix("/foo-example-com/")) resolved=websecure-foo-example-com@kubernetesgateway conflicting=false parentRefs=[]
+    listener_isolation_server_test.go:96: 
+        	Error Trace:	/home/ubuntu/repos/wt-8341c750/pkg/provider/kubernetes/gateway/listener_isolation_server_test.go:96
+        	Error:      	Not equal: 
+        	            	expected: map[string]string{"httproute-default-example-com":"default", "httproute-default-foo-example-com":"websecure-foo-example-com@kubernetesgateway", "httproute-default-wildcard-example-com":"default", "other@file":"default"}
+        	            	actual  : map[string]string{"httproute-default-foo-example-com":"websecure-foo-example-com@kubernetesgateway", "httproute-default-wildcard-example-com":"default", "other@file":"default"}
+        	            	
+        	            	Diff:
+        	            	--- Expected
+        	            	+++ Actual
+        	            	@@ -1,3 +1,2 @@
+        	            	-(map[string]string) (len=4) {
+        	            	- (string) (len=29) "httproute-default-example-com": (string) (len=7) "default",
+        	            	+(map[string]string) (len=3) {
+        	            	  (string) (len=33) "httproute-default-foo-example-com": (string) (len=43) "websecure-foo-example-com@kubernetesgateway",
+        	Test:       	TestHTTPSListener_conflictWithAnotherProvider
+--- FAIL: TestHTTPSListener_conflictWithAnotherProvider (0.05s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/provider/kubernetes/gateway	0.078s
+FAIL
+### VERIFY_MUT=strict go test -count=1 -v -run '^TestHTTPSListener_conflictWithAnotherProvider$' ./pkg/provider/kubernetes/gateway
+=== RUN   TestHTTPSListener_conflictWithAnotherProvider
+    listener_isolation_server_test.go:77: VERIFY router httproute-default-wildcard-example-com-gw-default-my-gateway-ep-websecure-0-520f64a0db3a03a23922@kubernetesgateway rule=HostRegexp("^[a-z0-9-\\.]+\\.example\\.com$") && (Path("/wildcard-example-com") || PathPrefix("/wildcard-example-com/")) && !Host("foo.example.com") resolved=default conflicting=false parentRefs=[]
+    listener_isolation_server_test.go:77: VERIFY router websecure-conflicted-other@file rule=Host("example.com") && PathPrefix("/other") resolved=default conflicting=true parentRefs=[]
+    listener_isolation_server_test.go:77: VERIFY router websecure-conflicted-httproute-default-example-com-gw-default-my-gateway-ep-websecure-0-2009d9cf3d9c53f3246a@kubernetesgateway rule=Host("example.com") && (Path("/example-com") || PathPrefix("/example-com/")) resolved=websecure-example-com@kubernetesgateway conflicting=true parentRefs=[]
+    listener_isolation_server_test.go:77: VERIFY router httproute-default-foo-example-com-gw-default-my-gateway-ep-websecure-0-f2b7d949ea84aa206d9f@kubernetesgateway rule=Host("foo.example.com") && (Path("/foo-example-com") || PathPrefix("/foo-example-com/")) resolved=websecure-foo-example-com@kubernetesgateway conflicting=false parentRefs=[]
+    listener_isolation_server_test.go:89: 
+        	Error Trace:	/home/ubuntu/repos/wt-8341c750/pkg/provider/kubernetes/gateway/listener_isolation_server_test.go:89
+        	Error:      	Should be false
+        	Test:       	TestHTTPSListener_conflictWithAnotherProvider
+    listener_isolation_server_test.go:89: 
+        	Error Trace:	/home/ubuntu/repos/wt-8341c750/pkg/provider/kubernetes/gateway/listener_isolation_server_test.go:89
+        	Error:      	Should be false
+        	Test:       	TestHTTPSListener_conflictWithAnotherProvider
+    listener_isolation_server_test.go:96: 
+        	Error Trace:	/home/ubuntu/repos/wt-8341c750/pkg/provider/kubernetes/gateway/listener_isolation_server_test.go:96
+        	Error:      	Not equal: 
+        	            	expected: map[string]string{"httproute-default-example-com":"default", "httproute-default-foo-example-com":"websecure-foo-example-com@kubernetesgateway", "httproute-default-wildcard-example-com":"default", "other@file":"default"}
+        	            	actual  : map[string]string{"httproute-default-example-com":"websecure-example-com@kubernetesgateway", "httproute-default-foo-example-com":"websecure-foo-example-com@kubernetesgateway", "httproute-default-wildcard-example-com":"default", "other@file":"default"}
+        	            	
+        	            	Diff:
+        	            	--- Expected
+        	            	+++ Actual
+        	            	@@ -1,3 +1,3 @@
+        	            	 (map[string]string) (len=4) {
+        	            	- (string) (len=29) "httproute-default-example-com": (string) (len=7) "default",
+        	            	+ (string) (len=29) "httproute-default-example-com": (string) (len=39) "websecure-example-com@kubernetesgateway",
+        	            	  (string) (len=33) "httproute-default-foo-example-com": (string) (len=43) "websecure-foo-example-com@kubernetesgateway",
+        	Test:       	TestHTTPSListener_conflictWithAnotherProvider
+--- FAIL: TestHTTPSListener_conflictWithAnotherProvider (0.06s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/provider/kubernetes/gateway	0.081s
+FAIL

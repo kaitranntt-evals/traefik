@@ -1,0 +1,29 @@
+=== RUN   TestVerify_ResolveTrace
+CASE control: child Host(foo.example.com) / gateway exact
+  childDomains[ext-root@file] = [foo.example.com foo.example.com foo.example.com]
+  childDomains[listener@kubernetesgateway] = [foo.example.com foo.example.com]
+  resolved websecure-conflicted-ext-root@file               TLS.ResolvedOptions=default
+  resolved websecure-conflicted-listener@kubernetesgateway  TLS.ResolvedOptions=default
+CASE C3/C5: grandchild Host(foo.example.com) behind intermediate / gateway exact
+  childDomains[ext-root@file] = []
+  childDomains[listener@kubernetesgateway] = [foo.example.com]
+  resolved listener@kubernetesgateway                       TLS.ResolvedOptions=listener@kubernetesgateway
+  resolved websecure-conflicted-ext-root@file               TLS.ResolvedOptions=default
+CASE C4: child Host(*.example.com) / gateway exact foo.example.com
+  childDomains[ext-root@file] = [foo.example.com foo.example.com]
+  childDomains[listener@kubernetesgateway] = [foo.example.com]
+  resolved websecure-conflicted-ext-root@file               TLS.ResolvedOptions=default
+  resolved websecure-conflicted-listener@kubernetesgateway  TLS.ResolvedOptions=default
+CASE C4/C6: child Host(*.example.com) / gateway **.example.com
+  childDomains[ext-root@file] = []
+  childDomains[listener@kubernetesgateway] = []
+  resolved listener@kubernetesgateway                       TLS.ResolvedOptions=listener@kubernetesgateway
+  resolved websecure-conflicted-ext-root@file               TLS.ResolvedOptions=default
+CASE control: flat external Host(*.example.com) / gateway **.example.com
+  childDomains[ext@file] = []
+  childDomains[listener@kubernetesgateway] = [*.example.com]
+  resolved websecure-conflicted-ext@file                    TLS.ResolvedOptions=default
+  resolved websecure-conflicted-listener@kubernetesgateway  TLS.ResolvedOptions=default
+--- PASS: TestVerify_ResolveTrace (0.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/server	0.028s

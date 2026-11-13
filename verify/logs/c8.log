@@ -1,0 +1,14 @@
+=== RUN   TestVerify_ParentRename
+=== RUN   TestVerify_ParentRename/control_no_overlap
+ROUTER ext-child@file resolvedTLS=- parentRefs=[ext-parent@file] childRefs=[] status=enabled err=[] rule=Path(`/other`)
+ROUTER ext-parent@file resolvedTLS=custom@file parentRefs=[] childRefs=[ext-child@file] status=enabled err=[] rule=Host(`unrelated.test`)
+ROUTER httproute-default-http-app-gw-gw-default-verify-gw-ep-websecure-0-30daf25dd5b5f7b5d99f@kubernetesgateway resolvedTLS=default parentRefs=[] childRefs=[] status=enabled err=[] rule=Host("foo.example.com") && Path("/gw")
+RESULT control_no_overlap sniOptions(unrelated.test)="custom@file" err=<nil> GET https://unrelated.test/other=200(aeval-file-backend) GET https://foo.example.com/gw=200(10.10.1.1)
+=== RUN   TestVerify_ParentRename/overlap_triggers_fallback
+ROUTER ext-child@file resolvedTLS=- parentRefs=[ext-parent@file] childRefs=[] status=disabled err=[parent router "ext-parent@file" does not exist router is not reachable] rule=Path(`/other`)
+ROUTER websecure-conflicted-ext-parent@file resolvedTLS=default parentRefs=[] childRefs=[] status=disabled err=[router has no service and no child routers router must have either a service or child routers router's TLSOptions configuration is conflicting with other routers on the same entrypoint and host, default TLS options will be used instead] rule=Host(`foo.example.com`)
+ROUTER websecure-conflicted-httproute-default-http-app-gw-gw-default-verify-gw-ep-websecure-0-30daf25dd5b5f7b5d99f@kubernetesgateway resolvedTLS=default parentRefs=[] childRefs=[] status=enabled err=[] rule=Host("foo.example.com") && Path("/gw")
+RESULT overlap_triggers_fallback sniOptions(foo.example.com)="default" err=<nil> GET https://foo.example.com/other=404(404 page not found) GET https://foo.example.com/gw=200(10.10.1.1)
+--- PASS: TestVerify_ParentRename (0.13s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/gateway	0.160s

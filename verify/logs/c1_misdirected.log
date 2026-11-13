@@ -1,0 +1,41 @@
+### VERIFY_DROP=MIS:wildcard-listener-fallback go test -count=1 -v -run '^TestHTTPSListenerMisdirectedRequests$' ./pkg/provider/kubernetes/gateway
+=== RUN   TestHTTPSListenerMisdirectedRequests
+=== RUN   TestHTTPSListenerMisdirectedRequests/HTTPRoute
+=== PAUSE TestHTTPSListenerMisdirectedRequests/HTTPRoute
+=== RUN   TestHTTPSListenerMisdirectedRequests/GRPCRoute
+=== PAUSE TestHTTPSListenerMisdirectedRequests/GRPCRoute
+=== CONT  TestHTTPSListenerMisdirectedRequests/HTTPRoute
+=== CONT  TestHTTPSListenerMisdirectedRequests/GRPCRoute
+    listener_test.go:87: VERIFY removed service default-gateway-wildcard-listener-fallback
+=== NAME  TestHTTPSListenerMisdirectedRequests/HTTPRoute
+    listener_test.go:87: VERIFY removed service default-gateway-wildcard-listener-fallback
+=== RUN   TestHTTPSListenerMisdirectedRequests/GRPCRoute/a.example.com/b.example.com/wildcard
+=== RUN   TestHTTPSListenerMisdirectedRequests/GRPCRoute/a.foo.example.com/b.foo.example.com/nested
+=== RUN   TestHTTPSListenerMisdirectedRequests/GRPCRoute/BAR.FOO.EXAMPLE.COM/bar.foo.example.com/exact
+=== RUN   TestHTTPSListenerMisdirectedRequests/GRPCRoute/a.example.com/a.foo.example.com/nested
+=== RUN   TestHTTPSListenerMisdirectedRequests/GRPCRoute/a.foo.example.com/a.example.com/wildcard
+=== RUN   TestHTTPSListenerMisdirectedRequests/GRPCRoute/bar.foo.example.com/a.foo.example.com/nested
+=== RUN   TestHTTPSListenerMisdirectedRequests/GRPCRoute/a.foo.example.com/bar.foo.example.com/exact
+=== RUN   TestHTTPSListenerMisdirectedRequests/GRPCRoute/a.example.com/unknown.test/catchall
+=== RUN   TestHTTPSListenerMisdirectedRequests/GRPCRoute/unknown.test/a.example.com/wildcard
+=== RUN   TestHTTPSListenerMisdirectedRequests/GRPCRoute/a.example.com/reserved.example.com/wildcard
+=== RUN   TestHTTPSListenerMisdirectedRequests/GRPCRoute/a.example.com/bar.foo.example.com/missing
+=== RUN   TestHTTPSListenerMisdirectedRequests/GRPCRoute/reserved.example.com/reserved.example.com/missing
+=== RUN   TestHTTPSListenerMisdirectedRequests/GRPCRoute/unknown.test/other.test/missing
+=== RUN   TestHTTPSListenerMisdirectedRequests/HTTPRoute/a.example.com/b.example.com/wildcard
+=== RUN   TestHTTPSListenerMisdirectedRequests/HTTPRoute/a.foo.example.com/b.foo.example.com/nested
+=== RUN   TestHTTPSListenerMisdirectedRequests/HTTPRoute/BAR.FOO.EXAMPLE.COM/bar.foo.example.com/exact
+=== RUN   TestHTTPSListenerMisdirectedRequests/HTTPRoute/a.example.com/a.foo.example.com/nested
+=== RUN   TestHTTPSListenerMisdirectedRequests/HTTPRoute/a.foo.example.com/a.example.com/wildcard
+=== RUN   TestHTTPSListenerMisdirectedRequests/HTTPRoute/bar.foo.example.com/a.foo.example.com/nested
+=== RUN   TestHTTPSListenerMisdirectedRequests/HTTPRoute/a.foo.example.com/bar.foo.example.com/exact
+=== RUN   TestHTTPSListenerMisdirectedRequests/HTTPRoute/a.example.com/unknown.test/catchall
+=== RUN   TestHTTPSListenerMisdirectedRequests/HTTPRoute/unknown.test/a.example.com/wildcard
+=== RUN   TestHTTPSListenerMisdirectedRequests/HTTPRoute/a.example.com/reserved.example.com/wildcard
+=== RUN   TestHTTPSListenerMisdirectedRequests/HTTPRoute/a.example.com/bar.foo.example.com/missing
+=== RUN   TestHTTPSListenerMisdirectedRequests/HTTPRoute/reserved.example.com/reserved.example.com/missing
+=== RUN   TestHTTPSListenerMisdirectedRequests/HTTPRoute/unknown.test/other.test/missing
+--- PASS: TestHTTPSListenerMisdirectedRequests (0.00s)
+    --- PASS: TestHTTPSListenerMisdirectedRequests/GRPCRoute (0.06s)
+        --- PASS: TestHTTPSListenerMisdirectedRequests/GRPCRoute/a.example.com/b.example.com/wildcard (0.00s)
+        --- PASS: TestHTTPSListenerMisdirectedRequests/GRPCRoute/a.foo.example.com/b.foo.example.com/nested (0.00s)
