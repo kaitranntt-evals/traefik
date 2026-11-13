@@ -1,0 +1,221 @@
+=== RUN   TestEval_ProviderToBuilder_PluginSuccessExecution
+=== PAUSE TestEval_ProviderToBuilder_PluginSuccessExecution
+=== RUN   TestEval_ProviderToBuilder_PluginInputMutationIsolation
+=== PAUSE TestEval_ProviderToBuilder_PluginInputMutationIsolation
+=== RUN   TestEval_ProviderToBuilder_PluginEscapedKeyExecution
+=== PAUSE TestEval_ProviderToBuilder_PluginEscapedKeyExecution
+=== RUN   TestEval_ProviderToBuilder_PluginNestedExecution
+=== PAUSE TestEval_ProviderToBuilder_PluginNestedExecution
+=== RUN   TestEval_ProviderToBuilder_PluginTypedSecretField
+=== PAUSE TestEval_ProviderToBuilder_PluginTypedSecretField
+=== RUN   TestEval_ProviderToBuilder_PluginRetainedCreateConfigIsolation
+=== PAUSE TestEval_ProviderToBuilder_PluginRetainedCreateConfigIsolation
+=== RUN   TestEval_ProviderToBuilder_PluginWasmExecution
+--- PASS: TestEval_ProviderToBuilder_PluginWasmExecution (0.14s)
+=== CONT  TestEval_ProviderToBuilder_PluginSuccessExecution
+=== CONT  TestEval_ProviderToBuilder_PluginTypedSecretField
+=== CONT  TestEval_ProviderToBuilder_PluginEscapedKeyExecution
+=== CONT  TestEval_ProviderToBuilder_PluginInputMutationIsolation
+=== CONT  TestEval_ProviderToBuilder_PluginRetainedCreateConfigIsolation
+=== CONT  TestEval_ProviderToBuilder_PluginNestedExecution
+=== NAME  TestEval_ProviderToBuilder_PluginSuccessExecution
+    eval_provider_to_builder_runtime_test.go:1179: 
+        	Error Trace:	/home/ubuntu/repos/wt-9c319c44/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:1179
+        	Error:      	Not equal: 
+        	            	expected: "urn:k8s:secret:name:key"
+        	            	actual  : ""
+        	            	
+        	            	Diff:
+        	            	--- Expected
+        	            	+++ Actual
+        	            	@@ -1 +1 @@
+        	            	-urn:k8s:secret:name:key
+        	            	+
+        	Test:       	TestEval_ProviderToBuilder_PluginSuccessExecution
+        	Messages:   	shared configuration must retain URN reference
+--- FAIL: TestEval_ProviderToBuilder_PluginSuccessExecution (0.01s)
+=== NAME  TestEval_ProviderToBuilder_PluginTypedSecretField
+    eval_provider_to_builder_runtime_test.go:2044: 
+        	Error Trace:	/home/ubuntu/repos/wt-9c319c44/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:2044
+        	Error:      	Not equal: 
+        	            	expected: string("urn:k8s:secret:name:key")
+        	            	actual  : dynamic.Secret(urn:k8s:secret:name:key)
+        	Test:       	TestEval_ProviderToBuilder_PluginTypedSecretField
+        	Messages:   	shared configuration must keep the URN
+    eval_provider_to_builder_runtime_test.go:2076: 
+        	Error Trace:	/home/ubuntu/repos/wt-9c319c44/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:2076
+        	Error:      	Not equal: 
+        	            	expected: string("urn:k8s:secret:name:key")
+        	            	actual  : dynamic.Secret(urn:k8s:secret:name:key)
+        	Test:       	TestEval_ProviderToBuilder_PluginTypedSecretField
+        	Messages:   	published configuration must keep the URN at the secret field
+    eval_provider_to_builder_runtime_test.go:2078: 
+        	Error Trace:	/home/ubuntu/repos/wt-9c319c44/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:2078
+        	Error:      	Not equal: 
+        	            	expected: string("urn:k8s:secret:name:key")
+        	            	actual  : dynamic.Secret(urn:k8s:secret:name:key)
+        	Test:       	TestEval_ProviderToBuilder_PluginTypedSecretField
+        	Messages:   	published configuration must keep the URN at the bound typed field
+    eval_provider_to_builder_runtime_test.go:2083: 
+        	Error Trace:	/home/ubuntu/repos/wt-9c319c44/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:2083
+        	Error:      	Not equal: 
+        	            	expected: string("urn:k8s:secret:name:key")
+        	            	actual  : dynamic.Secret(urn:k8s:secret:name:key)
+        	Test:       	TestEval_ProviderToBuilder_PluginTypedSecretField
+        	Messages:   	shared configuration must keep the URN at the secret field
+    eval_provider_to_builder_runtime_test.go:2085: 
+        	Error Trace:	/home/ubuntu/repos/wt-9c319c44/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:2085
+        	Error:      	Not equal: 
+        	            	expected: string("urn:k8s:secret:name:key")
+        	            	actual  : dynamic.Secret(urn:k8s:secret:name:key)
+        	Test:       	TestEval_ProviderToBuilder_PluginTypedSecretField
+        	Messages:   	shared configuration must keep the URN at the bound typed field
+--- FAIL: TestEval_ProviderToBuilder_PluginTypedSecretField (0.04s)
+--- PASS: TestEval_ProviderToBuilder_PluginEscapedKeyExecution (0.04s)
+=== RUN   TestEval_ProviderToBuilder_PluginInputMutationIsolation/deep_map/success
+=== PAUSE TestEval_ProviderToBuilder_PluginInputMutationIsolation/deep_map/success
+=== RUN   TestEval_ProviderToBuilder_PluginInputMutationIsolation/deep_map/constructor_error
+=== PAUSE TestEval_ProviderToBuilder_PluginInputMutationIsolation/deep_map/constructor_error
+=== RUN   TestEval_ProviderToBuilder_PluginInputMutationIsolation/deep_map/decode_error
+=== PAUSE TestEval_ProviderToBuilder_PluginInputMutationIsolation/deep_map/decode_error
+=== RUN   TestEval_ProviderToBuilder_PluginInputMutationIsolation/list/success
+=== PAUSE TestEval_ProviderToBuilder_PluginInputMutationIsolation/list/success
+=== RUN   TestEval_ProviderToBuilder_PluginInputMutationIsolation/list/constructor_error
+=== PAUSE TestEval_ProviderToBuilder_PluginInputMutationIsolation/list/constructor_error
+=== RUN   TestEval_ProviderToBuilder_PluginInputMutationIsolation/list/decode_error
+=== PAUSE TestEval_ProviderToBuilder_PluginInputMutationIsolation/list/decode_error
+=== RUN   TestEval_ProviderToBuilder_PluginInputMutationIsolation/list_of_maps/success
+=== PAUSE TestEval_ProviderToBuilder_PluginInputMutationIsolation/list_of_maps/success
+=== RUN   TestEval_ProviderToBuilder_PluginInputMutationIsolation/list_of_maps/constructor_error
+=== PAUSE TestEval_ProviderToBuilder_PluginInputMutationIsolation/list_of_maps/constructor_error
+=== RUN   TestEval_ProviderToBuilder_PluginInputMutationIsolation/list_of_maps/decode_error
+=== PAUSE TestEval_ProviderToBuilder_PluginInputMutationIsolation/list_of_maps/decode_error
+=== RUN   TestEval_ProviderToBuilder_PluginInputMutationIsolation/payload_equals_reference/success
+=== PAUSE TestEval_ProviderToBuilder_PluginInputMutationIsolation/payload_equals_reference/success
+=== RUN   TestEval_ProviderToBuilder_PluginInputMutationIsolation/payload_equals_reference/constructor_error
+=== PAUSE TestEval_ProviderToBuilder_PluginInputMutationIsolation/payload_equals_reference/constructor_error
+=== RUN   TestEval_ProviderToBuilder_PluginInputMutationIsolation/payload_equals_reference/decode_error
+=== PAUSE TestEval_ProviderToBuilder_PluginInputMutationIsolation/payload_equals_reference/decode_error
+=== CONT  TestEval_ProviderToBuilder_PluginInputMutationIsolation/deep_map/success
+=== CONT  TestEval_ProviderToBuilder_PluginInputMutationIsolation/list_of_maps/decode_error
+=== CONT  TestEval_ProviderToBuilder_PluginInputMutationIsolation/payload_equals_reference/decode_error
+=== CONT  TestEval_ProviderToBuilder_PluginInputMutationIsolation/payload_equals_reference/constructor_error
+=== CONT  TestEval_ProviderToBuilder_PluginInputMutationIsolation/payload_equals_reference/success
+=== CONT  TestEval_ProviderToBuilder_PluginInputMutationIsolation/list/constructor_error
+=== NAME  TestEval_ProviderToBuilder_PluginInputMutationIsolation/deep_map/success
+    eval_provider_to_builder_runtime_test.go:1287: 
+        	Error Trace:	/home/ubuntu/repos/wt-9c319c44/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:1287
+        	Error:      	Should NOT be empty, but was []
+        	Test:       	TestEval_ProviderToBuilder_PluginInputMutationIsolation/deep_map/success
+        	Messages:   	the fixture must publish the URN references this contract protects
+=== CONT  TestEval_ProviderToBuilder_PluginInputMutationIsolation/list_of_maps/constructor_error
+=== NAME  TestEval_ProviderToBuilder_PluginInputMutationIsolation/list_of_maps/decode_error
+    eval_provider_to_builder_runtime_test.go:1287: 
+        	Error Trace:	/home/ubuntu/repos/wt-9c319c44/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:1287
+        	Error:      	Should NOT be empty, but was []
+        	Test:       	TestEval_ProviderToBuilder_PluginInputMutationIsolation/list_of_maps/decode_error
+        	Messages:   	the fixture must publish the URN references this contract protects
+=== CONT  TestEval_ProviderToBuilder_PluginInputMutationIsolation/list_of_maps/success
+    eval_provider_to_builder_runtime_test.go:1287: 
+        	Error Trace:	/home/ubuntu/repos/wt-9c319c44/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:1287
+        	Error:      	Should NOT be empty, but was []
+        	Test:       	TestEval_ProviderToBuilder_PluginInputMutationIsolation/list_of_maps/success
+        	Messages:   	the fixture must publish the URN references this contract protects
+=== RUN   TestEval_ProviderToBuilder_PluginNestedExecution/deep_map
+=== PAUSE TestEval_ProviderToBuilder_PluginNestedExecution/deep_map
+=== RUN   TestEval_ProviderToBuilder_PluginNestedExecution/list
+=== PAUSE TestEval_ProviderToBuilder_PluginNestedExecution/list
+=== RUN   TestEval_ProviderToBuilder_PluginNestedExecution/list_of_maps
+=== PAUSE TestEval_ProviderToBuilder_PluginNestedExecution/list_of_maps
+=== RUN   TestEval_ProviderToBuilder_PluginRetainedCreateConfigIsolation/deep_map_/_decode_error
+=== CONT  TestEval_ProviderToBuilder_PluginInputMutationIsolation/list/decode_error
+=== CONT  TestEval_ProviderToBuilder_PluginInputMutationIsolation/deep_map/decode_error
+=== RUN   TestEval_ProviderToBuilder_PluginRetainedCreateConfigIsolation/list_/_decode_error
+=== RUN   TestEval_ProviderToBuilder_PluginRetainedCreateConfigIsolation/list_of_maps_/_decode_error
+=== RUN   TestEval_ProviderToBuilder_PluginRetainedCreateConfigIsolation/bound_secret_/_decode_error
+=== RUN   TestEval_ProviderToBuilder_PluginRetainedCreateConfigIsolation/deep_map_/_success
+--- PASS: TestEval_ProviderToBuilder_PluginRetainedCreateConfigIsolation (0.07s)
+    --- PASS: TestEval_ProviderToBuilder_PluginRetainedCreateConfigIsolation/deep_map_/_decode_error (0.00s)
+    --- PASS: TestEval_ProviderToBuilder_PluginRetainedCreateConfigIsolation/list_/_decode_error (0.01s)
+    --- PASS: TestEval_ProviderToBuilder_PluginRetainedCreateConfigIsolation/list_of_maps_/_decode_error (0.00s)
+    --- PASS: TestEval_ProviderToBuilder_PluginRetainedCreateConfigIsolation/bound_secret_/_decode_error (0.00s)
+    --- PASS: TestEval_ProviderToBuilder_PluginRetainedCreateConfigIsolation/deep_map_/_success (0.01s)
+=== CONT  TestEval_ProviderToBuilder_PluginInputMutationIsolation/list/success
+=== NAME  TestEval_ProviderToBuilder_PluginInputMutationIsolation/payload_equals_reference/decode_error
+    eval_provider_to_builder_runtime_test.go:1287: 
+        	Error Trace:	/home/ubuntu/repos/wt-9c319c44/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:1287
+        	Error:      	Should NOT be empty, but was []
+        	Test:       	TestEval_ProviderToBuilder_PluginInputMutationIsolation/payload_equals_reference/decode_error
+        	Messages:   	the fixture must publish the URN references this contract protects
+=== CONT  TestEval_ProviderToBuilder_PluginInputMutationIsolation/deep_map/constructor_error
+=== NAME  TestEval_ProviderToBuilder_PluginInputMutationIsolation/payload_equals_reference/constructor_error
+    eval_provider_to_builder_runtime_test.go:1287: 
+        	Error Trace:	/home/ubuntu/repos/wt-9c319c44/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:1287
+        	Error:      	Should NOT be empty, but was []
+        	Test:       	TestEval_ProviderToBuilder_PluginInputMutationIsolation/payload_equals_reference/constructor_error
+        	Messages:   	the fixture must publish the URN references this contract protects
+=== CONT  TestEval_ProviderToBuilder_PluginNestedExecution/deep_map
+=== NAME  TestEval_ProviderToBuilder_PluginInputMutationIsolation/payload_equals_reference/success
+    eval_provider_to_builder_runtime_test.go:1287: 
+        	Error Trace:	/home/ubuntu/repos/wt-9c319c44/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:1287
+        	Error:      	Should NOT be empty, but was []
+        	Test:       	TestEval_ProviderToBuilder_PluginInputMutationIsolation/payload_equals_reference/success
+        	Messages:   	the fixture must publish the URN references this contract protects
+=== CONT  TestEval_ProviderToBuilder_PluginNestedExecution/list_of_maps
+=== NAME  TestEval_ProviderToBuilder_PluginInputMutationIsolation/list/constructor_error
+    eval_provider_to_builder_runtime_test.go:1287: 
+        	Error Trace:	/home/ubuntu/repos/wt-9c319c44/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:1287
+        	Error:      	Should NOT be empty, but was []
+        	Test:       	TestEval_ProviderToBuilder_PluginInputMutationIsolation/list/constructor_error
+        	Messages:   	the fixture must publish the URN references this contract protects
+=== CONT  TestEval_ProviderToBuilder_PluginNestedExecution/list
+=== NAME  TestEval_ProviderToBuilder_PluginInputMutationIsolation/list_of_maps/constructor_error
+    eval_provider_to_builder_runtime_test.go:1287: 
+        	Error Trace:	/home/ubuntu/repos/wt-9c319c44/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:1287
+        	Error:      	Should NOT be empty, but was []
+        	Test:       	TestEval_ProviderToBuilder_PluginInputMutationIsolation/list_of_maps/constructor_error
+        	Messages:   	the fixture must publish the URN references this contract protects
+=== NAME  TestEval_ProviderToBuilder_PluginInputMutationIsolation/list/decode_error
+    eval_provider_to_builder_runtime_test.go:1287: 
+        	Error Trace:	/home/ubuntu/repos/wt-9c319c44/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:1287
+        	Error:      	Should NOT be empty, but was []
+        	Test:       	TestEval_ProviderToBuilder_PluginInputMutationIsolation/list/decode_error
+        	Messages:   	the fixture must publish the URN references this contract protects
+=== NAME  TestEval_ProviderToBuilder_PluginInputMutationIsolation/deep_map/decode_error
+    eval_provider_to_builder_runtime_test.go:1287: 
+        	Error Trace:	/home/ubuntu/repos/wt-9c319c44/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:1287
+        	Error:      	Should NOT be empty, but was []
+        	Test:       	TestEval_ProviderToBuilder_PluginInputMutationIsolation/deep_map/decode_error
+        	Messages:   	the fixture must publish the URN references this contract protects
+=== NAME  TestEval_ProviderToBuilder_PluginInputMutationIsolation/list/success
+    eval_provider_to_builder_runtime_test.go:1287: 
+        	Error Trace:	/home/ubuntu/repos/wt-9c319c44/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:1287
+        	Error:      	Should NOT be empty, but was []
+        	Test:       	TestEval_ProviderToBuilder_PluginInputMutationIsolation/list/success
+        	Messages:   	the fixture must publish the URN references this contract protects
+=== NAME  TestEval_ProviderToBuilder_PluginInputMutationIsolation/deep_map/constructor_error
+    eval_provider_to_builder_runtime_test.go:1287: 
+        	Error Trace:	/home/ubuntu/repos/wt-9c319c44/pkg/provider/kubernetes/crd/eval_provider_to_builder_runtime_test.go:1287
+        	Error:      	Should NOT be empty, but was []
+        	Test:       	TestEval_ProviderToBuilder_PluginInputMutationIsolation/deep_map/constructor_error
+        	Messages:   	the fixture must publish the URN references this contract protects
+--- FAIL: TestEval_ProviderToBuilder_PluginInputMutationIsolation (0.04s)
+    --- FAIL: TestEval_ProviderToBuilder_PluginInputMutationIsolation/deep_map/success (0.00s)
+    --- FAIL: TestEval_ProviderToBuilder_PluginInputMutationIsolation/list_of_maps/decode_error (0.00s)
+    --- FAIL: TestEval_ProviderToBuilder_PluginInputMutationIsolation/list_of_maps/success (0.00s)
+    --- FAIL: TestEval_ProviderToBuilder_PluginInputMutationIsolation/payload_equals_reference/decode_error (0.03s)
+    --- FAIL: TestEval_ProviderToBuilder_PluginInputMutationIsolation/payload_equals_reference/constructor_error (0.03s)
+    --- FAIL: TestEval_ProviderToBuilder_PluginInputMutationIsolation/payload_equals_reference/success (0.04s)
+    --- FAIL: TestEval_ProviderToBuilder_PluginInputMutationIsolation/list/constructor_error (0.04s)
+    --- FAIL: TestEval_ProviderToBuilder_PluginInputMutationIsolation/list_of_maps/constructor_error (0.04s)
+    --- FAIL: TestEval_ProviderToBuilder_PluginInputMutationIsolation/list/decode_error (0.03s)
+    --- FAIL: TestEval_ProviderToBuilder_PluginInputMutationIsolation/deep_map/decode_error (0.04s)
+    --- FAIL: TestEval_ProviderToBuilder_PluginInputMutationIsolation/list/success (0.01s)
+    --- FAIL: TestEval_ProviderToBuilder_PluginInputMutationIsolation/deep_map/constructor_error (0.01s)
+--- PASS: TestEval_ProviderToBuilder_PluginNestedExecution (0.05s)
+    --- PASS: TestEval_ProviderToBuilder_PluginNestedExecution/deep_map (0.01s)
+    --- PASS: TestEval_ProviderToBuilder_PluginNestedExecution/list_of_maps (0.02s)
+    --- PASS: TestEval_ProviderToBuilder_PluginNestedExecution/list (0.02s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd	0.252s
+FAIL

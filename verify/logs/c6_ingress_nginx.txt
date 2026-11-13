@@ -1,0 +1,17 @@
+=== RUN   TestVerify_C6_IngressNginxReferencesNameContributingKeys
+=== RUN   TestVerify_C6_IngressNginxReferencesNameContributingKeys/basic_auth-file_with_an_unread_sibling_key
+    c6_ingress_nginx_auth_reference_probe_test.go:51: Secret.Data keys=[auth unrelated] retained users=["urn:k8s:secret:auth:auth"] resolved users=["user:{SHA}W6ph5Mm5Pz8GgiULbPgzG37mj9g="]
+    c6_ingress_nginx_auth_reference_probe_test.go:61: named key "auth": exists in Secret.Data=true, value contributes=true
+=== RUN   TestVerify_C6_IngressNginxReferencesNameContributingKeys/basic_auth-map
+    c6_ingress_nginx_auth_reference_probe_test.go:51: Secret.Data keys=[user user2] retained users=["urn:k8s:secret:auth:user" "urn:k8s:secret:auth:user2"] resolved users=["user:{SHA}W6ph5Mm5Pz8GgiULbPgzG37mj9g=" "user2:$apr1$d9hr9HBB$4HxwgUir3HP4EsggP/QNo0"]
+    c6_ingress_nginx_auth_reference_probe_test.go:61: named key "user": exists in Secret.Data=true, value contributes=true
+    c6_ingress_nginx_auth_reference_probe_test.go:61: named key "user2": exists in Secret.Data=true, value contributes=true
+=== RUN   TestVerify_C6_IngressNginxReferencesNameContributingKeys/digest_auth-file
+    c6_ingress_nginx_auth_reference_probe_test.go:51: Secret.Data keys=[auth] retained users=["urn:k8s:secret:auth:auth"] resolved users=["user:traefik:a2688e031edb4be6a3797f3882655c05"]
+    c6_ingress_nginx_auth_reference_probe_test.go:61: named key "auth": exists in Secret.Data=true, value contributes=true
+--- PASS: TestVerify_C6_IngressNginxReferencesNameContributingKeys (0.05s)
+    --- PASS: TestVerify_C6_IngressNginxReferencesNameContributingKeys/basic_auth-file_with_an_unread_sibling_key (0.05s)
+    --- PASS: TestVerify_C6_IngressNginxReferencesNameContributingKeys/basic_auth-map (0.00s)
+    --- PASS: TestVerify_C6_IngressNginxReferencesNameContributingKeys/digest_auth-file (0.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/ingress-nginx	0.066s

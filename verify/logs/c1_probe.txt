@@ -1,0 +1,47 @@
+=== RUN   TestVerify_C1_PluginRetentionAndSerialization
+=== RUN   TestVerify_C1_PluginRetentionAndSerialization/with_plugin_read_secret.yml
+    c1_plugin_retention_probe_test.go:34: retained Go value (%#v): map[string]dynamic.PluginConf{"test-secret":dynamic.PluginConf{"secret":urn:k8s:secret:name:key, "user":"admin"}}
+    c1_plugin_retention_probe_test.go:63: redactor.RemoveCredentials: {"http":{"middlewares":{"default-test-secret":{"plugin":{"test-secret":{"secret":{},"user":{}}}}}},"tcp":{},"udp":{},"tls":{}}
+    c1_plugin_retention_probe_test.go:63: redactor.Anonymize: {"http":{"middlewares":{"default-test-secret":{"plugin":{"test-secret":{"secret":{},"user":{}}}}}},"tcp":{},"udp":{},"tls":{}}
+    c1_plugin_retention_probe_test.go:72: json plugin: {"test-secret":{"secret":"urn:k8s:secret:name:key","user":"admin"}}
+    c1_plugin_retention_probe_test.go:73: yaml plugin: test-secret:
+            secret: urn:k8s:secret:name:key
+            user: admin
+=== RUN   TestVerify_C1_PluginRetentionAndSerialization/with_plugin_deep_read_secret.yml
+    c1_plugin_retention_probe_test.go:34: retained Go value (%#v): map[string]dynamic.PluginConf{"test-secret":dynamic.PluginConf{"secret_0":map[string]interface {}{"secret_1":map[string]interface {}{"secret_2":map[string]interface {}{"secret":urn:k8s:secret:name:key, "user":"admin"}}}}}
+    c1_plugin_retention_probe_test.go:63: redactor.RemoveCredentials: {"http":{"middlewares":{"default-test-secret":{"plugin":{"test-secret":{"secret_0":{}}}}}},"tcp":{},"udp":{},"tls":{}}
+    c1_plugin_retention_probe_test.go:63: redactor.Anonymize: {"http":{"middlewares":{"default-test-secret":{"plugin":{"test-secret":{"secret_0":{}}}}}},"tcp":{},"udp":{},"tls":{}}
+    c1_plugin_retention_probe_test.go:72: json plugin: {"test-secret":{"secret_0":{"secret_1":{"secret_2":{"secret":"urn:k8s:secret:name:key","user":"admin"}}}}}
+    c1_plugin_retention_probe_test.go:73: yaml plugin: test-secret:
+            secret_0:
+                secret_1:
+                    secret_2:
+                        secret: urn:k8s:secret:name:key
+                        user: admin
+=== RUN   TestVerify_C1_PluginRetentionAndSerialization/with_plugin_read_array_of_secret.yml
+    c1_plugin_retention_probe_test.go:34: retained Go value (%#v): map[string]dynamic.PluginConf{"test-secret":dynamic.PluginConf{"secret":[]interface {}{urn:k8s:secret:name:key1, urn:k8s:secret:name:key2}}}
+    c1_plugin_retention_probe_test.go:63: redactor.RemoveCredentials: {"http":{"middlewares":{"default-test-secret":{"plugin":{"test-secret":{"secret":{}}}}}},"tcp":{},"udp":{},"tls":{}}
+    c1_plugin_retention_probe_test.go:63: redactor.Anonymize: {"http":{"middlewares":{"default-test-secret":{"plugin":{"test-secret":{"secret":{}}}}}},"tcp":{},"udp":{},"tls":{}}
+    c1_plugin_retention_probe_test.go:72: json plugin: {"test-secret":{"secret":["urn:k8s:secret:name:key1","urn:k8s:secret:name:key2"]}}
+    c1_plugin_retention_probe_test.go:73: yaml plugin: test-secret:
+            secret:
+                - urn:k8s:secret:name:key1
+                - urn:k8s:secret:name:key2
+=== RUN   TestVerify_C1_PluginRetentionAndSerialization/with_plugin_read_array_of_map_contain_secret.yml
+    c1_plugin_retention_probe_test.go:34: retained Go value (%#v): map[string]dynamic.PluginConf{"test-secret":dynamic.PluginConf{"users":[]interface {}{map[string]interface {}{"name":"admin", "secret":urn:k8s:secret:name:key1}, map[string]interface {}{"name":"user", "secret":urn:k8s:secret:name:key2}}}}
+    c1_plugin_retention_probe_test.go:63: redactor.RemoveCredentials: {"http":{"middlewares":{"default-test-secret":{"plugin":{"test-secret":{"users":{}}}}}},"tcp":{},"udp":{},"tls":{}}
+    c1_plugin_retention_probe_test.go:63: redactor.Anonymize: {"http":{"middlewares":{"default-test-secret":{"plugin":{"test-secret":{"users":{}}}}}},"tcp":{},"udp":{},"tls":{}}
+    c1_plugin_retention_probe_test.go:72: json plugin: {"test-secret":{"users":[{"name":"admin","secret":"urn:k8s:secret:name:key1"},{"name":"user","secret":"urn:k8s:secret:name:key2"}]}}
+    c1_plugin_retention_probe_test.go:73: yaml plugin: test-secret:
+            users:
+                - name: admin
+                  secret: urn:k8s:secret:name:key1
+                - name: user
+                  secret: urn:k8s:secret:name:key2
+--- PASS: TestVerify_C1_PluginRetentionAndSerialization (0.07s)
+    --- PASS: TestVerify_C1_PluginRetentionAndSerialization/with_plugin_read_secret.yml (0.06s)
+    --- PASS: TestVerify_C1_PluginRetentionAndSerialization/with_plugin_deep_read_secret.yml (0.00s)
+    --- PASS: TestVerify_C1_PluginRetentionAndSerialization/with_plugin_read_array_of_secret.yml (0.00s)
+    --- PASS: TestVerify_C1_PluginRetentionAndSerialization/with_plugin_read_array_of_map_contain_secret.yml (0.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd	0.096s

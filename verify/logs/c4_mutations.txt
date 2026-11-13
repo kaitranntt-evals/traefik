@@ -1,0 +1,17 @@
+=== baseline
+--- PASS: TestBuilder_PluginSecretReference (0.00s)
+ok  	github.com/traefik/traefik/v3/pkg/server/middleware	0.023s
+=== M1: references inside lists are not resolved
+        	            	expected: map[string]interface {}{"nested":map[string]interface {}{"list":[]interface {}{"s3cr3t-other", "urn:k8s:secret:unknown:key"}}, "plain":"altered", "token":"s3cr3t-token"}
+        	            	actual  : map[string]interface {}{"nested":map[string]interface {}{"list":[]interface {}{"urn:k8s:secret:creds:other", "urn:k8s:secret:unknown:key"}}, "plain":"altered", "token":"s3cr3t-token"}
+--- FAIL: TestBuilder_PluginSecretReference (0.00s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/server/middleware	0.024s
+FAIL
+=== M2: unbound (literal) list siblings are dropped to empty
+        	            	expected: map[string]interface {}{"nested":map[string]interface {}{"list":[]interface {}{"s3cr3t-other", "urn:k8s:secret:unknown:key"}}, "plain":"altered", "token":"s3cr3t-token"}
+        	            	actual  : map[string]interface {}{"nested":map[string]interface {}{"list":[]interface {}{"s3cr3t-other", ""}}, "plain":"altered", "token":"s3cr3t-token"}
+--- FAIL: TestBuilder_PluginSecretReference (0.00s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/server/middleware	0.023s
+FAIL

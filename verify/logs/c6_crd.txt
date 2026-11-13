@@ -1,0 +1,23 @@
+=== RUN   TestVerify_C6_ComposedReferencesNameContributingKeys
+=== RUN   TestVerify_C6_ComposedReferencesNameContributingKeys/basicAuth_kubernetes.io/basic-auth_(username+password)
+    c6_crd_auth_reference_probe_test.go:63: Secret.Data keys=username,password
+    c6_crd_auth_reference_probe_test.go:64: retained users=["urn:k8s:secret:creds:username:urn:k8s:secret:creds:password"]
+    c6_crd_auth_reference_probe_test.go:65: resolved users=["alice:{SHA}JauGvtFJymypwcDV23yakTiN3qs="]
+    c6_crd_auth_reference_probe_test.go:83: named key "username": exists in Secret.Data=true, value contributes (resolved users change when only it changes)=true
+    c6_crd_auth_reference_probe_test.go:83: named key "password": exists in Secret.Data=true, value contributes (resolved users change when only it changes)=true
+=== RUN   TestVerify_C6_ComposedReferencesNameContributingKeys/basicAuth_htpasswd_single_key
+    c6_crd_auth_reference_probe_test.go:63: Secret.Data keys=my.users
+    c6_crd_auth_reference_probe_test.go:64: retained users=["urn:k8s:secret:creds:my.users"]
+    c6_crd_auth_reference_probe_test.go:65: resolved users=["alice:$apr1$aaaa$bbbb" "bob:$apr1$cccc$dddd"]
+    c6_crd_auth_reference_probe_test.go:83: named key "my.users": exists in Secret.Data=true, value contributes (resolved users change when only it changes)=true
+=== RUN   TestVerify_C6_ComposedReferencesNameContributingKeys/digestAuth_single_key
+    c6_crd_auth_reference_probe_test.go:63: Secret.Data keys=htdigest
+    c6_crd_auth_reference_probe_test.go:64: retained users=["urn:k8s:secret:creds:htdigest"]
+    c6_crd_auth_reference_probe_test.go:65: resolved users=["alice:traefik:a2688e031edb4be6a3797f3882655c05"]
+    c6_crd_auth_reference_probe_test.go:83: named key "htdigest": exists in Secret.Data=true, value contributes (resolved users change when only it changes)=true
+--- PASS: TestVerify_C6_ComposedReferencesNameContributingKeys (0.05s)
+    --- PASS: TestVerify_C6_ComposedReferencesNameContributingKeys/basicAuth_kubernetes.io/basic-auth_(username+password) (0.05s)
+    --- PASS: TestVerify_C6_ComposedReferencesNameContributingKeys/basicAuth_htpasswd_single_key (0.00s)
+    --- PASS: TestVerify_C6_ComposedReferencesNameContributingKeys/digestAuth_single_key (0.00s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd	0.068s

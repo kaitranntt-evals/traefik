@@ -1,0 +1,68 @@
+##### 177cb630 baseline
+--- PASS: TestBuilderSecretAuthentication (0.00s)
+--- PASS: TestResolveSecretsCopy (0.00s)
+--- PASS: TestResolveSecretUserEntries (0.00s)
+--- PASS: TestBuilderSecretForwardAuthTLS (0.00s)
+--- PASS: TestBuilderSecretAuthErrors (0.00s)
+ok  	github.com/traefik/traefik/v3/pkg/server/middleware	0.027s
+=== [177 M1 resolveSecretUsers drops literal (unbound) siblings]
+--- FAIL: TestResolveSecretUserEntries (0.00s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/server/middleware	0.026s
+FAIL
+=== [177 M2 resolveSecretUsers leaves references unresolved]
+--- FAIL: TestBuilderSecretAuthentication (0.00s)
+--- FAIL: TestResolveSecretUserEntries (0.00s)
+--- FAIL: TestBuilderSecretAuthErrors (0.00s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/server/middleware	0.027s
+FAIL
+=== [177 M3 resolveSecrets blanks the non-secret ForwardAuth.Address]
+--- FAIL: TestBuilderSecretForwardAuthTLS (0.00s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/server/middleware	0.025s
+FAIL
+=== [177 M4 nested ForwardAuth.TLS secrets left unresolved]
+--- FAIL: TestResolveSecretsCopy (0.00s)
+--- FAIL: TestBuilderSecretForwardAuthTLS (0.00s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/server/middleware	0.025s
+FAIL
+##### e230a658 baseline
+--- PASS: TestSecretValues_ResolveUsers (0.00s)
+--- PASS: TestSecretValues_ResolvePluginConf (0.00s)
+ok  	github.com/traefik/traefik/v3/pkg/config/dynamic	0.009s
+--- PASS: TestBuilder_BasicAuthSecretReference (0.00s)
+--- PASS: TestBuilder_PluginSecretReference (0.00s)
+--- PASS: TestBuilder_AuthErrorDoesNotRevealSecretValues (0.00s)
+ok  	github.com/traefik/traefik/v3/pkg/server/middleware	0.023s
+=== [e23 M1 ResolveUsers drops literal (unbound) siblings]
+--- FAIL: TestSecretValues_ResolveUsers (0.00s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/config/dynamic	0.010s
+ok  	github.com/traefik/traefik/v3/pkg/server/middleware	0.023s
+FAIL
+=== [e23 M2 ResolveUsers leaves references unresolved]
+--- FAIL: TestSecretValues_ResolveUsers (0.00s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/config/dynamic	0.011s
+--- FAIL: TestBuilder_BasicAuthSecretReference (0.00s)
+--- FAIL: TestBuilder_AuthErrorDoesNotRevealSecretValues (0.00s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/server/middleware	0.024s
+FAIL
+=== [e23 M3 ResolvePluginConf drops non-string siblings]
+--- FAIL: TestSecretValues_ResolvePluginConf (0.00s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/config/dynamic	0.009s
+ok  	github.com/traefik/traefik/v3/pkg/server/middleware	0.023s
+FAIL
+=== [e23 M4 ResolvePluginConf does not resolve inside nested lists]
+--- FAIL: TestSecretValues_ResolvePluginConf (0.00s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/config/dynamic	0.010s
+--- FAIL: TestBuilder_PluginSecretReference (0.00s)
+    --- FAIL: TestBuilder_PluginSecretReference/valid_value (0.00s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/server/middleware	0.022s
+FAIL

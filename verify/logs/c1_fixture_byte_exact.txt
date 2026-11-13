@@ -1,0 +1,11 @@
+=== RUN   TestEval_CRD_Plugin_SecretRetentionAndSerialization
+=== PAUSE TestEval_CRD_Plugin_SecretRetentionAndSerialization
+=== CONT  TestEval_CRD_Plugin_SecretRetentionAndSerialization
+    eval_crd_behavior_test.go:137: 
+        	Error Trace:	/home/ubuntu/repos/wt-9c319c44/pkg/provider/kubernetes/crd/eval_crd_behavior_test.go:137
+        	Error:      	Should be true
+        	Test:       	TestEval_CRD_Plugin_SecretRetentionAndSerialization
+--- FAIL: TestEval_CRD_Plugin_SecretRetentionAndSerialization (0.05s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd	0.078s
+FAIL

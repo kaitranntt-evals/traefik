@@ -1,0 +1,98 @@
+=== RUN   TestEval_ProviderToBuilder_PluginSuccessExecution
+=== PAUSE TestEval_ProviderToBuilder_PluginSuccessExecution
+=== RUN   TestEval_ProviderToBuilder_PluginInputMutationIsolation
+=== PAUSE TestEval_ProviderToBuilder_PluginInputMutationIsolation
+=== RUN   TestEval_ProviderToBuilder_PluginEscapedKeyExecution
+=== PAUSE TestEval_ProviderToBuilder_PluginEscapedKeyExecution
+=== RUN   TestEval_ProviderToBuilder_PluginNestedExecution
+=== PAUSE TestEval_ProviderToBuilder_PluginNestedExecution
+=== RUN   TestEval_ProviderToBuilder_PluginTypedSecretField
+=== PAUSE TestEval_ProviderToBuilder_PluginTypedSecretField
+=== RUN   TestEval_ProviderToBuilder_PluginRetainedCreateConfigIsolation
+=== PAUSE TestEval_ProviderToBuilder_PluginRetainedCreateConfigIsolation
+=== RUN   TestEval_ProviderToBuilder_PluginWasmExecution
+--- PASS: TestEval_ProviderToBuilder_PluginWasmExecution (0.14s)
+=== CONT  TestEval_ProviderToBuilder_PluginSuccessExecution
+=== CONT  TestEval_ProviderToBuilder_PluginTypedSecretField
+=== CONT  TestEval_ProviderToBuilder_PluginRetainedCreateConfigIsolation
+=== CONT  TestEval_ProviderToBuilder_PluginEscapedKeyExecution
+=== CONT  TestEval_ProviderToBuilder_PluginNestedExecution
+=== CONT  TestEval_ProviderToBuilder_PluginInputMutationIsolation
+--- PASS: TestEval_ProviderToBuilder_PluginSuccessExecution (0.01s)
+--- PASS: TestEval_ProviderToBuilder_PluginTypedSecretField (0.03s)
+=== RUN   TestEval_ProviderToBuilder_PluginRetainedCreateConfigIsolation/deep_map_/_decode_error
+=== RUN   TestEval_ProviderToBuilder_PluginRetainedCreateConfigIsolation/list_/_decode_error
+=== RUN   TestEval_ProviderToBuilder_PluginRetainedCreateConfigIsolation/list_of_maps_/_decode_error
+=== RUN   TestEval_ProviderToBuilder_PluginRetainedCreateConfigIsolation/bound_secret_/_decode_error
+=== RUN   TestEval_ProviderToBuilder_PluginRetainedCreateConfigIsolation/deep_map_/_success
+--- PASS: TestEval_ProviderToBuilder_PluginRetainedCreateConfigIsolation (0.06s)
+    --- PASS: TestEval_ProviderToBuilder_PluginRetainedCreateConfigIsolation/deep_map_/_decode_error (0.01s)
+    --- PASS: TestEval_ProviderToBuilder_PluginRetainedCreateConfigIsolation/list_/_decode_error (0.00s)
+    --- PASS: TestEval_ProviderToBuilder_PluginRetainedCreateConfigIsolation/list_of_maps_/_decode_error (0.00s)
+    --- PASS: TestEval_ProviderToBuilder_PluginRetainedCreateConfigIsolation/bound_secret_/_decode_error (0.01s)
+    --- PASS: TestEval_ProviderToBuilder_PluginRetainedCreateConfigIsolation/deep_map_/_success (0.00s)
+--- PASS: TestEval_ProviderToBuilder_PluginEscapedKeyExecution (0.06s)
+=== RUN   TestEval_ProviderToBuilder_PluginNestedExecution/deep_map
+=== PAUSE TestEval_ProviderToBuilder_PluginNestedExecution/deep_map
+=== RUN   TestEval_ProviderToBuilder_PluginNestedExecution/list
+=== PAUSE TestEval_ProviderToBuilder_PluginNestedExecution/list
+=== RUN   TestEval_ProviderToBuilder_PluginNestedExecution/list_of_maps
+=== PAUSE TestEval_ProviderToBuilder_PluginNestedExecution/list_of_maps
+=== CONT  TestEval_ProviderToBuilder_PluginNestedExecution/deep_map
+=== CONT  TestEval_ProviderToBuilder_PluginNestedExecution/list_of_maps
+=== CONT  TestEval_ProviderToBuilder_PluginNestedExecution/list
+=== RUN   TestEval_ProviderToBuilder_PluginInputMutationIsolation/deep_map/success
+=== PAUSE TestEval_ProviderToBuilder_PluginInputMutationIsolation/deep_map/success
+=== RUN   TestEval_ProviderToBuilder_PluginInputMutationIsolation/deep_map/constructor_error
+=== PAUSE TestEval_ProviderToBuilder_PluginInputMutationIsolation/deep_map/constructor_error
+=== RUN   TestEval_ProviderToBuilder_PluginInputMutationIsolation/deep_map/decode_error
+=== PAUSE TestEval_ProviderToBuilder_PluginInputMutationIsolation/deep_map/decode_error
+=== RUN   TestEval_ProviderToBuilder_PluginInputMutationIsolation/list/success
+=== PAUSE TestEval_ProviderToBuilder_PluginInputMutationIsolation/list/success
+=== RUN   TestEval_ProviderToBuilder_PluginInputMutationIsolation/list/constructor_error
+=== PAUSE TestEval_ProviderToBuilder_PluginInputMutationIsolation/list/constructor_error
+=== RUN   TestEval_ProviderToBuilder_PluginInputMutationIsolation/list/decode_error
+=== PAUSE TestEval_ProviderToBuilder_PluginInputMutationIsolation/list/decode_error
+=== RUN   TestEval_ProviderToBuilder_PluginInputMutationIsolation/list_of_maps/success
+=== PAUSE TestEval_ProviderToBuilder_PluginInputMutationIsolation/list_of_maps/success
+=== RUN   TestEval_ProviderToBuilder_PluginInputMutationIsolation/list_of_maps/constructor_error
+=== PAUSE TestEval_ProviderToBuilder_PluginInputMutationIsolation/list_of_maps/constructor_error
+=== RUN   TestEval_ProviderToBuilder_PluginInputMutationIsolation/list_of_maps/decode_error
+=== PAUSE TestEval_ProviderToBuilder_PluginInputMutationIsolation/list_of_maps/decode_error
+=== RUN   TestEval_ProviderToBuilder_PluginInputMutationIsolation/payload_equals_reference/success
+=== PAUSE TestEval_ProviderToBuilder_PluginInputMutationIsolation/payload_equals_reference/success
+=== RUN   TestEval_ProviderToBuilder_PluginInputMutationIsolation/payload_equals_reference/constructor_error
+=== PAUSE TestEval_ProviderToBuilder_PluginInputMutationIsolation/payload_equals_reference/constructor_error
+=== RUN   TestEval_ProviderToBuilder_PluginInputMutationIsolation/payload_equals_reference/decode_error
+=== PAUSE TestEval_ProviderToBuilder_PluginInputMutationIsolation/payload_equals_reference/decode_error
+=== CONT  TestEval_ProviderToBuilder_PluginInputMutationIsolation/deep_map/success
+=== CONT  TestEval_ProviderToBuilder_PluginInputMutationIsolation/payload_equals_reference/decode_error
+=== CONT  TestEval_ProviderToBuilder_PluginInputMutationIsolation/payload_equals_reference/constructor_error
+=== CONT  TestEval_ProviderToBuilder_PluginInputMutationIsolation/payload_equals_reference/success
+=== CONT  TestEval_ProviderToBuilder_PluginInputMutationIsolation/list/constructor_error
+=== CONT  TestEval_ProviderToBuilder_PluginInputMutationIsolation/list/decode_error
+=== CONT  TestEval_ProviderToBuilder_PluginInputMutationIsolation/list/success
+--- PASS: TestEval_ProviderToBuilder_PluginNestedExecution (0.06s)
+    --- PASS: TestEval_ProviderToBuilder_PluginNestedExecution/deep_map (0.00s)
+    --- PASS: TestEval_ProviderToBuilder_PluginNestedExecution/list_of_maps (0.00s)
+    --- PASS: TestEval_ProviderToBuilder_PluginNestedExecution/list (0.01s)
+=== CONT  TestEval_ProviderToBuilder_PluginInputMutationIsolation/deep_map/decode_error
+=== CONT  TestEval_ProviderToBuilder_PluginInputMutationIsolation/deep_map/constructor_error
+=== CONT  TestEval_ProviderToBuilder_PluginInputMutationIsolation/list_of_maps/constructor_error
+=== CONT  TestEval_ProviderToBuilder_PluginInputMutationIsolation/list_of_maps/decode_error
+=== CONT  TestEval_ProviderToBuilder_PluginInputMutationIsolation/list_of_maps/success
+--- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation (0.06s)
+    --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/deep_map/success (0.01s)
+    --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/payload_equals_reference/decode_error (0.01s)
+    --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/payload_equals_reference/constructor_error (0.01s)
+    --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/payload_equals_reference/success (0.01s)
+    --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/list/constructor_error (0.01s)
+    --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/list/decode_error (0.02s)
+    --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/list/success (0.02s)
+    --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/deep_map/decode_error (0.02s)
+    --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/deep_map/constructor_error (0.02s)
+    --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/list_of_maps/constructor_error (0.02s)
+    --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/list_of_maps/decode_error (0.02s)
+    --- PASS: TestEval_ProviderToBuilder_PluginInputMutationIsolation/list_of_maps/success (0.02s)
+PASS
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd	0.253s

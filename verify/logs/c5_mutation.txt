@@ -1,0 +1,26 @@
+=== baseline
+--- PASS: TestSecretStore_Digest (0.00s)
+ok  	github.com/traefik/traefik/v3/pkg/config/dynamic	0.009s
+    c5_reload_probe_test.go:25: unchanged Secret: provider hash equal=true, watcher DeepEqual=true
+    c5_reload_probe_test.go:26: rotated Secret:   provider hash equal=false, watcher DeepEqual=false
+--- PASS: TestVerify_C5_ProductionReloadComparisons (0.06s)
+--- PASS: TestLoadConfigurationFromCRD_secretUpdate (0.01s)
+--- PASS: TestLoadConfigurationFromCRD_authSecretUpdate (0.00s)
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd	0.089s
+--- PASS: TestLoadConfiguration_authSecretUpdate (0.05s)
+ok  	github.com/traefik/traefik/v3/pkg/provider/kubernetes/ingress-nginx	0.065s
+=== mutation: digest no longer depends on the Secret values
+--- FAIL: TestSecretStore_Digest (0.00s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/config/dynamic	0.009s
+    c5_reload_probe_test.go:25: unchanged Secret: provider hash equal=true, watcher DeepEqual=true
+    c5_reload_probe_test.go:26: rotated Secret:   provider hash equal=true, watcher DeepEqual=true
+--- PASS: TestVerify_C5_ProductionReloadComparisons (0.06s)
+--- FAIL: TestLoadConfigurationFromCRD_secretUpdate (0.01s)
+--- FAIL: TestLoadConfigurationFromCRD_authSecretUpdate (0.00s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd	0.083s
+--- FAIL: TestLoadConfiguration_authSecretUpdate (0.05s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/provider/kubernetes/ingress-nginx	0.068s
+FAIL

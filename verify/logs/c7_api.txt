@@ -1,0 +1,80 @@
+=== RUN   TestVerify_C7_ExtractTypeSelection
+    c7_api_type_probe_test.go:32: extractType(rateLimit, no carrier)        = "RateLimit"
+    c7_api_type_probe_test.go:33: extractType(rateLimit, populated carrier) = "secretValues"
+    c7_api_type_probe_test.go:34: extractType(plugin demo, populated carrier) = "secretValues"
+    c7_api_type_probe_test.go:35: 
+        	Error Trace:	/home/ubuntu/repos/wt-f176eba1/pkg/api/c7_api_type_probe_test.go:35
+        	Error:      	Not equal: 
+        	            	expected: "RateLimit"
+        	            	actual  : "secretValues"
+        	            	
+        	            	Diff:
+        	            	--- Expected
+        	            	+++ Actual
+        	            	@@ -1 +1 @@
+        	            	-RateLimit
+        	            	+secretValues
+        	Test:       	TestVerify_C7_ExtractTypeSelection
+    c7_api_type_probe_test.go:36: 
+        	Error Trace:	/home/ubuntu/repos/wt-f176eba1/pkg/api/c7_api_type_probe_test.go:36
+        	Error:      	Not equal: 
+        	            	expected: "demo"
+        	            	actual  : "secretValues"
+        	            	
+        	            	Diff:
+        	            	--- Expected
+        	            	+++ Actual
+        	            	@@ -1 +1 @@
+        	            	-demo
+        	            	+secretValues
+        	Test:       	TestVerify_C7_ExtractTypeSelection
+--- FAIL: TestVerify_C7_ExtractTypeSelection (0.00s)
+=== RUN   TestVerify_C7_APIResponseType
+    c7_api_type_probe_test.go:65: GET /api/http/middlewares: name=default-basicauth@kubernetescrd type="basicauth"
+    c7_api_type_probe_test.go:65: GET /api/http/middlewares: name=default-digestauth@kubernetescrd type="digestauth"
+    c7_api_type_probe_test.go:65: GET /api/http/middlewares: name=default-forwardauth@kubernetescrd type="secretvalues"
+    c7_api_type_probe_test.go:65: GET /api/http/middlewares: name=default-ratelimit@kubernetescrd type="secretvalues"
+    c7_api_type_probe_test.go:65: GET /api/http/middlewares: name=default-test-secret@kubernetescrd type="secretvalues"
+    c7_api_type_probe_test.go:69: 
+        	Error Trace:	/home/ubuntu/repos/wt-f176eba1/pkg/api/c7_api_type_probe_test.go:69
+        	Error:      	Not equal: 
+        	            	expected: "ratelimit"
+        	            	actual  : "secretvalues"
+        	            	
+        	            	Diff:
+        	            	--- Expected
+        	            	+++ Actual
+        	            	@@ -1 +1 @@
+        	            	-ratelimit
+        	            	+secretvalues
+        	Test:       	TestVerify_C7_APIResponseType
+    c7_api_type_probe_test.go:70: 
+        	Error Trace:	/home/ubuntu/repos/wt-f176eba1/pkg/api/c7_api_type_probe_test.go:70
+        	Error:      	Not equal: 
+        	            	expected: "forwardauth"
+        	            	actual  : "secretvalues"
+        	            	
+        	            	Diff:
+        	            	--- Expected
+        	            	+++ Actual
+        	            	@@ -1 +1 @@
+        	            	-forwardauth
+        	            	+secretvalues
+        	Test:       	TestVerify_C7_APIResponseType
+    c7_api_type_probe_test.go:71: 
+        	Error Trace:	/home/ubuntu/repos/wt-f176eba1/pkg/api/c7_api_type_probe_test.go:71
+        	Error:      	Not equal: 
+        	            	expected: "test-secret"
+        	            	actual  : "secretvalues"
+        	            	
+        	            	Diff:
+        	            	--- Expected
+        	            	+++ Actual
+        	            	@@ -1 +1 @@
+        	            	-test-secret
+        	            	+secretvalues
+        	Test:       	TestVerify_C7_APIResponseType
+--- FAIL: TestVerify_C7_APIResponseType (0.06s)
+FAIL
+FAIL	github.com/traefik/traefik/v3/pkg/api	0.082s
+FAIL
