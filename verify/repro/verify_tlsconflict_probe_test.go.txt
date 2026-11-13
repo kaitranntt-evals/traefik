@@ -1,0 +1,186 @@
+//go:build verify
+
+// Run (C2, C3, C4): unzip eval_tests.zip, then from the repo root: cp <eval_tests>/tests/*.go pkg/provider/kubernetes/gateway/ && cp verify/repro/verify_tlsconflict_probe_test.go.txt pkg/provider/kubernetes/gateway/verify_tlsconflict_probe_test.go && go test -tags verify -count=1 -v -run TestVerify_ ./pkg/provider/kubernetes/gateway  (a FAIL with "HTTP 421 for equal SNI/Host request" is the finding)
+
+package gateway_test
+
+import (
+	"fmt"
+	"os"
+	"sort"
+	"strings"
+	"testing"
+
+	"github.com/traefik/traefik/v3/pkg/config/dynamic"
+	"github.com/traefik/traefik/v3/pkg/provider/kubernetes/gateway"
+	traefiktls "github.com/traefik/traefik/v3/pkg/tls"
+	k8sruntime "k8s.io/apimachinery/pkg/runtime"
+)
+
+type verifyReq struct{ sni, host, path string }
+
+type verifyCase struct {
+	name      string
+	listeners []string
+	routeHost string // optional HTTPRoute hostname
+	file      map[string]*dynamic.Router
+	fileTLS   map[string]traefiktls.Options
+	reqs      []verifyReq
+}
+
+func verifyFileConf(routers map[string]*dynamic.Router, opts map[string]traefiktls.Options) *dynamic.Configuration {
+	conf := &dynamic.Configuration{
+		HTTP: &dynamic.HTTPConfiguration{
+			Routers: routers,
+			Services: map[string]*dynamic.Service{
+				"aeval-file-service": {LoadBalancer: &dynamic.ServersLoadBalancer{Servers: []dynamic.Server{{URL: "http://" + evalTLSConflictFileBackend + ":8080"}}}},
+			},
+		},
+	}
+	if opts != nil {
+		conf.TLS = &dynamic.TLSConfiguration{Options: opts}
+	}
+	return conf
+}
+
+func verifyRun(t *testing.T, tc verifyCase) map[string]int {
+	t.Helper()
+	secret := gateway.EvalIsoTLSSecretExported(t, "supersecret")
+	eps := map[string]gateway.Entrypoint{"websecure": {Address: ":443"}}
+	gwDoc := gateway.EvalIsoHTTPSGatewayExported("verify-gw", "supersecret", tc.listeners...)
+	routeDoc := gateway.EvalIsoRouteExported("http-app-gw", "verify-gw", "broad", "/gw")
+	if tc.routeHost != "" {
+		routeDoc = gateway.EvalIsoWithHostnamesExported(routeDoc, tc.routeHost)
+	}
+	gatewayConf := gateway.EvalIsoLoadExported(t, eps, []k8sruntime.Object{secret}, gateway.EvalIsoWhoamiYAML, gateway.EvalIsoClassYAML, gwDoc, routeDoc)
+	rt := evalTLSConflictRuntimeFor(t, gatewayConf, nil, verifyFileConf(tc.file, tc.fileTLS), "websecure", "", os.Getenv("VERIFY_STRICT") == "1")
+
+	var names []string
+	for name := range rt.Routers {
+		names = append(names, name)
+	}
+	sort.Strings(names)
+	for _, name := range names {
+		info := rt.Routers[name]
+		tlsDesc := "tls=nil"
+		if info.TLS != nil {
+			tlsDesc = fmt.Sprintf("tls.options=%q resolved=%q conflicting=%t", info.TLS.Options, info.TLS.ResolvedOptions, info.TLS.ConflictingOptions)
+		}
+		fmt.Printf("VERIFY[%s] router %s rule=%s prio=%d parents=%v %s status=%s err=%v\n", tc.name, name, info.Rule, info.Priority, info.ParentRefs, tlsDesc, info.Status, info.Err)
+	}
+	codes := map[string]int{}
+	for _, r := range tc.reqs {
+		_, opt, err := rt.TLSConfig(r.sni)
+		res := rt.Serve(r.sni, r.host, r.path)
+		fmt.Printf("VERIFY[%s] request sni=%s host=%s path=%s -> sni-selected-tls-options=%q (err=%v) HTTP %d body=%q\n", tc.name, r.sni, r.host, r.path, opt, err, res.Code, strings.TrimSpace(res.Body))
+		codes[r.sni+" "+r.path] = res.Code
+	}
+	return codes
+}
+
+func verifyFileRouter(rule string, options string) *dynamic.Router {
+	return &dynamic.Router{Rule: rule, Priority: 100, EntryPoints: []string{"websecure"}, Service: "aeval-file-service", TLS: &dynamic.RouterTLSConfig{Options: options}}
+}
+
+var verifyCustomOpts = map[string]traefiktls.Options{"custom": {MinVersion: "VersionTLS13"}}
+
+// C2: overlapping external wildcard rules next to a Gateway wildcard listener.
+func TestVerify_C2_ExternalWildcards(t *testing.T) {
+	reqs := []verifyReq{
+		{"foo.example.com", "foo.example.com", "/gw"},
+		{"foo.example.com", "foo.example.com", "/other"},
+		{"bar.foo.example.com", "bar.foo.example.com", "/gw"},
+		{"bar.foo.example.com", "bar.foo.example.com", "/other"},
+		{"baz.bar.foo.example.com", "baz.bar.foo.example.com", "/gw"},
+		{"baz.bar.foo.example.com", "baz.bar.foo.example.com", "/other"},
+	}
+	for _, tc := range []verifyCase{
+		{name: "ext=*.example.com/default-options", listeners: []string{"broad=*.example.com"},
+			file: map[string]*dynamic.Router{"ext": verifyFileRouter("Host(`*.example.com`) && Path(`/other`)", "")}, reqs: reqs},
+		{name: "ext=**.foo.example.com/default-options", listeners: []string{"broad=*.example.com"},
+			file: map[string]*dynamic.Router{"ext": verifyFileRouter("Host(`**.foo.example.com`) && Path(`/other`)", "")}, reqs: reqs},
+		{name: "ext=*.example.com/custom-options", listeners: []string{"broad=*.example.com"}, fileTLS: verifyCustomOpts,
+			file: map[string]*dynamic.Router{"ext": verifyFileRouter("Host(`*.example.com`) && Path(`/other`)", "custom")}, reqs: reqs},
+		{name: "ext=**.foo.example.com/custom-options", listeners: []string{"broad=*.example.com"}, fileTLS: verifyCustomOpts,
+			file: map[string]*dynamic.Router{"ext": verifyFileRouter("Host(`**.foo.example.com`) && Path(`/other`)", "custom")}, reqs: reqs},
+		{name: "ext=**.example.com/default-options", listeners: []string{"broad=*.example.com"},
+			file: map[string]*dynamic.Router{"ext": verifyFileRouter("Host(`**.example.com`) && Path(`/other`)", "")}, reqs: reqs},
+		{name: "ext=*.foo.example.com/default-options", listeners: []string{"broad=*.example.com"},
+			file: map[string]*dynamic.Router{"ext": verifyFileRouter("Host(`*.foo.example.com`) && Path(`/other`)", "")}, reqs: reqs},
+		{name: "ext=both-wildcards/default-options", listeners: []string{"broad=*.example.com"},
+			file: map[string]*dynamic.Router{
+				"ext1": verifyFileRouter("Host(`**.foo.example.com`) && Path(`/other`)", ""),
+				"ext2": verifyFileRouter("Host(`*.example.com`) && Path(`/other2`)", ""),
+			}, reqs: reqs},
+		{name: "control/ext=foo.example.com/default-options", listeners: []string{"broad=*.example.com"},
+			file: map[string]*dynamic.Router{"ext": verifyFileRouter("Host(`foo.example.com`) && Path(`/other`)", "")}, reqs: reqs},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			for key, code := range verifyRun(t, tc) {
+				if code == 421 {
+					t.Errorf("HTTP 421 for equal SNI/Host request %q", key)
+				}
+			}
+		})
+	}
+}
+
+// C3: external hostname declared only in a child rule.
+func TestVerify_C3_ChildOnlyHostname(t *testing.T) {
+	reqs := []verifyReq{
+		{"foo.example.com", "foo.example.com", "/gw"},
+		{"foo.example.com", "foo.example.com", "/other"},
+		{"bar.example.com", "bar.example.com", "/gw"},
+	}
+	child := func(rule string) *dynamic.Router {
+		return &dynamic.Router{Rule: rule, ParentRefs: []string{"parent"}, Service: "aeval-file-service"}
+	}
+	parent := func(options string) *dynamic.Router {
+		return &dynamic.Router{Rule: "PathPrefix(`/other`)", Priority: 100, EntryPoints: []string{"websecure"}, TLS: &dynamic.RouterTLSConfig{Options: options}}
+	}
+	for _, tc := range []verifyCase{
+		{name: "child-only-host/default-options", listeners: []string{"broad=*.example.com"},
+			file: map[string]*dynamic.Router{"parent": parent(""), "child": child("Host(`foo.example.com`)")}, reqs: reqs},
+		{name: "child-only-host/custom-options", listeners: []string{"broad=*.example.com"}, fileTLS: verifyCustomOpts,
+			file: map[string]*dynamic.Router{"parent": parent("custom"), "child": child("Host(`foo.example.com`)")}, reqs: reqs},
+		{name: "child-only-host/default-options/route-hostname", listeners: []string{"broad=*.example.com"}, routeHost: "foo.example.com",
+			file: map[string]*dynamic.Router{"parent": parent(""), "child": child("Host(`foo.example.com`)")}, reqs: reqs},
+		{name: "control/parent-host/default-options", listeners: []string{"broad=*.example.com"},
+			file: map[string]*dynamic.Router{
+				"parent": {Rule: "Host(`foo.example.com`) && PathPrefix(`/other`)", Priority: 100, EntryPoints: []string{"websecure"}, TLS: &dynamic.RouterTLSConfig{}},
+				"child":  child("Method(`GET`)"),
+			}, reqs: reqs},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			for key, code := range verifyRun(t, tc) {
+				if code == 421 {
+					t.Errorf("HTTP 421 for equal SNI/Host request %q", key)
+				}
+			}
+		})
+	}
+}
+
+// C4 (named TLS options part): an external exact-host router using named TLS options.
+func TestVerify_C4_NamedOptions(t *testing.T) {
+	reqs := []verifyReq{
+		{"foo.example.com", "foo.example.com", "/gw"},
+		{"foo.example.com", "foo.example.com", "/other"},
+	}
+	for _, tc := range []verifyCase{
+		{name: "named/wildcard-listener", listeners: []string{"broad=*.example.com"}, fileTLS: verifyCustomOpts,
+			file: map[string]*dynamic.Router{"ext": verifyFileRouter("Host(`foo.example.com`) && Path(`/other`)", "custom")}, reqs: reqs},
+		{name: "named/catchall-listener", listeners: []string{"broad="}, fileTLS: verifyCustomOpts,
+			file: map[string]*dynamic.Router{"ext": verifyFileRouter("Host(`foo.example.com`) && Path(`/other`)", "custom")}, reqs: reqs},
+		{name: "named/exact-listener", listeners: []string{"broad=foo.example.com"}, fileTLS: verifyCustomOpts,
+			file: map[string]*dynamic.Router{"ext": verifyFileRouter("Host(`foo.example.com`) && Path(`/other`)", "custom")}, reqs: reqs},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			for key, code := range verifyRun(t, tc) {
+				if code != 200 {
+					t.Errorf("HTTP %d for equal SNI/Host request %q", code, key)
+				}
+			}
+		})
+	}
+}

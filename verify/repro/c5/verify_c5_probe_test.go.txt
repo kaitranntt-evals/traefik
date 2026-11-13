@@ -1,0 +1,46 @@
+// Run (C5): in a worktree of evalon/traefik-ga-0d524d9c: cp verify/repro/c5/verify_c5_probe_test.go.txt <worktree>/pkg/provider/kubernetes/gateway/verify_c5_probe_test.go && cd <worktree> && go test -count=1 -v -run TestVerifyC5 ./pkg/provider/kubernetes/gateway  (FAIL on the GRPCRoute line is the finding)
+package gateway_test
+
+import (
+	"encoding/json"
+	"net/http"
+	"sort"
+	"strings"
+	"testing"
+
+	"github.com/traefik/traefik/v3/pkg/provider/kubernetes/gateway"
+	gatev1 "sigs.k8s.io/gateway-api/apis/v1"
+)
+
+// TestVerifyC5 dumps the services production generates for the positive routing helper
+// (listenerRoute) and the full response the positive controls only read .Code from.
+func TestVerifyC5(t *testing.T) {
+	for _, kind := range []string{"HTTPRoute", "GRPCRoute"} {
+		conf := gateway.LoadListenerConfiguration(t, gatev1.HTTPProtocolType,
+			[]gatev1.Listener{{Name: "catch-all"}},
+			listenerRoute(kind, "route", "catch-all", nil, "Call"))
+		var names []string
+		for name := range conf.HTTP.Services {
+			names = append(names, name)
+		}
+		sort.Strings(names)
+		for _, name := range names {
+			svc := conf.HTTP.Services[name]
+			raw, _ := json.Marshal(svc)
+			t.Logf("VERIFY[%s] service %s = %s", kind, name, raw)
+			if svc.Weighted == nil {
+				continue
+			}
+			for _, child := range svc.Weighted.Services {
+				_, generated := conf.HTTP.Services[child.Name]
+				t.Logf("VERIFY[%s]   wrr child %s: GRPCStatus=%+v Status=%v generatedAsService=%v", kind, child.Name, child.GRPCStatus, child.Status != nil, generated)
+			}
+		}
+		handler := listenerHandler(t, gatev1.HTTPProtocolType, conf)
+		res := listenerRequest(handler, "other.org", "other.org", "Call")
+		t.Logf("VERIFY[%s] positive request -> HTTP %d headers=%v body=%q", kind, res.Code, res.Header(), res.Body.String())
+		if res.Code == http.StatusOK && strings.Contains(res.Body.String(), `"code":14`) {
+			t.Errorf("VERIFY[%s] HTTP 200 carries gRPC status 14 Unavailable: no successful backend was reached", kind)
+		}
+	}
+}

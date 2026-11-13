@@ -1,0 +1,16 @@
+diff --git a/pkg/server/aggregator.go b/pkg/server/aggregator.go
+index 434b518da..5b5dba6f6 100644
+--- a/pkg/server/aggregator.go
++++ b/pkg/server/aggregator.go
+@@ -468,6 +468,11 @@ func findConflictingRouters(ep string, routers map[string]*dynamic.Router, child
+ 			continue
+ 		}
+ 
++		// VERIFY C4 regression: external named TLS options no longer take part in conflict detection.
++		if o := router.TLS.ResolvedOptions; o != traefiktls.DefaultTLSConfigName && !strings.HasSuffix(o, "@kubernetesgateway") {
++			continue
++		}
++
+ 		for _, domain := range slices.Compact(slices.Sorted(slices.Values(append(domains, childDomains[name]...)))) {
+ 			if routersByHostAndOption[domain] == nil {
+ 				routersByHostAndOption[domain] = map[string][]string{}

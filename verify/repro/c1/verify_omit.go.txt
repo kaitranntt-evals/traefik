@@ -1,0 +1,86 @@
+// Audit instrumentation for C1 (not production code): copied by run_c1.sh to pkg/provider/kubernetes/gateway/verify_omit.go in a claim-branch worktree.
+package gateway
+
+import (
+	"fmt"
+	"os"
+	"sort"
+	"strings"
+
+	"github.com/traefik/traefik/v3/pkg/config/dynamic"
+	ktypes "k8s.io/apimachinery/pkg/types"
+	gatev1 "sigs.k8s.io/gateway-api/apis/v1"
+)
+
+// verifyOmit drops exactly one production-generated record, selected by VERIFY_OMIT, from the provider output.
+// VERIFY_OMIT is one of: service:NAME, router:NAME, tlsopt:NAME, cond:http|grpc:NS/NAME:TYPE.
+// With VERIFY_DUMP=file it appends the list of generated records to that file.
+func verifyOmit(conf *dynamic.Configuration, report *statusReport) {
+	if path := os.Getenv("VERIFY_DUMP"); path != "" {
+		var lines []string
+		for name := range conf.HTTP.Services {
+			lines = append(lines, "service:"+name)
+		}
+		for name := range conf.HTTP.Routers {
+			lines = append(lines, "router:"+name)
+		}
+		if conf.TLS != nil {
+			for name := range conf.TLS.Options {
+				lines = append(lines, "tlsopt:"+name)
+			}
+		}
+		for kind, routes := range map[string]map[ktypes.NamespacedName]gatev1.RouteStatus{"http": report.httpRoutes, "grpc": report.grpcRoutes} {
+			for nn, st := range routes {
+				for _, parent := range st.Parents {
+					for _, c := range parent.Conditions {
+						lines = append(lines, fmt.Sprintf("cond:%s:%s/%s:%s=%s", kind, nn.Namespace, nn.Name, c.Type, c.Status))
+					}
+				}
+			}
+		}
+		sort.Strings(lines)
+		if f, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o644); err == nil {
+			fmt.Fprintln(f, strings.Join(lines, "\n"))
+			f.Close()
+		}
+	}
+
+	kind, rest, ok := strings.Cut(os.Getenv("VERIFY_OMIT"), ":")
+	if !ok {
+		return
+	}
+	switch kind {
+	case "service":
+		delete(conf.HTTP.Services, rest)
+	case "router":
+		delete(conf.HTTP.Routers, rest)
+	case "tlsopt":
+		if conf.TLS != nil {
+			delete(conf.TLS.Options, rest)
+		}
+	case "cond":
+		parts := strings.Split(rest, ":")
+		routes := report.httpRoutes
+		if parts[0] == "grpc" {
+			routes = report.grpcRoutes
+		}
+		ns, name, _ := strings.Cut(parts[1], "/")
+		nn := ktypes.NamespacedName{Namespace: ns, Name: name}
+		st, found := routes[nn]
+		if !found {
+			return
+		}
+		for i := range st.Parents {
+			var kept []gatev1.RouteParentStatus
+			_ = kept
+			conds := st.Parents[i].Conditions[:0:0]
+			for _, c := range st.Parents[i].Conditions {
+				if c.Type != parts[2] {
+					conds = append(conds, c)
+				}
+			}
+			st.Parents[i].Conditions = conds
+		}
+		routes[nn] = st
+	}
+}
