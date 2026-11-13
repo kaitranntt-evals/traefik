@@ -300,38 +300,11 @@ func resolveHTTPTLSOptions(routers map[string]*dynamic.Router, strictTLSOptions 
 }
 
 // resolveParentChildDomains determines which concrete hostnames a parent router effectively
-// serves through its child routers on an entryPoint, while preserving exclusion precedence
-// across same-provider parents and detecting concrete external-host overlaps on broad routes.
+// serves through its child routers on an entryPoint and which overlapping host expressions it
+// shares with other providers' routers when at least one router is a parent.
 func resolveParentChildDomains(epRouters map[string]*dynamic.Router, allRouters map[string]*dynamic.Router) map[string][]string {
-	parentDomains := map[string][]string{}
-	for _, router := range allRouters {
-		for _, parentRef := range router.ParentRefs {
-			parent, ok := epRouters[parentRef]
-			if !ok {
-				continue
-			}
-			if _, seen := parentDomains[parentRef]; seen {
-				continue
-			}
-			domains, err := httpmuxer.ParseDomains(parent.Rule)
-			if err != nil {
-				continue
-			}
-			parentDomains[parentRef] = domains
-		}
-	}
-
-	providerSuffix := func(name string) string {
-		_, suffix, ok := strings.Cut(name, "@")
-		if !ok {
-			return ""
-		}
-		return suffix
-	}
-
-	isBroadDomain := func(d string) bool {
-		return d == "*" || strings.HasPrefix(d, "*.") || strings.HasPrefix(d, "**.")
-	}
+	providerOf := func(name string) string { _, sfx, _ := strings.Cut(name, "@"); return sfx }
+	isBroad := func(d string) bool { return d == "*" || strings.HasPrefix(d, "*.") || strings.HasPrefix(d, "**.") }
 
 	coverRank := func(patterns []string, d string) int {
 		if len(patterns) == 0 {
@@ -339,7 +312,7 @@ func resolveParentChildDomains(epRouters map[string]*dynamic.Router, allRouters 
 		}
 		best := -1
 		for _, p := range patterns {
-			var rank int
+			rank := -1
 			switch {
 			case p == "*":
 				rank = 0
@@ -347,10 +320,8 @@ func resolveParentChildDomains(epRouters map[string]*dynamic.Router, allRouters 
 				rank = 10000 + len(p)
 			case strings.HasPrefix(p, "**.") && muxer.DomainMatchHostExpression(d, p):
 				rank = 1 + len(strings.TrimPrefix(p, "**."))
-			case strings.HasPrefix(p, "*.") && muxer.DomainMatchHostExpression(d, p):
+			case strings.HasPrefix(p, "*.") && !strings.HasPrefix(d, "**.") && muxer.DomainMatchHostExpression(d, p):
 				rank = 1 + len(strings.TrimPrefix(p, "*."))
-			default:
-				continue
 			}
 			if rank > best {
 				best = rank
@@ -359,40 +330,17 @@ func resolveParentChildDomains(epRouters map[string]*dynamic.Router, allRouters 
 		return best
 	}
 
-	parentClaimsDomain := func(parentRef, d string) bool {
-		rank := coverRank(parentDomains[parentRef], d)
-		if rank < 0 {
-			return false
-		}
-		pvd := providerSuffix(parentRef)
-		for other, otherPatterns := range parentDomains {
-			if other == parentRef || providerSuffix(other) != pvd {
-				continue
-			}
-			if coverRank(otherPatterns, d) > rank {
-				return false
+	rootOwn := map[string][]string{}
+	for name, router := range epRouters {
+		if router.TLS != nil {
+			if own, err := httpmuxer.ParseDomains(router.Rule); err == nil {
+				rootOwn[name] = own
 			}
 		}
-		return true
 	}
 
-	type epRoot struct {
-		domains []string
-		options string
-	}
-	var epRoots []epRoot
-	for _, router := range epRouters {
-		if router.TLS == nil {
-			continue
-		}
-		domains, err := httpmuxer.ParseDomains(router.Rule)
-		if err != nil {
-			continue
-		}
-		epRoots = append(epRoots, epRoot{domains: domains, options: router.TLS.ResolvedOptions})
-	}
-
-	childDomains := map[string][]string{}
+	parentDomains := map[string][]string{}
+	childRules := map[string][][]string{}
 	for _, router := range allRouters {
 		if len(router.ParentRefs) == 0 {
 			continue
@@ -402,29 +350,62 @@ func resolveParentChildDomains(epRouters map[string]*dynamic.Router, allRouters 
 			continue
 		}
 		for _, parentRef := range router.ParentRefs {
-			parent, ok := epRouters[parentRef]
-			if !ok {
-				continue
+			if own, ok := rootOwn[parentRef]; ok {
+				parentDomains[parentRef] = own
+				childRules[parentRef] = append(childRules[parentRef], domains)
 			}
+		}
+	}
+
+	parentClaimsDomain := func(parentRef, d string) bool {
+		rank := coverRank(parentDomains[parentRef], d)
+		if rank < 0 {
+			return false
+		}
+		pvd := providerOf(parentRef)
+		for other, otherPatterns := range parentDomains {
+			if other != parentRef && providerOf(other) == pvd && coverRank(otherPatterns, d) > rank {
+				return false
+			}
+		}
+		return true
+	}
+
+	childDomains := map[string][]string{}
+	for parentRef, rules := range childRules {
+		for _, domains := range rules {
 			for _, c := range domains {
-				if !isBroadDomain(c) && parentClaimsDomain(parentRef, c) {
+				if !isBroad(c) && parentClaimsDomain(parentRef, c) {
 					childDomains[parentRef] = append(childDomains[parentRef], c)
 				}
 			}
-			// Broad or hostname-free child routes inherit concrete external-host overlaps on the entryPoint.
-			if len(domains) == 0 || slices.ContainsFunc(domains, isBroadDomain) {
-				for _, root := range epRoots {
-					if root.options == parent.TLS.ResolvedOptions {
-						continue
-					}
-					for _, e := range root.domains {
-						if isBroadDomain(e) || coverRank(domains, e) < 0 {
-							continue
-						}
-						if parentClaimsDomain(parentRef, e) {
-							childDomains[parentRef] = append(childDomains[parentRef], e)
-						}
-					}
+		}
+	}
+
+	serves := func(name string, own []string, d string) bool {
+		rules, isParent := childRules[name]
+		if !isParent {
+			return len(own) > 0 && coverRank(own, d) >= 0
+		}
+		return parentClaimsDomain(name, d) && slices.ContainsFunc(rules, func(child []string) bool {
+			return (len(child) > 0 || len(own) > 0) && coverRank(child, d) >= 0
+		})
+	}
+
+	rootAll := map[string][]string{}
+	for name, own := range rootOwn {
+		rootAll[name] = slices.Concat(own, childDomains[name])
+	}
+	for name, own := range rootOwn {
+		_, isParent := childRules[name]
+		for other, otherDomains := range rootAll {
+			_, otherIsParent := childRules[other]
+			if providerOf(name) == providerOf(other) || (!isParent && !otherIsParent) {
+				continue
+			}
+			for _, d := range otherDomains {
+				if serves(name, own, d) {
+					childDomains[name] = append(childDomains[name], d)
 				}
 			}
 		}
@@ -438,62 +419,75 @@ func resolveParentChildDomains(epRouters map[string]*dynamic.Router, allRouters 
 // to the default TLS options, or, when strictTLSOptions is enabled, by disabling them.
 func findConflictingRouters(ep string, routers map[string]*dynamic.Router, childDomains map[string][]string, strictTLSOptions bool) []string {
 	var conflicting []string
-
-	// For each host (SNI, already lower-cased by the domain parsing), the routers
-	// serving it grouped by their resolved TLS option. A host with more than one
-	// group is served with conflicting TLS options.
-	routersByHostAndOption := map[string]map[string][]string{}
+	effectiveOptions := map[string]string{}
+	routerDomains := map[string][]string{}
 
 	for name, router := range routers {
 		if router.TLS == nil {
 			continue
 		}
-
 		domains, err := httpmuxer.ParseDomains(router.Rule)
 		if err != nil {
 			continue
 		}
 
+		option := router.TLS.ResolvedOptions
 		// The configured TLSOptions on a router without a domain in its rule cannot be selected when evaluating the SNI,
 		// so if it is not the default one, it is a conflict.
-		if len(domains) == 0 && router.TLS.ResolvedOptions != traefiktls.DefaultTLSConfigName {
+		if len(domains) == 0 && option != traefiktls.DefaultTLSConfigName {
 			conflicting = append(conflicting, name)
-
 			if strictTLSOptions {
 				log.Error().Msgf("On EntryPoint %q, router %q, with no domains in its rule, is configured with a TLS options different than the default one, the fallback to the default TLS options being disabled, it will be disabled", ep, name)
 				continue
 			}
-
 			log.Error().Msgf("On EntryPoint %q, router %q, with no domains in its rule, is configured with a TLS options different than the default one, default TLSOptions will be applied for it", ep, name)
-			continue
+			option = traefiktls.DefaultTLSConfigName
 		}
 
-		for _, domain := range slices.Compact(slices.Sorted(slices.Values(append(domains, childDomains[name]...)))) {
-			if routersByHostAndOption[domain] == nil {
-				routersByHostAndOption[domain] = map[string][]string{}
-			}
-			option := router.TLS.ResolvedOptions
-			routersByHostAndOption[domain][option] = append(routersByHostAndOption[domain][option], name)
-		}
+		effectiveOptions[name] = option
+		routerDomains[name] = slices.Compact(slices.Sorted(slices.Values(append(domains, childDomains[name]...))))
 	}
 
-	for domain, routersByOption := range routersByHostAndOption {
-		if len(routersByOption) == 1 {
-			continue
+	for {
+		routersByHostAndOption := map[string]map[string][]string{}
+		for name, domains := range routerDomains {
+			opt := effectiveOptions[name]
+			for _, domain := range domains {
+				if routersByHostAndOption[domain] == nil {
+					routersByHostAndOption[domain] = map[string][]string{}
+				}
+				routersByHostAndOption[domain][opt] = append(routersByHostAndOption[domain][opt], name)
+			}
 		}
 
-		var routersInConflict []string
-		for _, names := range routersByOption {
-			conflicting = append(conflicting, names...)
-			routersInConflict = append(routersInConflict, names...)
+		changed := false
+		for domain, routersByOption := range routersByHostAndOption {
+			if len(routersByOption) == 1 {
+				continue
+			}
+			var routersInConflict []string
+			for _, names := range routersByOption {
+				for _, name := range names {
+					if !slices.Contains(conflicting, name) {
+						conflicting = append(conflicting, name)
+					}
+					if !strictTLSOptions && effectiveOptions[name] != traefiktls.DefaultTLSConfigName {
+						effectiveOptions[name] = traefiktls.DefaultTLSConfigName
+						changed = true
+					}
+				}
+				routersInConflict = append(routersInConflict, names...)
+			}
+			if strictTLSOptions {
+				log.Error().Msgf("On EntryPoint %q, Host %q is served by multiple routers with different TLS options, the fallback to the default TLS options being disabled, the following routers are disabled: %v", ep, domain, routersInConflict)
+			} else {
+				log.Error().Msgf("On EntryPoint %q, Host %q is served by multiple routers with different TLS options, default TLSOptions will be applied for the following routers: %v", ep, domain, routersInConflict)
+			}
 		}
 
-		if strictTLSOptions {
-			log.Error().Msgf("On EntryPoint %q, Host %q is served by multiple routers with different TLS options, the fallback to the default TLS options being disabled, the following routers are disabled: %v", ep, domain, routersInConflict)
-			continue
+		if strictTLSOptions || !changed {
+			break
 		}
-
-		log.Error().Msgf("On EntryPoint %q, Host %q is served by multiple routers with different TLS options, default TLSOptions will be applied for the following routers: %v", ep, domain, routersInConflict)
 	}
 
 	return conflicting
