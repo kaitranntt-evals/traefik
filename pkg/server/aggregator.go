@@ -8,6 +8,7 @@ import (
 	"github.com/go-acme/lego/v5/challenge/tlsalpn01"
 	"github.com/rs/zerolog/log"
 	"github.com/traefik/traefik/v3/pkg/config/dynamic"
+	"github.com/traefik/traefik/v3/pkg/muxer"
 	httpmuxer "github.com/traefik/traefik/v3/pkg/muxer/http"
 	"github.com/traefik/traefik/v3/pkg/observability/logs"
 	otypes "github.com/traefik/traefik/v3/pkg/observability/types"
@@ -223,48 +224,7 @@ func resolveHTTPTLSOptions(routers map[string]*dynamic.Router, strictTLSOptions 
 	// Resolve the TLS options independently for each entryPoint.
 	conflictingRouters := make(map[string][]string, len(routersByEntryPoint))
 	for ep, epRouters := range routersByEntryPoint {
-		// A parent router on this entryPoint also serves, for SNI purposes, the hosts its child
-		// routers match, unless another parent router on the same entryPoint claims that host.
-		claimedBy := map[string][]string{}
-		for _, router := range routers {
-			for _, parentRef := range router.ParentRefs {
-				parent, ok := epRouters[parentRef]
-				if !ok {
-					continue
-				}
-				domains, err := httpmuxer.ParseDomains(parent.Rule)
-				if err != nil {
-					continue
-				}
-				for _, domain := range domains {
-					if !slices.Contains(claimedBy[domain], parentRef) {
-						claimedBy[domain] = append(claimedBy[domain], parentRef)
-					}
-				}
-			}
-		}
-
-		childDomains := map[string][]string{}
-		for _, router := range routers {
-			if len(router.ParentRefs) == 0 {
-				continue
-			}
-			domains, err := httpmuxer.ParseDomains(router.Rule)
-			if err != nil {
-				continue
-			}
-			for _, parentRef := range router.ParentRefs {
-				if _, ok := epRouters[parentRef]; !ok {
-					continue
-				}
-				for _, domain := range domains {
-					if slices.ContainsFunc(claimedBy[domain], func(other string) bool { return other != parentRef }) {
-						continue
-					}
-					childDomains[parentRef] = append(childDomains[parentRef], domain)
-				}
-			}
-		}
+		childDomains := resolveParentChildDomains(epRouters, routers)
 
 		conflictingRouters[ep] = findConflictingRouters(ep, epRouters, childDomains, strictTLSOptions)
 	}
@@ -337,6 +297,139 @@ func resolveHTTPTLSOptions(routers map[string]*dynamic.Router, strictTLSOptions 
 	}
 
 	return newRouters
+}
+
+// resolveParentChildDomains determines which concrete hostnames a parent router effectively
+// serves through its child routers on an entryPoint, while preserving exclusion precedence
+// across same-provider parents and detecting concrete external-host overlaps on broad routes.
+func resolveParentChildDomains(epRouters map[string]*dynamic.Router, allRouters map[string]*dynamic.Router) map[string][]string {
+	parentDomains := map[string][]string{}
+	for _, router := range allRouters {
+		for _, parentRef := range router.ParentRefs {
+			parent, ok := epRouters[parentRef]
+			if !ok {
+				continue
+			}
+			if _, seen := parentDomains[parentRef]; seen {
+				continue
+			}
+			domains, err := httpmuxer.ParseDomains(parent.Rule)
+			if err != nil {
+				continue
+			}
+			parentDomains[parentRef] = domains
+		}
+	}
+
+	providerSuffix := func(name string) string {
+		_, suffix, ok := strings.Cut(name, "@")
+		if !ok {
+			return ""
+		}
+		return suffix
+	}
+
+	isBroadDomain := func(d string) bool {
+		return d == "*" || strings.HasPrefix(d, "*.") || strings.HasPrefix(d, "**.")
+	}
+
+	coverRank := func(patterns []string, d string) int {
+		if len(patterns) == 0 {
+			return 0
+		}
+		best := -1
+		for _, p := range patterns {
+			var rank int
+			switch {
+			case p == "*":
+				rank = 0
+			case strings.EqualFold(p, d):
+				rank = 10000 + len(p)
+			case strings.HasPrefix(p, "**.") && muxer.DomainMatchHostExpression(d, p):
+				rank = 1 + len(strings.TrimPrefix(p, "**."))
+			case strings.HasPrefix(p, "*.") && muxer.DomainMatchHostExpression(d, p):
+				rank = 1 + len(strings.TrimPrefix(p, "*."))
+			default:
+				continue
+			}
+			if rank > best {
+				best = rank
+			}
+		}
+		return best
+	}
+
+	parentClaimsDomain := func(parentRef, d string) bool {
+		rank := coverRank(parentDomains[parentRef], d)
+		if rank < 0 {
+			return false
+		}
+		pvd := providerSuffix(parentRef)
+		for other, otherPatterns := range parentDomains {
+			if other == parentRef || providerSuffix(other) != pvd {
+				continue
+			}
+			if coverRank(otherPatterns, d) > rank {
+				return false
+			}
+		}
+		return true
+	}
+
+	type epRoot struct {
+		domains []string
+		options string
+	}
+	var epRoots []epRoot
+	for _, router := range epRouters {
+		if router.TLS == nil {
+			continue
+		}
+		domains, err := httpmuxer.ParseDomains(router.Rule)
+		if err != nil {
+			continue
+		}
+		epRoots = append(epRoots, epRoot{domains: domains, options: router.TLS.ResolvedOptions})
+	}
+
+	childDomains := map[string][]string{}
+	for _, router := range allRouters {
+		if len(router.ParentRefs) == 0 {
+			continue
+		}
+		domains, err := httpmuxer.ParseDomains(router.Rule)
+		if err != nil {
+			continue
+		}
+		for _, parentRef := range router.ParentRefs {
+			parent, ok := epRouters[parentRef]
+			if !ok {
+				continue
+			}
+			for _, c := range domains {
+				if !isBroadDomain(c) && parentClaimsDomain(parentRef, c) {
+					childDomains[parentRef] = append(childDomains[parentRef], c)
+				}
+			}
+			// Broad or hostname-free child routes inherit concrete external-host overlaps on the entryPoint.
+			if len(domains) == 0 || slices.ContainsFunc(domains, isBroadDomain) {
+				for _, root := range epRoots {
+					if root.options == parent.TLS.ResolvedOptions {
+						continue
+					}
+					for _, e := range root.domains {
+						if isBroadDomain(e) || coverRank(domains, e) < 0 {
+							continue
+						}
+						if parentClaimsDomain(parentRef, e) {
+							childDomains[parentRef] = append(childDomains[parentRef], e)
+						}
+					}
+				}
+			}
+		}
+	}
+	return childDomains
 }
 
 // findConflictingRouters returns the names of the routers, among the given
