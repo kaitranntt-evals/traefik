@@ -1,0 +1,42 @@
+# Apply on evalon/traefik-ga-db4a8424, then: VERIFY_DROP=catchall-hosts go test -count=1 -v -run "^TestGatewayListenerIsolation$" ./pkg/provider/kubernetes/gateway/
+diff --git a/pkg/provider/kubernetes/gateway/listener_test.go b/pkg/provider/kubernetes/gateway/listener_test.go
+index e4f76b501..5615f67d5 100644
+--- a/pkg/provider/kubernetes/gateway/listener_test.go
++++ b/pkg/provider/kubernetes/gateway/listener_test.go
+@@ -1,6 +1,10 @@
+ package gateway
+ 
+ import (
++	"fmt"
++	"os"
++	"regexp"
++	"strings"
+ 	"testing"
+ 
+ 	"github.com/stretchr/testify/assert"
+@@ -89,5 +93,25 @@ func LoadListenerConfigurationForTest(t *testing.T, objects ...runtime.Object) *
+ 	}
+ 	assert.Contains(t, report.gatewayClasses["traefik"].SupportedFeatures, gatev1.SupportedFeature{Name: gatev1.FeatureName(features.SupportGatewayHTTPListenerIsolation)})
+ 	assert.Contains(t, report.gatewayClasses["traefik"].SupportedFeatures, gatev1.SupportedFeature{Name: gatev1.FeatureName(features.SupportGatewayHTTPSListenerDetectMisdirectedRequests)})
++	if os.Getenv("VERIFY_DUMP") != "" {
++		for k := range conf.HTTP.Services {
++			if strings.Contains(k, "catchall") {
++				fmt.Printf("VERIFY %s service-key %s\n", t.Name(), k)
++			}
++		}
++		for k, r := range conf.HTTP.Routers {
++			if strings.Contains(k, "catchall") {
++				fmt.Printf("VERIFY %s router %s rule=%s service=%s prio=%d\n", t.Name(), k, r.Rule, r.Service, r.Priority)
++			}
++		}
++	}
++	if pat := os.Getenv("VERIFY_DROP"); pat != "" {
++		for k := range conf.HTTP.Services {
++			if regexp.MustCompile(pat).MatchString(k) {
++				delete(conf.HTTP.Services, k)
++				fmt.Printf("VERIFY %s dropped service %s\n", t.Name(), k)
++			}
++		}
++	}
+ 	return conf
+ }
