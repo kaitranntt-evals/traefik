@@ -723,25 +723,18 @@ func (p *Provider) buildListenerRouters(gateways []gatewayWithListeners, conf *d
 			listenerRouterName := makeListenerRouterName(uniq, hostname)
 
 			listenerRouter := &dynamic.Router{
+				RuleSyntax:  "default",
 				Rule:        buildListenerRule(hostname, hostnames),
 				EntryPoints: []string{uniq.epName},
 			}
 
-			// Flawed: global listener election across all gateways instead of per-gateway
-			var allListeners []gatewayListener
-			for _, gw := range gateways {
-				allListeners = append(allListeners, gw.listeners...)
-			}
-			globalElected := mostSpecificListener(allListeners, uniq, hostname)
-			if globalElected != nil {
-				for i := range gateways {
-					for j := range gateways[i].listeners {
-						if gateways[i].listeners[j].Name == globalElected.Name && gateways[i].listeners[j].EPName == globalElected.EPName {
-							gateways[i].listeners[j].RouterNames = append(gateways[i].listeners[j].RouterNames, listenerRouterName)
-							break
-						}
-					}
+			for _, gateway := range gateways {
+				listener := mostSpecificListener(gateway.listeners, uniq, hostname)
+				if listener == nil {
+					continue
 				}
+
+				listener.RouterNames = append(listener.RouterNames, listenerRouterName)
 			}
 
 			if uniq.protocol == gatev1.HTTPSProtocolType {
