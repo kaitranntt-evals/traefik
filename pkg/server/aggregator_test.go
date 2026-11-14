@@ -1602,3 +1602,78 @@ func Test_resolveHTTPTLSOptions_childHostPropagationBoundaries(t *testing.T) {
 		}
 	})
 }
+
+func Test_resolveHTTPTLSOptions_descendantAndWildcardChildConflicts(t *testing.T) {
+	t.Run("grandchild host propagates to external TLS root against wildcard gateway", func(t *testing.T) {
+		routers := map[string]*dynamic.Router{
+			"listener-wildcard@kubernetesgateway": {
+				EntryPoints: []string{"websecure"},
+				Rule:        "Host(`**.example.com`)",
+				TLS:         &dynamic.RouterTLSConfig{Options: "listener-wildcard"},
+			},
+			"gw-app@kubernetesgateway": {
+				Rule:       "Host(`foo.example.com`) && Path(`/gw`)",
+				ParentRefs: []string{"listener-wildcard@kubernetesgateway"},
+				Service:    "gw@kubernetesgateway",
+			},
+			"ext-root@file": {
+				EntryPoints: []string{"websecure"},
+				Rule:        "PathPrefix(`/other`)",
+				TLS:         &dynamic.RouterTLSConfig{Options: "default"},
+			},
+			"ext-mid@file": {
+				Rule:       "Method(`GET`)",
+				ParentRefs: []string{"ext-root@file"},
+			},
+			"ext-leaf@file": {
+				Rule:       "Host(`foo.example.com`)",
+				ParentRefs: []string{"ext-mid@file"},
+				Service:    "ext@file",
+			},
+		}
+
+		got := resolveHTTPTLSOptions(routers, false)
+		require.Contains(t, got, "websecure-conflicted-listener-wildcard@kubernetesgateway")
+		require.Equal(t, "default", got["websecure-conflicted-listener-wildcard@kubernetesgateway"].TLS.ResolvedOptions)
+		require.Equal(t, []string{"websecure-conflicted-listener-wildcard@kubernetesgateway"}, got["gw-app@kubernetesgateway"].ParentRefs)
+	})
+
+	t.Run("wildcard child propagates to external TLS root against wildcard gateway", func(t *testing.T) {
+		routers := map[string]*dynamic.Router{
+			"listener-wildcard@kubernetesgateway": {
+				EntryPoints: []string{"websecure"},
+				Rule:        "Host(`**.example.com`)",
+				TLS:         &dynamic.RouterTLSConfig{Options: "listener-wildcard"},
+			},
+			"gw-app@kubernetesgateway": {
+				Rule:       "Host(`**.example.com`) && Path(`/gw`)",
+				ParentRefs: []string{"listener-wildcard@kubernetesgateway"},
+				Service:    "gw@kubernetesgateway",
+			},
+			"ext-root@file": {
+				EntryPoints: []string{"websecure"},
+				Rule:        "PathPrefix(`/other`)",
+				TLS:         &dynamic.RouterTLSConfig{Options: "default"},
+			},
+			"ext-child@file": {
+				Rule:       "Host(`*.example.com`)",
+				ParentRefs: []string{"ext-root@file"},
+				Service:    "ext@file",
+			},
+		}
+
+		got := resolveHTTPTLSOptions(routers, false)
+		require.Contains(t, got, "websecure-conflicted-listener-wildcard@kubernetesgateway")
+		require.Equal(t, "default", got["websecure-conflicted-listener-wildcard@kubernetesgateway"].TLS.ResolvedOptions)
+	})
+
+	t.Run("cyclic parent refs terminate safely", func(t *testing.T) {
+		routers := map[string]*dynamic.Router{
+			"a@file": {Rule: "Method(`GET`)", ParentRefs: []string{"b@file"}},
+			"b@file": {Rule: "Host(`foo.example.com`)", ParentRefs: []string{"a@file"}, Service: "ext@file"},
+		}
+		got := resolveHTTPTLSOptions(routers, false)
+		require.Contains(t, got, "a@file")
+		require.Contains(t, got, "b@file")
+	})
+}

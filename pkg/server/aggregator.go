@@ -304,7 +304,6 @@ func resolveHTTPTLSOptions(routers map[string]*dynamic.Router, strictTLSOptions 
 // shares with other providers' routers when at least one router is a parent.
 func resolveParentChildDomains(epRouters map[string]*dynamic.Router, allRouters map[string]*dynamic.Router) map[string][]string {
 	providerOf := func(name string) string { _, sfx, _ := strings.Cut(name, "@"); return sfx }
-	isBroad := func(d string) bool { return d == "*" || strings.HasPrefix(d, "*.") || strings.HasPrefix(d, "**.") }
 
 	coverRank := func(patterns []string, d string) int {
 		if len(patterns) == 0 {
@@ -339,6 +338,22 @@ func resolveParentChildDomains(epRouters map[string]*dynamic.Router, allRouters 
 		}
 	}
 
+	var rootsOf func(refs []string, seen map[string]bool) []string
+	rootsOf = func(refs []string, seen map[string]bool) []string {
+		var roots []string
+		for _, ref := range refs {
+			if seen[ref] {
+				continue
+			}
+			seen[ref] = true
+			if _, ok := rootOwn[ref]; ok {
+				roots = append(roots, ref)
+			} else if parent, ok := allRouters[ref]; ok {
+				roots = append(roots, rootsOf(parent.ParentRefs, seen)...)
+			}
+		}
+		return roots
+	}
 	parentDomains := map[string][]string{}
 	childRules := map[string][][]string{}
 	for _, router := range allRouters {
@@ -349,11 +364,9 @@ func resolveParentChildDomains(epRouters map[string]*dynamic.Router, allRouters 
 		if err != nil {
 			continue
 		}
-		for _, parentRef := range router.ParentRefs {
-			if own, ok := rootOwn[parentRef]; ok {
-				parentDomains[parentRef] = own
-				childRules[parentRef] = append(childRules[parentRef], domains)
-			}
+		for _, root := range rootsOf(router.ParentRefs, map[string]bool{}) {
+			parentDomains[root] = rootOwn[root]
+			childRules[root] = append(childRules[root], domains)
 		}
 	}
 
@@ -375,7 +388,7 @@ func resolveParentChildDomains(epRouters map[string]*dynamic.Router, allRouters 
 	for parentRef, rules := range childRules {
 		for _, domains := range rules {
 			for _, c := range domains {
-				if !isBroad(c) && parentClaimsDomain(parentRef, c) {
+				if parentClaimsDomain(parentRef, c) {
 					childDomains[parentRef] = append(childDomains[parentRef], c)
 				}
 			}
